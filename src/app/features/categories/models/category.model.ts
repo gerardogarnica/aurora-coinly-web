@@ -7,3 +7,9 @@ export interface Category {
   isDeleted: boolean;
   notes?: string;
 }
+
+export interface CreateCategory extends Omit<Category, 'categoryId' | 'isDeleted'> {
+}
+
+export interface UpdateCategory extends Omit<Category, 'type' | 'isDeleted'> {
+}
