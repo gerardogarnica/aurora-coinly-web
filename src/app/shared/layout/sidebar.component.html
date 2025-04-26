@@ -5,7 +5,7 @@
          routerLinkActive="bg-gray-200 font-semibold"
          class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
         <span class="w-5 mr-3">
-          <i class="fas fa-home"></i>
+          <fa-icon [icon]="faHome"></fa-icon>
         </span>
         <span>Dashboard</span>
       </a>
@@ -15,7 +15,7 @@
          routerLinkActive="bg-gray-200 font-semibold"
          class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
         <span class="w-5 mr-3">
-          <i class="fas fa-exchange-alt"></i>
+          <fa-icon [icon]="faReceipt"></fa-icon>
         </span>
         <span>Transactions</span>
       </a>
@@ -25,7 +25,7 @@
          routerLinkActive="bg-gray-200 font-semibold"
          class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
         <span class="w-5 mr-3">
-          <i class="fas fa-wallet"></i>
+          <fa-icon [icon]="faWallet"></fa-icon>
         </span>
         <span>Wallets</span>
       </a>
@@ -35,9 +35,19 @@
          routerLinkActive="bg-gray-200 font-semibold"
          class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
         <span class="w-5 mr-3">
-          <i class="fas fa-tags"></i>
+          <fa-icon [icon]="faTags"></fa-icon>
         </span>
         <span>Categories</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/methods" 
+         routerLinkActive="bg-gray-200 font-semibold"
+         class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+        <span class="w-5 mr-3">
+          <fa-icon [icon]="faCoins"></fa-icon>
+        </span>
+        <span>Payment Methods</span>
       </a>
     </li>
     <li>
@@ -45,7 +55,7 @@
          routerLinkActive="bg-gray-200 font-semibold"
          class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
         <span class="w-5 mr-3">
-          <i class="fas fa-chart-bar"></i>
+          <fa-icon [icon]="faChartBar"></fa-icon>
         </span>
         <span>Reports</span>
       </a>
