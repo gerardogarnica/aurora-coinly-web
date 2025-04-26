@@ -11,7 +11,7 @@ export const routes: Routes = [
             },
             {
                 path: 'categories',
-                loadComponent: () => import('@features/categories/pages/categories.component').then(m => m.CategoriesComponent),
+                loadComponent: () => import('@features/categories/pages/categories.component'),
             },
             {
                 path: '**',
