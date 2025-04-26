@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './navbar.component';
-import { SidebarComponent } from './sidebar.component';
+import { RouterModule } from '@angular/router';
+import { NavbarComponent } from '@shared/layout/navbar.component';
+import { SidebarComponent } from '@shared/layout/sidebar.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, SidebarComponent],
+  imports: [RouterModule, NavbarComponent, SidebarComponent],
   templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent {} 
