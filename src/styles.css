@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     scrollbar-width: thin;
 }
 
@@ -10,7 +10,7 @@ body {
     --color-coinly-primary: oklch(0.47 0.1 242.95);
     --color-coinly-secondary: oklch(0.63 0.12 229.05);
     --color-coinly-light: oklch(0.99 0 0);
-    --color-coinly-highlight: oklch(0.85 0.1 217.15);
+    --color-coinly-highlight: oklch(0.95 0.03 237.63);
     --color-coinly-danger-light: oklch(0.81 0.11 19.78);
     --color-coinly-danger: oklch(0.58 0.24 28.48);
     --color-coinly-danger-dark: oklch(0.44 0.18 26.79);
