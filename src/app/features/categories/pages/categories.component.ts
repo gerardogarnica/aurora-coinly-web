@@ -10,6 +10,7 @@ import { CategoryService } from '@features/categories/services/category.service'
 export default class CategoriesComponent {
   private readonly categoryService = inject(CategoryService);
   categories = signal<Category[]>([]);
+  errorMessage = signal<string | null>(null);
 
   ngOnInit() {
     this.loadCategories();
@@ -19,10 +20,11 @@ export default class CategoriesComponent {
     this.categoryService.getCategories(false).subscribe({
       next: (categories: Category[]) => {
         this.categories.set(categories);
+        this.errorMessage.set(null);
       },
-      error: (error: Error) => {
-        console.error('Error loading categories:', error);
+      error: (error: string) => {
+        this.errorMessage.set(error);
       }
     });
   }
-} 
+}
