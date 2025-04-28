@@ -1,13 +1,15 @@
-<nav class="bg-white shadow-md p-4 flex justify-between items-center">
-  <div class="text-xl font-bold text-gray-800">
-    <a routerLink="/" class="hover:text-gray-600">Aurora Coinly</a>
+<nav class="bg-blue-950 p-4 flex justify-between items-center">
+  <div class="text-2xl font-bold text-neutral-50 tracking-wide">
+    <a routerLink="/" class="hover:text-blue-200 transition-colors">Aurora Coinly</a>
   </div>
   <div class="flex items-center space-x-4">
-    <a class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium transition-colors">
-      Sign up
-    </a>
-    <a class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded font-medium transition-colors">
-      Log in
-    </a>
+    <button 
+      class="text-neutral-50 hover:text-blue-200 text-xl focus:outline-none">
+      <fa-icon [icon]="faBell"></fa-icon>
+    </button>
+    <button
+      class="text-neutral-50 hover:text-blue-200 text-xl rounded-full bg-blue-600 w-8 h-8 flex items-center justify-center focus:outline-none">
+      <fa-icon [icon]="faUser"></fa-icon>
+    </button>
   </div>
-</nav> 
+</nav>

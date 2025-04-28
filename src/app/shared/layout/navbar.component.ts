@@ -1,10 +1,20 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SharedModule } from '@shared/shared.module';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faBell, faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, SharedModule],
   templateUrl: './navbar.component.html'
 })
-export class NavbarComponent {}
+export class NavbarComponent {
+  faBell = faBell;
+  faUser = faUser;
+
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faBell, faUser);
+  }
+}

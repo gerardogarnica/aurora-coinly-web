@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faCoffee, faHome, faReceipt, faTags, faWallet, faCoins, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faTableColumns, faReceipt, faTags, faWallet, faCoins, faChartBar } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,8 +10,7 @@ import { faCoffee, faHome, faReceipt, faTags, faWallet, faCoins, faChartBar } fr
   templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent {
-  faCoffee = faCoffee;
-  faHome = faHome;
+  faTableColumns = faTableColumns;
   faReceipt = faReceipt;
   faTags = faTags;
   faWallet = faWallet;
@@ -19,6 +18,6 @@ export class SidebarComponent {
   faChartBar = faChartBar;
 
   constructor(library: FaIconLibrary) {
-    library.addIcons(faCoffee, faHome, faReceipt, faTags, faWallet, faCoins, faChartBar);
+    library.addIcons(faTableColumns, faReceipt, faTags, faWallet, faCoins, faChartBar);
   }
 }
