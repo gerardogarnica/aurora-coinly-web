@@ -1,13 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+
 import { Category } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { SharedModule } from '@shared/shared.module';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, PageTitleComponent],
   templateUrl: './categories.component.html'
 })
 export default class CategoriesComponent {
