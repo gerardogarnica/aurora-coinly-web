@@ -5,3 +5,10 @@ body {
     font-family: 'Montserrat', sans-serif;
     scrollbar-width: thin;
 }
+
+@theme {
+    --color-blue-950: oklch(0.47 0.1 242.95);
+    --color-neutral-50: oklch(0.99 0 0);
+    --color-sky-300: oklch(0.85 0.1 217.15);
+    --color-sky-500: oklch(0.63 0.12 229.05);
+}

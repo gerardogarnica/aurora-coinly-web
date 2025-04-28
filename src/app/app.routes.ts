@@ -6,8 +6,8 @@ export const routes: Routes = [
         loadComponent: () => import('@shared/layout/main-layout.component').then(m => m.MainLayoutComponent),
         children: [
             {
-                path: '',
-                loadComponent: () => import('@features/dashboard/pages/dashboard.component').then(m => m.DashboardComponent),
+                path: 'dashboard',
+                loadComponent: () => import('@features/dashboard/pages/dashboard.component'),
             },
             {
                 path: 'categories',
@@ -15,7 +15,7 @@ export const routes: Routes = [
             },
             {
                 path: '**',
-                redirectTo: ''
+                redirectTo: 'dashboard'
             }
         ]
     },
