@@ -14,6 +14,18 @@ export const routes: Routes = [
                 loadComponent: () => import('@features/categories/pages/categories.component'),
             },
             {
+                path: 'methods',
+                loadComponent: () => import('@features/methods/pages/methods.component'),
+            },
+            {
+                path: 'transactions',
+                loadComponent: () => import('@features/transactions/pages/transactions.component'),
+            },
+            {
+                path: 'wallets',
+                loadComponent: () => import('@features/wallets/pages/wallets.component'),
+            },
+            {
                 path: '**',
                 redirectTo: 'dashboard'
             }

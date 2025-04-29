@@ -3,9 +3,11 @@ import { Component } from '@angular/core';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-transactions',
   standalone: true,
   imports: [PageTitleComponent],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './transactions.component.html'
 })
-export default class DashboardComponent {} 
+export default class TransactionsComponent {
+
+}
