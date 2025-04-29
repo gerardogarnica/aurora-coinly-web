@@ -3,12 +3,32 @@
   subtitle="Manage your categories to organize your transactions and keep your finances on track.">
 </app-page-title>
 
-<div class="flex justify-end mb-4">
-  <button
-    class="px-5 py-2 bg-coinly-info hover:bg-coinly-info-dark text-coinly-light text-sm font-semibold rounded shadow transition-colors">
-    + Add New Category
-  </button>
-</div>
+<section class="flex flex-col md:flex-row items-center justify-between mb-4 space-y-3 md:space-y-0 md:space-x-16 text-sm">
+  <div class="w-full md:w-3/5">
+    <form class="flex items-center">
+      <label for="simple-search" class="sr-only">Search</label>
+      <div class="relative w-full">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-coinly-secondary">
+          <fa-icon [icon]="faSearch"></fa-icon>
+        </span>
+        <input
+          type="text"
+          id="simple-search"
+          placeholder="Search categories..."
+          maxlength="100"
+          class="block w-full pl-10 pr-4 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div class="w-full md:w-auto justify-end">
+    <button
+      class="px-5 py-2 bg-coinly-info hover:bg-coinly-info-dark text-coinly-light hover:font-bold rounded-lg shadow transition-colors focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary">
+      + Add New category
+    </button>
+  </div>
+</section>
 
 @if (errorMessage()) {
   <div class="mb-4 p-3 rounded bg-coinly-danger-light text-coinly-danger border border-coinly-danger-dark">

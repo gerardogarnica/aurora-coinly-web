@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { Category } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
@@ -16,8 +16,10 @@ export default class CategoriesComponent {
   private readonly categoryService = inject(CategoryService);
   categories = signal<Category[]>([]);
   errorMessage = signal<string | null>(null);
+
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
+  faSearch = faSearch;
 
   ngOnInit() {
     this.loadCategories();
