@@ -9,17 +9,17 @@ export class ErrorsService {
   constructor() { }
 
   handleHttpError(error: HttpErrorResponse): string {
-    const errorMessageText = error.error.Message;
+    const errorMessageText = error.error.detail;
 
     // Client-side or network error
     if (error.error instanceof ErrorEvent) {
-      console.error('A client-side or network error occurred:', error.error.message);
+      console.error('A client-side or network error occurred:', errorMessageText);
       return 'A network error occurred. Please check your connection.';
     }
 
     // Backend returned an unsuccessful response code
     console.error(
-      `Backend returned code ${error.status}, body was: `, error.error
+      `Backend returned code ${error.status}, ${error.error.detail}, body was: `, error.error
     );
 
     // Customize messages based on status or error content
