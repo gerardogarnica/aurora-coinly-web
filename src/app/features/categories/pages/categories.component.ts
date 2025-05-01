@@ -5,13 +5,14 @@ import { CategoryDetailDialogComponent } from '@features/categories/components/c
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { SharedModule } from '@shared/shared.module';
+import { IconButtonComponent } from '@shared/components/icon-button/icon-button.component';
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [SharedModule, PageTitleComponent, CategoryDetailDialogComponent, LargeButtonComponent],
+  imports: [SharedModule, PageTitleComponent, CategoryDetailDialogComponent, IconButtonComponent, LargeButtonComponent],
   templateUrl: './categories.component.html'
 })
 export default class CategoriesComponent {

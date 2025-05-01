@@ -93,15 +93,15 @@
           </td>
           <td class="px-6 py-2 whitespace-nowrap">
             <div class="flex items-center gap-2">
-              <app-large-button
-                [text]="'Edit'"
+              <app-icon-button
                 [action]="'edit'"
                 (buttonClick)="openEditCategoryDialog(category)"
-              ></app-large-button>
-              <app-large-button
-                [text]="'Delete'"
+                [title]="'Edit'"
+              ></app-icon-button>
+              <app-icon-button
                 [action]="'delete'"
-              ></app-large-button>
+                [title]="'Delete'"
+              ></app-icon-button>
             </div>
           </td>
         </tr>
