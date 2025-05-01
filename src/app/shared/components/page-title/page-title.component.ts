@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
     <p class="text-base text-gray-600 mt-2">
       {{ subtitle }}
       </p>
-      }
+    }
   </section>
   `
 })
