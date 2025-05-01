@@ -25,7 +25,7 @@ export class LargeButtonComponent {
   faTimes = faTimes;
 
   get buttonClasses(): string {
-    const baseClasses = 'px-5 py-2 text-coinly-light hover:font-bold rounded-lg shadow transition-colors focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary';
+    const baseClasses = 'px-5 py-2 text-coinly-light hover:font-black rounded-lg shadow transition-colors focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary';
     const enabledClasses = 'cursor-pointer';
     const disabledClasses = 'opacity-50 cursor-not-allowed';
     

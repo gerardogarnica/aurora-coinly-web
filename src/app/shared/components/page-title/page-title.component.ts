@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   imports: [],
   template: `
   <section class="mb-6">
-    <h1 class="text-2xl text-coinly-primary font-bold">
+    <h1 class="text-2xl text-coinly-primary font-bold pb-2 border-b border-coinly-primary">
       {{ title }}
     </h1>
     @if (subtitle) {
