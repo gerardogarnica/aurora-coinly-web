@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
+import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
 
 @Component({
   selector: 'app-category-detail-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LargeButtonComponent],
   templateUrl: './category-detail-dialog.component.html'
 })
 export class CategoryDetailDialogComponent implements OnInit {

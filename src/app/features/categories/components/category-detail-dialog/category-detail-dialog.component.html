@@ -1,77 +1,77 @@
 @if (showDialog) {
-  <dialog open class="fixed inset-0 bg-coinly-secondary/25 flex items-center justify-center z-50 w-full h-full border-none p-0" (click)="onDialogClick($event)">
-    <div class="bg-coinly-light rounded-lg shadow-xl w-full max-w-md mx-4" (click)="$event.stopPropagation()">
+  <dialog open class="fixed inset-0 bg-coinly-secondary/50 flex items-center justify-center z-50 w-full h-full border-none p-0" (click)="onDialogClick($event)">
+    <div class="bg-coinly-light rounded-lg shadow-2xl w-full max-w-md mx-4 text-sm" (click)="$event.stopPropagation()">
       <div class="p-6">
-        <h2 class="text-2xl font-semibold text-coinly-primary mb-4">
+        <h2 class="text-2xl font-semibold text-coinly-primary mb-4 pb-2 border-b border-coinly-primary">
           {{ mode === 'add' ? 'Add New Category' : 'Update Category' }}
         </h2>
         
         <form [formGroup]="categoryForm" class="space-y-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-coinly-secondary mb-1">Name (3-100 characters)</label>
+            <label for="name" class="block mb-1">Name <span class="text-coinly-info">(required, 3-100 characters)</span></label>
             <input
               type="text"
               id="name"
               formControlName="name"
-              class="w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
               placeholder="Enter category name"
+              maxlength="100"
+              class="block w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
             />
             @if (categoryForm.get('name')?.hasError('required') && categoryForm.get('name')?.touched) {
-              <p class="mt-1 text-sm text-coinly-danger">Name is required</p>
+              <p class="mt-1 text-coinly-danger">Name is required</p>
             }
             @if (categoryForm.get('name')?.hasError('minlength')) {
-              <p class="mt-1 text-sm text-coinly-danger">Name must be at least 3 characters</p>
+              <p class="mt-1 text-coinly-danger">Name must be at least 3 characters</p>
             }
             @if (categoryForm.get('name')?.hasError('maxlength')) {
-              <p class="mt-1 text-sm text-coinly-danger">Name cannot exceed 100 characters</p>
+              <p class="mt-1 text-coinly-danger">Name cannot exceed 100 characters</p>
             }
           </div>
 
           <div>
-            <label for="type" class="block text-sm font-medium text-coinly-secondary mb-1">Type</label>
+            <label for="type" class="block mb-1">Type</label>
             <select
               id="type"
               formControlName="type"
-              class="w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary disabled:bg-coinly-secondary-light disabled:cursor-not-allowed"
+              class="block w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="Expense">Expense</option>
               <option value="Income">Income</option>
             </select>
             @if (categoryForm.get('type')?.hasError('required') && categoryForm.get('type')?.touched) {
-              <p class="mt-1 text-sm text-coinly-danger">Type is required</p>
+              <p class="mt-1 text-coinly-danger">Type is required</p>
             }
           </div>
 
           <div>
-            <label for="notes" class="block text-sm font-medium text-coinly-secondary mb-1">Notes</label>
+            <label for="notes" class="block mb-1">Notes <span class="text-coinly-info">(max 1000 characters)</span></label>
             <textarea
               id="notes"
               formControlName="notes"
-              rows="3"
-              class="w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
+              rows="6"
               placeholder="Enter any additional notes"
+              maxlength="1000"
+              class="block w-full px-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
             ></textarea>
             @if (categoryForm.get('notes')?.hasError('maxlength')) {
-              <p class="mt-1 text-sm text-coinly-danger">Notes cannot exceed 1000 characters</p>
+              <p class="mt-1 text-coinly-danger">Notes cannot exceed 1000 characters</p>
             }
           </div>
         </form>
       </div>
 
       <div class="bg-coinly-secondary-light px-6 py-4 rounded-b-lg flex justify-end space-x-3">
-        <button
-          (click)="onCancel()"
-          class="px-4 py-2 text-coinly-secondary hover:text-coinly-primary font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-coinly-primary"
-        >
-          Cancel
-        </button>
-        <button
-          (click)="onSave()"
+        <app-large-button
+          [text]="'Cancel'"
+          [action]="'cancel'"
+          (buttonClick)="onCancel()"
+        ></app-large-button>
+        <app-large-button
+          [text]="'Save'"
+          [action]="'save'"
           [disabled]="!categoryForm.valid"
-          class="px-4 py-2 bg-coinly-primary text-white font-medium rounded-lg hover:bg-coinly-primary-dark focus:outline-none focus:ring-2 focus:ring-coinly-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Save
-        </button>
+          (buttonClick)="onSave()"
+        ></app-large-button>
       </div>
     </div>
   </dialog>
