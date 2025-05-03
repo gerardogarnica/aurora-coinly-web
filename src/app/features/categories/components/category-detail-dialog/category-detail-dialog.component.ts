@@ -4,12 +4,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
+import { AutofocusDirective } from '@shared/directives/autofocus.directive';
 import { ProcessStatus } from '@shared/models/process-status.model';
 
 @Component({
   selector: 'app-category-detail-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LargeButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, LargeButtonComponent, AutofocusDirective],
   templateUrl: './category-detail-dialog.component.html'
 })
 export class CategoryDetailDialogComponent implements OnInit {

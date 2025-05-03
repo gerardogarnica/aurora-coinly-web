@@ -3,13 +3,14 @@
     <div class="bg-coinly-light rounded-lg shadow-2xl w-full max-w-md mx-4 text-sm" (click)="$event.stopPropagation()">
       <div class="p-6">
         <h2 class="text-2xl font-bold text-coinly-primary mb-4 pb-2 border-b border-coinly-primary">
-          {{ mode === 'add' ? 'Add New Category' : 'Update Category' }}
+          {{ mode === 'add' ? 'Add New Category' : 'Edit Category' }}
         </h2>
         
         <form [formGroup]="categoryForm" class="space-y-4">
           <div>
             <label for="name" class="block mb-1">Name <span class="text-coinly-info">(required, 3-100 characters)</span></label>
             <input
+              appAutofocus
               type="text"
               id="name"
               formControlName="name"
