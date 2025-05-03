@@ -1,10 +1,12 @@
 <button
   [type]="type"
   [title]="text"
-  [disabled]="disabled"
+  [disabled]="disabled || loading"
   [class]="buttonClasses"
   (click)="onClick()">
-  @if (icon) {
+  @if (loading) {
+    <fa-icon [icon]="faSpinner" [animation]="'spin-pulse'" class="mr-1"></fa-icon>
+  } @else if (icon) {
     <fa-icon [icon]="icon" class="mr-1"></fa-icon>
   }
   {{ text }}

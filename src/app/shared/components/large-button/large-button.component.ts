@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faPlus, faSave, faEdit, faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faEdit, faTrash, faTimes, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { ButtonAction } from '@shared/models/button-action.model';
 
@@ -16,6 +16,7 @@ export class LargeButtonComponent {
   @Input() action: ButtonAction = 'none';
   @Input() type: 'button' | 'submit' = 'button';
   @Input() disabled = false;
+  @Input() loading = false;
   @Output() buttonClick = new EventEmitter<void>();
 
   faPlus = faPlus;
@@ -23,6 +24,7 @@ export class LargeButtonComponent {
   faEdit = faEdit;
   faTrash = faTrash;
   faTimes = faTimes;
+  faSpinner = faSpinner;
 
   get buttonClasses(): string {
     const baseClasses = 'px-5 py-2 text-coinly-light hover:font-black rounded-lg shadow transition-colors focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary';
@@ -50,7 +52,7 @@ export class LargeButtonComponent {
         colorClasses = 'bg-coinly-info hover:bg-coinly-info-dark';
     }
 
-    return `${baseClasses} ${colorClasses} ${this.disabled ? disabledClasses : enabledClasses}`;
+    return `${baseClasses} ${colorClasses} ${this.disabled || this.loading ? disabledClasses : enabledClasses}`;
   }
 
   get icon() {
@@ -71,7 +73,7 @@ export class LargeButtonComponent {
   }
 
   onClick(): void {
-    if (!this.disabled) {
+    if (!this.disabled && !this.loading) {
       this.buttonClick.emit();
     }
   }
