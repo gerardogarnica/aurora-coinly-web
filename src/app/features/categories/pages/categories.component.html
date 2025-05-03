@@ -3,8 +3,8 @@
   subtitle="Manage your categories to organize your transactions and keep your finances on track.">
 </app-page-title>
 
-<section class="flex flex-col md:flex-row items-center justify-between mb-4 space-y-3 md:space-y-0 md:space-x-16 text-sm">
-  <div class="w-full md:w-3/5">
+<section class="flex flex-col sm:flex-row items-center justify-between mb-4 space-y-3 sm:space-y-0 sm:space-x-16 text-sm">
+  <div class="w-full sm:w-1/2 md:w-3/5">
     <form class="flex items-center">
       <label for="simple-search" class="sr-only">Search</label>
       <div class="relative w-full">
@@ -22,7 +22,7 @@
     </form>
   </div>
 
-  <div class="w-full md:w-auto justify-end">
+  <div class="w-full sm:w-auto justify-end">
     <app-large-button
       [text]="'Add new Category'"
       [action]="'new'"
@@ -37,9 +37,9 @@
   </div>
 }
 
-<div class="overflow-x-auto">
+<div class="h-[calc(100vh-280px)] overflow-y-auto">
   <table class="min-w-full divide-y text-sm text-left border-b border-coinly-secondary">
-    <thead class="bg-coinly-secondary text-coinly-light">
+    <thead class="bg-coinly-secondary text-coinly-light sticky top-0 z-10">
       <tr>
         <th scope="col" class="px-6 py-2 tracking-wider">
           Name
