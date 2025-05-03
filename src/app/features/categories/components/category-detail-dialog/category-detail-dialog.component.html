@@ -64,12 +64,14 @@
         <app-large-button
           [text]="'Cancel'"
           [action]="'cancel'"
+          [disabled]="processStatus === 'loading'"
           (buttonClick)="onCancel()"
         ></app-large-button>
         <app-large-button
           [text]="'Save'"
           [action]="'save'"
           [disabled]="!categoryForm.valid"
+          [loading]="processStatus === 'loading'"
           (buttonClick)="onSave()"
         ></app-large-button>
       </div>

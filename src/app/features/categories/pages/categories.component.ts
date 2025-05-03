@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { faArrowUp, faArrowDown, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { CategoryDetailDialogComponent } from '@features/categories/components/category-detail-dialog/category-detail-dialog.component';
@@ -16,6 +16,8 @@ import { PageTitleComponent } from '@shared/components/page-title/page-title.com
   templateUrl: './categories.component.html'
 })
 export default class CategoriesComponent {
+  @ViewChild(CategoryDetailDialogComponent) dialogComponent?: CategoryDetailDialogComponent;
+
   private readonly categoryService = inject(CategoryService);
   categories = signal<Category[]>([]);
   errorMessage = signal<string | null>(null);
@@ -78,11 +80,12 @@ export default class CategoriesComponent {
       .createCategory(category)
       .subscribe({
         next: () => {
+          this.dialogComponent?.onSaveSuccess();
           this.getCategories();
           this.errorMessage.set(null);
-          this.showDialog.set(false);
         },
         error: (error: string) => {
+          this.dialogComponent?.onSaveError();
           this.errorMessage.set(error);
         }
       });
@@ -93,11 +96,12 @@ export default class CategoriesComponent {
       .updateCategory(category)
       .subscribe({
         next: () => {
+          this.dialogComponent?.onSaveSuccess();
           this.getCategories();
           this.errorMessage.set(null);
-          this.showDialog.set(false);
         },
         error: (error: string) => {
+          this.dialogComponent?.onSaveError();
           this.errorMessage.set(error);
         }
       });

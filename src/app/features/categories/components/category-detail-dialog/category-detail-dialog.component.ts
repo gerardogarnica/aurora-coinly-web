@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
+import { ProcessStatus } from '@shared/models/process-status.model';
 
 @Component({
   selector: 'app-category-detail-dialog',
@@ -20,6 +21,7 @@ export class CategoryDetailDialogComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private elementRef = inject(ElementRef);
   showDialog = true;
+  processStatus: ProcessStatus = 'init';
 
   categoryForm: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
@@ -47,11 +49,14 @@ export class CategoryDetailDialogComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.close.emit();
+    if (this.processStatus !== 'loading') {
+      this.close.emit();
+    }
   }
 
   onSave(): void {
-    if (this.categoryForm.valid) {
+    if (this.categoryForm.valid && this.processStatus !== 'loading') {
+      this.processStatus = 'loading';
       const formValue = this.categoryForm.value;
       if (this.mode === 'update' && this.category) {
         const updateData: UpdateCategory = {
@@ -63,5 +68,14 @@ export class CategoryDetailDialogComponent implements OnInit {
         this.save.emit(formValue as CreateCategory);
       }
     }
+  }
+
+  onSaveSuccess(): void {
+    this.processStatus = 'success';
+    this.close.emit();
+  }
+
+  onSaveError(): void {
+    this.processStatus = 'error';
   }
 }
