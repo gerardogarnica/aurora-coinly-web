@@ -1,0 +1,10 @@
+<dialog open class="fixed inset-0 bg-coinly-secondary/50 flex items-center justify-center z-500 w-full h-full border-none p-0" (click)="onDialogClick($event)">
+  <div class="bg-coinly-light rounded-lg shadow-2xl w-full max-w-md mx-4 text-sm" (click)="$event.stopPropagation()">
+    <div class="p-6">
+        <h2 class="text-2xl font-bold text-coinly-primary mb-4 pb-2 border-b border-coinly-primary">
+            {{ title }}            
+        </h2>
+        <ng-content></ng-content>
+    </div>
+  </div>
+</dialog>
