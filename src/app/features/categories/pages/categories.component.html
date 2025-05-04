@@ -37,7 +37,17 @@
   </div>
 }
 
-<div class="h-[calc(100vh-280px)] overflow-y-auto">
+@if (processStatus() === 'success') {
+  <div class="mb-4 p-3 rounded bg-coinly-success-light text-coinly-success border border-coinly-success-dark">
+    @if (categoryFormDialogMode() === 'add') {
+      New category added successfully
+    } @else {
+      Category updated successfully
+    }
+  </div>
+}
+
+<section class="h-[calc(100vh-280px)] overflow-y-auto">
   <table class="min-w-full divide-y text-sm text-left border-b border-coinly-secondary">
     <thead class="bg-coinly-secondary text-coinly-light sticky top-0 z-10">
       <tr>
@@ -114,12 +124,21 @@
       }
     </tbody>
   </table>
-</div>
+</section>
 
-<app-category-detail-dialog
-  *ngIf="showDialog()"
-  [mode]="dialogMode()"
-  [category]="selectedCategory()"
-  (close)="onDialogClose()"
-  (save)="onDialogSave($event)">
-</app-category-detail-dialog>
+@if (showDialog()) {
+  <app-modal-dialog
+    [title]="categoryFormDialogTitle()"
+    [processStatus]="processStatus()"
+    (close)="onDialogClose()"
+  >
+    <app-category-form
+      [category]="selectedCategory()"
+      [mode]="categoryFormDialogMode()"
+      [processStatus]="processStatus()"
+      [submitError]="categoryFormErrorMessage()"
+      (cancel)="onDialogClose()"
+      (save)="onDialogSave($event)"
+    ></app-category-form>
+  </app-modal-dialog>
+}

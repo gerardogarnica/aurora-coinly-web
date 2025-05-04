@@ -1,39 +1,43 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { faArrowUp, faArrowDown, faSearch } from '@fortawesome/free-solid-svg-icons';
 
-import { CategoryDetailDialogComponent } from '@features/categories/components/category-detail-dialog/category-detail-dialog.component';
+import { CategoryFormComponent } from '@features/categories/components/category-form/category-form.component';
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { SharedModule } from '@shared/shared.module';
 import { IconButtonComponent } from '@shared/components/icon-button/icon-button.component';
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
+import { ModalDialogComponent } from '@shared/components/modal-dialog/modal-dialog.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
+import { ProcessStatus } from '@shared/models/process-status.model';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [SharedModule, PageTitleComponent, CategoryDetailDialogComponent, IconButtonComponent, LargeButtonComponent],
+  imports: [SharedModule, CategoryFormComponent, IconButtonComponent, LargeButtonComponent, ModalDialogComponent, PageTitleComponent],
   templateUrl: './categories.component.html'
 })
 export default class CategoriesComponent {
-  @ViewChild(CategoryDetailDialogComponent) dialogComponent?: CategoryDetailDialogComponent;
-
   private readonly categoryService = inject(CategoryService);
+
   categories = signal<Category[]>([]);
+  categoryFormDialogMode = signal<'add' | 'update'>('add');
+  categoryFormDialogTitle = signal<string>('Add New Category');
+  categoryFormErrorMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
-  showDialog = signal(false);
+  processStatus = signal<ProcessStatus>('init');
   selectedCategory = signal<Category | undefined>(undefined);
-  dialogMode = signal<'add' | 'update'>('add');
+  showDialog = signal(false);
 
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
   faSearch = faSearch;
 
   ngOnInit() {
-    this.getCategories();
+    this.loadCategories();
   }
 
-  getCategories() {
+  loadCategories() {
     this.categoryService
       .getCategories(false)
       .subscribe({
@@ -48,13 +52,19 @@ export default class CategoriesComponent {
   }
 
   openAddCategoryDialog(): void {
-    this.dialogMode.set('add');
+    this.categoryFormDialogMode.set('add');
+    this.categoryFormDialogTitle.set('Add New Category');
+    this.categoryFormErrorMessage.set(null);
+    this.processStatus.set('init');
     this.selectedCategory.set(undefined);
     this.showDialog.set(true);
   }
 
   openEditCategoryDialog(category: Category): void {
-    this.dialogMode.set('update');
+    this.categoryFormDialogMode.set('update');
+    this.categoryFormDialogTitle.set('Edit Category');
+    this.categoryFormErrorMessage.set(null);
+    this.processStatus.set('init');
     this.selectedCategory.set(category);
     this.showDialog.set(true);
   }
@@ -64,7 +74,10 @@ export default class CategoriesComponent {
   }
 
   onDialogSave(categoryData: CreateCategory | UpdateCategory): void {
-    if (this.dialogMode() === 'add') {
+    this.errorMessage.set(null);
+    this.processStatus.set('loading');
+
+    if (this.categoryFormDialogMode() === 'add') {
       this.createCategory(categoryData as CreateCategory);
     } else {
       const updateData: UpdateCategory = {
@@ -80,13 +93,13 @@ export default class CategoriesComponent {
       .createCategory(category)
       .subscribe({
         next: () => {
-          this.dialogComponent?.onSaveSuccess();
-          this.getCategories();
-          this.errorMessage.set(null);
+          this.onDialogClose();
+          this.loadCategories();
+          this.processStatus.set('success');
         },
         error: (error: string) => {
-          this.dialogComponent?.onSaveError();
-          this.errorMessage.set(error);
+          this.categoryFormErrorMessage.set(error);
+          this.processStatus.set('error');
         }
       });
   }
@@ -96,13 +109,13 @@ export default class CategoriesComponent {
       .updateCategory(category)
       .subscribe({
         next: () => {
-          this.dialogComponent?.onSaveSuccess();
-          this.getCategories();
-          this.errorMessage.set(null);
+          this.onDialogClose();
+          this.loadCategories();
+          this.processStatus.set('success');
         },
         error: (error: string) => {
-          this.dialogComponent?.onSaveError();
-          this.errorMessage.set(error);
+          this.categoryFormErrorMessage.set(error);
+          this.processStatus.set('error');
         }
       });
   }
