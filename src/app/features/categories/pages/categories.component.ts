@@ -28,6 +28,7 @@ export default class CategoriesComponent {
   processStatus = signal<ProcessStatus>('init');
   selectedCategory = signal<Category | undefined>(undefined);
   showDialog = signal(false);
+  showDeleted = signal(false);
 
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
@@ -39,7 +40,7 @@ export default class CategoriesComponent {
 
   loadCategories() {
     this.categoryService
-      .getCategories(false)
+      .getCategories(this.showDeleted())
       .subscribe({
         next: (categories: Category[]) => {
           this.categories.set(categories);
@@ -49,6 +50,12 @@ export default class CategoriesComponent {
           this.errorMessage.set(error);
         }
       });
+  }
+
+  onShowDeletedToggle(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.showDeleted.set(checked);
+    this.loadCategories();
   }
 
   openAddCategoryDialog(): void {

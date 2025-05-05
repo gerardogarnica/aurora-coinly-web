@@ -4,8 +4,8 @@
 </app-page-title>
 
 <section class="flex flex-col sm:flex-row items-center justify-between mb-4 space-y-3 sm:space-y-0 sm:space-x-16 text-sm">
-  <div class="w-full sm:w-1/2 md:w-3/5">
-    <form class="flex items-center">
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-3">
+    <form class="md:w-3/4 flex items-center">
       <label for="simple-search" class="sr-only">Search</label>
       <div class="relative w-full">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-coinly-secondary">
@@ -16,10 +16,15 @@
           id="simple-search"
           placeholder="Search categories..."
           maxlength="100"
-          class="block w-full pl-10 pr-3 py-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
+          class="block w-full pl-10 pr-3 py-2 border border-coinly-secondary rounded-lg placeholder-coinly-disabled focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
         />
       </div>
     </form>
+    <label class="md:w-auto inline-flex items-center select-none">
+      <input type="checkbox" value="" class="sr-only peer" [checked]="showDeleted()" (change)="onShowDeletedToggle($event)" />
+      <div class="relative w-11 h-6 bg-coinly-disabled peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-coinly-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-coinly-light after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-coinly-light after:border-coinly-secondary after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-coinly-info"></div>
+      <span class="ms-3 text-sm">Show deleted</span>
+    </label>
   </div>
 
   <div class="w-full sm:w-auto justify-end">
@@ -107,10 +112,12 @@
                 [action]="'edit'"
                 (buttonClick)="openEditCategoryDialog(category)"
                 [title]="'Edit'"
+                [disabled]="category.isDeleted"
               ></app-icon-button>
               <app-icon-button
                 [action]="'delete'"
                 [title]="'Delete'"
+                [disabled]="category.isDeleted"
               ></app-icon-button>
             </div>
           </td>
