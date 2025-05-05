@@ -25,8 +25,8 @@ export class IconButtonComponent {
   faTimes = faTimes;
 
   get buttonClasses(): string {
-    const baseClasses = 'w-10 h-10 flex items-center justify-center rounded-lg shadow transition-colors hover:text-base focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary text-coinly-light';
-    const enabledClasses = 'cursor-pointer';
+    const baseClasses = 'w-10 h-10 flex items-center justify-center rounded-lg shadow transition-colors focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary text-coinly-light';
+    const enabledClasses = 'hover:text-base cursor-pointer';
     const disabledClasses = 'opacity-50 cursor-not-allowed';
 
     let colorClasses = '';
