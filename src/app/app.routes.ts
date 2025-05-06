@@ -26,6 +26,10 @@ export const routes: Routes = [
                 loadComponent: () => import('@features/wallets/pages/wallets.component'),
             },
             {
+                path: 'reports',
+                loadComponent: () => import('@features/reports/pages/reports.component'),
+            },
+            {
                 path: '**',
                 redirectTo: 'dashboard'
             }
