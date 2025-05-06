@@ -9,6 +9,7 @@ import { IconButtonComponent } from '@shared/components/icon-button/icon-button.
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
 import { ModalDialogComponent } from '@shared/components/modal-dialog/modal-dialog.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
+import { InputFieldColorsWithIcon } from '@shared/models/control-colors.model';
 import { ProcessStatus } from '@shared/models/process-status.model';
 
 @Component({
@@ -36,6 +37,10 @@ export default class CategoriesComponent {
 
   ngOnInit() {
     this.loadCategories();
+  }
+
+  get inputFieldColorsWithIcon(): string {
+    return InputFieldColorsWithIcon;
   }
 
   loadCategories() {

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
 import { LargeButtonComponent } from '@shared/components/large-button/large-button.component';
 import { AutofocusDirective } from '@shared/directives/autofocus.directive';
+import { InputFieldColors, SelectFieldColors } from '@shared/models/control-colors.model';
 import { ProcessStatus } from '@shared/models/process-status.model';
 
 @Component({
@@ -37,6 +38,14 @@ export class CategoryFormComponent implements OnInit {
       });
       this.categoryForm.get('type')?.disable(); 
     }
+  }
+
+  get inputFieldColors(): string {
+    return InputFieldColors;
+  }
+
+  get selectFieldColors(): string {
+    return SelectFieldColors;
   }
 
   onCancel() {

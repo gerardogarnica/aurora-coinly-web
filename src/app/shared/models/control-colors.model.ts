@@ -1,0 +1,3 @@
+export const InputFieldColors: string = 'block w-full px-3 py-2 border border-coinly-secondary rounded-lg placeholder-coinly-disabled focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary';
+export const InputFieldColorsWithIcon: string = 'block w-full pl-10 pr-3 py-2 border border-coinly-secondary rounded-lg placeholder-coinly-disabled focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary';
+export const SelectFieldColors: string = 'block w-full p-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary disabled:opacity-50 disabled:cursor-not-allowed';

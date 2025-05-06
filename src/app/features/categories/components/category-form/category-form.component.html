@@ -8,7 +8,7 @@
       formControlName="name"
       placeholder="Enter category name"
       maxlength="100"
-      class="block w-full px-3 py-2 border border-coinly-secondary rounded-lg placeholder-coinly-disabled focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
+      [class]="inputFieldColors"
     />
     @if (categoryForm.get('name')?.hasError('required') && categoryForm.get('name')?.touched) {
       <p class="mt-1 text-coinly-danger">Name is required</p>
@@ -26,7 +26,7 @@
     <select
       id="type"
       formControlName="type"
-      class="block w-full p-2 border border-coinly-secondary rounded-lg focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      [class]="selectFieldColors"
     >
       <option value="Expense">Expense</option>
       <option value="Income">Income</option>
@@ -44,7 +44,7 @@
       rows="6"
       placeholder="Enter any additional notes"
       maxlength="1000"
-      class="block w-full px-3 py-2 border border-coinly-secondary rounded-lg placeholder-coinly-disabled focus:outline-none focus:border-coinly-primary focus:ring-1 focus:ring-coinly-primary"
+      [class]="inputFieldColors"
     ></textarea>
     @if (categoryForm.get('notes')?.hasError('maxlength')) {
       <p class="mt-1 text-coinly-danger">Notes cannot exceed 1,000 characters</p>
