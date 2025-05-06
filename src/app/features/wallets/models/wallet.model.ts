@@ -13,3 +13,37 @@ export interface Wallet {
   notes?: string;
   transactions?: WalletTransactionModel[];
 }
+
+export interface CreateWallet {
+  name: string;
+  currencyCode: string;
+  amount: number;
+  type: WalletType;
+  notes?: string;
+  openedOn: Date;
+}
+
+export interface UpdateWallet {
+  walletId: string;
+  name: string;
+  notes?: string;
+}
+
+export interface AssignToAvailableWalletRequest {
+  walletId: string;
+  amount: number;
+  assignedOn: Date;
+}
+
+export interface AssignToSavingsWalletRequest {
+  walletId: string;
+  amount: number;
+  assignedOn: Date;
+}
+
+export interface TransferBetweenWalletsRequest {
+  sourceWalletId: string;
+  destinationWalletId: string;
+  amount: number;
+  transferedOn: Date;
+}

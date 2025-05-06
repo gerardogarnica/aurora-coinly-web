@@ -4,7 +4,7 @@ export enum WalletType {
   EMoney = 'EMoney'
 }
 
-export enum WalletHistoryType {
+export enum WalletTransactionType {
   Created = 'Created',
   Deposit = 'Deposit',
   Withdrawal = 'Withdrawal',

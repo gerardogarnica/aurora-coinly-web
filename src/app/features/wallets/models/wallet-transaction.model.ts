@@ -1,8 +1,8 @@
-import { WalletHistoryType } from '@features/wallets/models/wallet.types';
+import { WalletTransactionType } from '@features/wallets/models/wallet.types';
 
 export interface WalletTransactionModel {
   operationId: string;
-  type: WalletHistoryType;
+  type: WalletTransactionType;
   description: string;
   amount: number;
   availableBalance: number;
