@@ -1,0 +1,130 @@
+<form [formGroup]="walletForm" class="space-y-4" (ngSubmit)="onSave()">
+  <div>
+    <label for="name" class="block mb-1">Name <span class="text-coinly-info">(required, 3-100 characters)</span></label>
+    <input
+      appAutofocus
+      type="text"
+      id="name"
+      formControlName="name"
+      placeholder="Enter wallet name"
+      maxlength="100"
+      [class]="inputFieldColors"
+    />
+    @if (walletForm.get('name')?.hasError('required') && walletForm.get('name')?.touched) {
+      <p class="mt-1 text-coinly-danger">Name is required</p>
+    }
+    @if (walletForm.get('name')?.hasError('minlength')) {
+      <p class="mt-1 text-coinly-danger">Name must be at least 3 characters</p>
+    }
+    @if (walletForm.get('name')?.hasError('maxlength')) {
+      <p class="mt-1 text-coinly-danger">Name cannot exceed 100 characters</p>
+    }
+  </div>
+
+  <div>
+    <label for="currencyCode" class="block mb-1">Currency</label>
+    <select
+      id="currencyCode"
+      formControlName="currencyCode"
+      [class]="selectFieldColors"
+    >
+      <option value="USD">USD (United States Dollar)</option>
+      <option value="EUR">EUR (Euro)</option>
+    </select>
+    @if (walletForm.get('currencyCode')?.hasError('required') && walletForm.get('currencyCode')?.touched) {
+      <p class="mt-1 text-coinly-danger">Currency is required</p>
+    }
+  </div>
+
+  <div>
+    <label for="amount" class="block mb-1">Amount</label>
+    <input
+      type="text"
+      id="amount"
+      formControlName="amount"
+      placeholder="Enter amount"
+      maxlength="10"
+      [class]="inputFieldColors"
+      (blur)="onAmountBlur()"
+      (focus)="onAmountFocus()"
+    />
+    @if (walletForm.get('amount')?.hasError('required') && walletForm.get('amount')?.touched) {
+      <p class="mt-1 text-coinly-danger">Amount is required</p>
+    }
+    @if (walletForm.get('amount')?.hasError('min') && walletForm.get('amount')?.touched) {
+      <p class="mt-1 text-coinly-danger">Amount must be greater than 0</p>
+    }
+    @if (walletForm.get('amount')?.hasError('max') && walletForm.get('amount')?.touched) {
+      <p class="mt-1 text-coinly-danger">Amount cannot exceed 999,999.99</p>
+    }
+  </div>
+
+  <div>
+    <label for="type" class="block mb-1">Type</label>
+    <select
+      id="type"
+      formControlName="type"
+      [class]="selectFieldColors"
+    >
+      <option value="Bank">Bank</option>
+      <option value="Cash">Cash</option>
+      <option value="EMoney">EMoney</option>
+    </select>
+    @if (walletForm.get('type')?.hasError('required') && walletForm.get('type')?.touched) {
+      <p class="mt-1 text-coinly-danger">Type is required</p>
+    }
+  </div>
+
+  <div>
+    <label for="openedOn" class="block mb-1">Open Date</label>
+    <input
+      type="date"
+      id="openedOn"
+      formControlName="openedOn"
+      [class]="inputFieldColors"
+    />
+    @if (walletForm.get('openedOn')?.hasError('required') && walletForm.get('openedOn')?.touched) {
+      <p class="mt-1 text-coinly-danger">Open Date is required</p>
+    }
+    @if (walletForm.get('openedOn')?.hasError('futureDate')) {
+      <p class="mt-1 text-coinly-danger">Open Date cannot be greater than today</p>
+    }
+  </div>
+
+  <div>
+    <label for="notes" class="block mb-1">Notes</label>
+    <textarea
+      id="notes"
+      formControlName="notes"
+      rows="6"
+      placeholder="Enter any additional information about this wallet"
+      maxlength="1000"
+      [class]="inputFieldColors"
+    ></textarea>
+    @if (walletForm.get('notes')?.hasError('maxlength')) {
+      <p class="mt-1 text-coinly-danger">Notes cannot exceed 1,000 characters</p>
+    }
+  </div>
+
+  @if (submitError) {
+    <div class="mb-4 p-3 rounded bg-coinly-danger-light text-coinly-danger border border-coinly-danger-dark">
+      {{ submitError }}
+    </div>
+  }
+
+  <div class="flex justify-end space-x-3">
+    <app-large-button
+      [text]="'Cancel'"
+      [action]="'cancel'"
+      [disabled]="processStatus === 'loading'"
+      (buttonClick)="onCancel()"
+    ></app-large-button>
+    <app-large-button
+      [text]="'Save'"
+      [action]="'save'"
+      [disabled]="!walletForm.valid"
+      [loading]="processStatus === 'loading'"
+      (buttonClick)="onSave()"
+    ></app-large-button>
+  </div>
+</form>

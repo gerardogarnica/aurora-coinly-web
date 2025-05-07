@@ -2,3 +2,191 @@
   title="Wallets"
   subtitle="Manage your wallets for your personal accounts.">
 </app-page-title>
+
+<section class="flex flex-col sm:flex-row items-center justify-between mb-4 space-y-3 sm:space-y-0 sm:space-x-16 text-sm">
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-3">
+    <form class="md:w-3/4 flex items-center">
+      <label for="simple-search" class="sr-only">Search</label>
+      <div class="relative w-full">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-coinly-secondary">
+          <fa-icon [icon]="faSearch"></fa-icon>
+        </span>
+        <input
+          type="text"
+          id="simple-search"
+          placeholder="Search wallets..."
+          maxlength="100"
+          [class]="inputFieldColorsWithIcon"
+        />
+      </div>
+    </form>
+    <label class="md:w-auto inline-flex items-center select-none">
+      <input type="checkbox" value="" class="sr-only peer" [checked]="showDeleted()" (change)="onShowDeletedToggle($event)" />
+      <div class="relative w-11 h-6 bg-coinly-disabled peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-coinly-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-coinly-light after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-coinly-light after:border-coinly-secondary after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-coinly-info"></div>
+      <span class="ms-3 text-sm">Show deleted</span>
+    </label>
+  </div>
+
+  <div class="w-full sm:w-auto justify-end">
+    <app-large-button
+      [text]="'Add new Wallet'"
+      [action]="'new'"
+      (buttonClick)="openAddWalletDialog()"
+    ></app-large-button>
+  </div>
+</section>
+
+@if (errorMessage()) {
+  <div class="mb-4 p-3 rounded bg-coinly-danger-light text-coinly-danger border border-coinly-danger-dark">
+    {{ errorMessage() }}
+  </div>
+}
+
+@if (processStatus() === 'success') {
+  <div class="mb-4 p-3 rounded bg-coinly-success-light text-coinly-success border border-coinly-success-dark">
+    @if (walletFormDialogMode() === 'add') {
+      New wallet added successfully
+    } @else {
+      Wallet updated successfully
+    }
+  </div>
+}
+
+<section class="h-[calc(100vh-280px)] overflow-y-auto">
+  <table class="min-w-full divide-y text-sm text-left border-b border-coinly-secondary">
+    <thead class="bg-coinly-secondary text-coinly-light sticky top-0 z-10">
+      <tr>
+        <th scope="col" class="px-6 py-2 tracking-wider">
+          Name
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Type
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Available
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Savings
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Total Balance
+        </th>
+        <th scope="col" class="px-6 py-2 tracking-wider">
+          Notes
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Status
+        </th>
+        <th scope="col" class="px-6 py-2 text-center tracking-wider">
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-coinly-secondary">
+      @for (wallet of wallets(); track wallet.walletId) {
+        <tr class="hover:bg-coinly-highlight">
+          <td class="px-6 py-2 whitespace-nowrap">
+            {{ wallet.name }}
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            {{ wallet.type }}
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            @if (wallet.availableAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.availableAmount | currency }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.availableAmount | currency }}
+              </span>
+            }
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            @if (wallet.savingsAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.savingsAmount | currency }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.savingsAmount | currency }}
+              </span>
+            }
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center font-bold">
+            @if (wallet.totalAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.totalAmount | currency }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.totalAmount | currency }}
+              </span>
+            }
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap">
+            <div class="max-w-[400px] truncate" [attr.title]="wallet.notes">
+              {{ wallet.notes }}
+            </div>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            @if (!wallet.isDeleted) {
+            <span class="inline-block px-3 py-1 rounded-full bg-coinly-success-light text-coinly-success">
+              Active
+            </span>
+            } @else {
+            <span class="inline-block px-3 py-1 rounded-full bg-coinly-danger-light text-coinly-danger">
+              Inactive
+            </span>
+            }
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            <div class="flex items-center justify-center gap-2">
+              <app-icon-button
+                [action]="'edit'"
+                (buttonClick)="openEditWalletDialog(wallet)"
+                [title]="'Edit'"
+                [disabled]="wallet.isDeleted"
+              ></app-icon-button>
+              <app-icon-button
+                [action]="'delete'"
+                [title]="'Delete'"
+                [disabled]="wallet.isDeleted"
+              ></app-icon-button>
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" class="px-6 py-2 text-center">
+            No categories found
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
+
+@if (showNewWalletDialog()) {
+  <app-modal-dialog
+    [title]="'Add New Wallet'"
+    [processStatus]="processStatus()"
+    (close)="onDialogClose()"
+  >
+    <app-new-wallet-form
+      [processStatus]="processStatus()"
+      [submitError]="walletFormErrorMessage()"
+      (cancel)="onDialogClose()"
+      (save)="onDialogSave($event)"
+    ></app-new-wallet-form>
+  </app-modal-dialog>
+}
+
+@if (showEditWalletDialog()) {
+  <app-modal-dialog
+    [title]="'Edit Wallet'"
+    [processStatus]="processStatus()"
+    (close)="onDialogClose()"
+  >
+  </app-modal-dialog>
+}
