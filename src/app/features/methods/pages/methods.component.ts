@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { faSearch, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+import { DeleteMethodFormComponent } from '@features/methods/components/delete-method-form/delete-method-form.component';
 import { SetDefaultMethodComponent } from '@features/methods/components/set-default-method/set-default-method.component';
 import { Method } from '@features/methods/models/method.model';
 import { MethodService } from '@features/methods/services/methods.service';
@@ -15,24 +16,23 @@ import { ProcessStatus } from '@shared/models/process-status.model';
 @Component({
   selector: 'app-methods',
   standalone: true,
-  imports: [SetDefaultMethodComponent, SharedModule, IconButtonComponent, LargeButtonComponent, ModalDialogComponent, PageTitleComponent],
+  imports: [DeleteMethodFormComponent, SetDefaultMethodComponent, SharedModule, IconButtonComponent, LargeButtonComponent, ModalDialogComponent, PageTitleComponent],
   templateUrl: './methods.component.html'
 })
 export default class MethodsComponent {
   private readonly methodService = inject(MethodService);
 
   methods = signal<Method[]>([]);
-  methodFormDialogMode = signal<'add' | 'update'>('add');
-  methodFormErrorMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
+  successMessage = signal<string | null>(null);
   processStatus = signal<ProcessStatus>('init');
   selectedMethod = signal<Method | undefined>(undefined);
-  setDefaultMethodErrorMessage = signal<string | null>(null);
-  setSuccessMessage = signal<string | null>(null);
-  showDeleted = signal(false);
-  showFormDialog = signal(false);
-  showDeleteDialog = signal(false);
-  showSetDefaultDialog = signal(false);
+  showDeletedMethods = signal(false);
+
+  showDialogForm = signal(false);
+  dialogFormMode = signal<'add' | 'update' | 'delete' | 'set-default'>('add');
+  dialogFormTitle = signal<string>('');
+  dialogFormMessage = signal<string | null>(null);
 
   faSearch = faSearch;
   faCheck = faCheck;
@@ -50,7 +50,7 @@ export default class MethodsComponent {
     this.onDialogClose();
 
     this.methodService
-      .getMethods(this.showDeleted())
+      .getMethods(this.showDeletedMethods())
       .subscribe({
         next: (methods: Method[]) => {
           this.methods.set(methods);
@@ -64,38 +64,28 @@ export default class MethodsComponent {
 
   onShowDeletedToggle(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    this.showDeleted.set(checked);
+    this.showDeletedMethods.set(checked);
     this.loadMethods();
   }
 
-  openAddMethodDialog() {
-    this.selectedMethod.set(undefined);
-    this.processStatus.set('init');
-    this.showFormDialog.set(true);
-  }
-
-  openEditMethodDialog(method: Method) {
+  openDialogForm(mode: 'add' | 'update' | 'delete' | 'set-default', title: string, method?: Method) {
+    this.dialogFormMode.set(mode);
+    this.dialogFormTitle.set(title);
+    this.dialogFormMessage.set(null);
     this.selectedMethod.set(method);
     this.processStatus.set('init');
-    this.showFormDialog.set(true);
-  }
-
-  openDeleteMethodDialog(method: Method) {
-    this.selectedMethod.set(method);
-    this.processStatus.set('init');
-    this.showDeleteDialog.set(true);
-  }
-
-  openSetDefaultMethodDialog(method: Method) {
-    this.selectedMethod.set(method);
-    this.processStatus.set('init');
-    this.showSetDefaultDialog.set(true);
+    this.showDialogForm.set(true);
   }
 
   onDialogClose(): void {
-    this.showFormDialog.set(false);
-    this.showDeleteDialog.set(false);
-    this.showSetDefaultDialog.set(false);
+    this.showDialogForm.set(false);
+  }
+
+  onDeleteMethodDialogSave() {
+    this.errorMessage.set(null);
+    this.processStatus.set('loading');
+
+    this.deleteMethod(this.selectedMethod()!.paymentMethodId);
   }
 
   onSetDefaultMethodDialogSave() {
@@ -105,6 +95,22 @@ export default class MethodsComponent {
     this.setDefaultMethod(this.selectedMethod()!.paymentMethodId);
   }
 
+  private deleteMethod(methodId: string) {
+    this.methodService
+      .deleteMethod(methodId)
+      .subscribe({
+        next: () => {
+          this.loadMethods();
+          this.processStatus.set('success');
+          this.successMessage.set('Payment method deleted successfully');
+        },
+        error: (error: string) => {
+          this.dialogFormMessage.set(error);
+          this.processStatus.set('error');
+        }
+      });
+  }
+
   private setDefaultMethod(methodId: string) {
     this.methodService
       .setDefaultMethod(methodId)
@@ -112,12 +118,12 @@ export default class MethodsComponent {
         next: () => {
           this.loadMethods();
           this.processStatus.set('success');
-          this.setSuccessMessage.set('Default payment method set successfully');
-          //this.setSuccessMessage.set('New payment method added successfully');
-          //this.setSuccessMessage.set('Payment method updated successfully');
+          this.successMessage.set('Default payment method set successfully');
+          //this.successMessage.set('New payment method added successfully');
+          //this.successMessage.set('Payment method updated successfully');
         },
         error: (error: string) => {
-          this.setDefaultMethodErrorMessage.set(error);
+          this.dialogFormMessage.set(error);
           this.processStatus.set('error');
         }
       });

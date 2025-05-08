@@ -21,7 +21,7 @@
       </div>
     </form>
     <label class="md:w-auto inline-flex items-center select-none">
-      <input type="checkbox" value="" class="sr-only peer" [checked]="showDeleted()" (change)="onShowDeletedToggle($event)" />
+      <input type="checkbox" value="" class="sr-only peer" [checked]="showDeletedMethods()" (change)="onShowDeletedToggle($event)" />
       <div class="relative w-11 h-6 bg-coinly-disabled peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-coinly-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-coinly-light after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-coinly-light after:border-coinly-secondary after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-coinly-info"></div>
       <span class="ms-3 text-sm">Show deleted</span>
     </label>
@@ -31,7 +31,7 @@
     <app-large-button
       [text]="'Add new Payment Method'"
       [action]="'new'"
-      (buttonClick)="openAddMethodDialog()"
+      (buttonClick)="openDialogForm('add', 'Add New Method')"
     ></app-large-button>
   </div>
 </section>
@@ -44,7 +44,7 @@
 
 @if (processStatus() === 'success') {
   <div class="mb-4 p-3 rounded bg-coinly-success-light text-coinly-success border border-coinly-success-dark">
-    {{ setSuccessMessage() }}
+    {{ successMessage() }}
   </div>
 }
 
@@ -109,7 +109,8 @@
                   <app-large-button
                     [text]="'Set as Default'"
                     [action]="'none'"
-                    (buttonClick)="openSetDefaultMethodDialog(method)"
+                    [disabled]="method.isDeleted"
+                    (buttonClick)="openDialogForm('set-default', 'Set as Default Method', method)"
                   ></app-large-button>
                 </span>
               </div>
@@ -137,13 +138,13 @@
                 [action]="'edit'"
                 [title]="'Edit'"
                 [disabled]="method.isDeleted"
-                (buttonClick)="openEditMethodDialog(method)"
+                (buttonClick)="openDialogForm('update', 'Edit Method', method)"
               ></app-icon-button>
               <app-icon-button
                 [action]="'delete'"
                 [title]="'Delete'"
                 [disabled]="method.isDeleted"
-                (buttonClick)="openDeleteMethodDialog(method)"
+                (buttonClick)="openDialogForm('delete', 'Delete Method', method)"
               ></app-icon-button>
             </div>
           </td>
@@ -159,36 +160,29 @@
   </table>
 </section>
 
-@if (showFormDialog()) {
+@if (showDialogForm()) {
   <app-modal-dialog
-    [title]="'HELLO'"
+    [title]="dialogFormTitle()"
     [processStatus]="processStatus()"
     (close)="onDialogClose()"
   >
-  </app-modal-dialog>
-}
-
-@if (showDeleteDialog()) {
-  <app-modal-dialog
-    [title]="'Delete Method'"
-    [processStatus]="processStatus()"
-    (close)="onDialogClose()"
-  >
-  </app-modal-dialog>
-}
-
-@if (showSetDefaultDialog()) {
-  <app-modal-dialog
-    [title]="'Set as Default Method'"
-    [processStatus]="processStatus()"
-    (close)="onDialogClose()"
-  >
+  @if(dialogFormMode() == 'delete') {
+    <app-delete-method-form
+      [method]="selectedMethod()"
+      [processStatus]="processStatus()"
+      [submitError]="dialogFormMessage()"
+      (cancel)="onDialogClose()"
+      (save)="onDeleteMethodDialogSave()"
+    ></app-delete-method-form>
+  }
+  @if(dialogFormMode() == 'set-default') {
     <app-set-default-method
       [method]="selectedMethod()"
       [processStatus]="processStatus()"
-      [submitError]="setDefaultMethodErrorMessage()"
+      [submitError]="dialogFormMessage()"
       (cancel)="onDialogClose()"
       (save)="onSetDefaultMethodDialogSave()"
     ></app-set-default-method>
+  }
   </app-modal-dialog>
 }

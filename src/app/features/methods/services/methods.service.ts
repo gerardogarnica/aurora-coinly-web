@@ -28,8 +28,15 @@ export class MethodService {
     );
   }
 
-  setDefaultMethod(methodId: string) {
-    let url = `${this.apiUrl}/${methodId}/default`;
+  deleteMethod(id: string) {
+    let url = `${this.apiUrl}/${id}`;
+    return this.httpClient.delete(url).pipe(
+      catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
+    );
+  }
+
+  setDefaultMethod(id: string) {
+    let url = `${this.apiUrl}/${id}/default`;
     return this.httpClient.put(url, {}).pipe(
       catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
     );

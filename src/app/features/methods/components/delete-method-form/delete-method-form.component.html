@@ -1,0 +1,27 @@
+<div class="space-y-4">
+  <div>
+    Are you sure you want to delete <span class="font-bold uppercase">{{ method?.name }}</span>?
+  </div>
+
+  @if (submitError) {
+    <div class="mb-4 p-3 rounded bg-coinly-danger-light text-coinly-danger border border-coinly-danger-dark">
+      {{ submitError }}
+    </div>
+  }
+
+  <div class="flex justify-end space-x-3">
+    <app-large-button
+      [text]="'No'"
+      [action]="'cancel'"
+      [disabled]="processStatus === 'loading'"
+      (buttonClick)="onCancel()"
+    ></app-large-button>
+    <app-large-button
+      [text]="'Confirm'"
+      [action]="'save'"
+      [disabled]="processStatus === 'loading'"
+      [loading]="processStatus === 'loading'"
+      (buttonClick)="onSave()"
+    ></app-large-button>
+  </div>
+</div>
