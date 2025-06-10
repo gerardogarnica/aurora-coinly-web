@@ -1,7 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+@plugin "tailwindcss-primeui";
 
 body {
-    font-family: 'Quicksand', sans-serif;
+    font-family: "DM Sans", 'Quicksand', sans-serif;
     scrollbar-width: thin;
+    font-size: 14px;
+    background-color: #f5f5f5;
+}
+
+@theme {
+    /* Coinly Colors */
+    --color-coinly-primary: oklch(0.47 0.1 242.95);
+    --color-coinly-secondary: oklch(0.63 0.12 229.05);
+    --color-coinly-light: oklch(0.92 0.003 48.717);
+    --color-coinly-highlight: oklch(0.95 0.03 237.63);
+    --color-coinly-disabled: oklch(0.71 0.02 261.3);
+    --color-coinly-danger-light: oklch(0.81 0.11 19.78);
+    --color-coinly-danger: oklch(0.58 0.24 28.48);
+    --color-coinly-danger-dark: oklch(0.44 0.18 26.79);
+    --color-coinly-info-light: oklch(0.95 0.07 196.05);
+    --color-coinly-info: oklch(0.65 0.17 247.4);
+    --color-coinly-info-dark: oklch(0.5 0.11 239.04);
+    --color-coinly-success-light: oklch(0.93 0.09 153.95);
+    --color-coinly-success: oklch(0.63 0.19 147.53);
+    --color-coinly-success-dark: oklch(0.45 0.12 149.05);
+    --color-coinly-cancel-light: oklch(0.81 0.11 19.78);
+    --color-coinly-cancel: oklch(0.58 0.24 28.48);
+    --color-coinly-cancel-dark: oklch(0.44 0.18 26.79);
+    --color-coinly-edit-light: oklch(0.95 0.07 196.05);
+    --color-coinly-edit: oklch(0.65 0.17 247.4);
+    --color-coinly-edit-dark: oklch(0.5 0.11 239.04);
 }
