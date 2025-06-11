@@ -1,3 +1,15 @@
 <aside class="fixed top-0 left-0 z-40 w-64 h-screen bg-coinly-secondary border-r border-coinly-highlight pt-20 overflow-y-auto transition-transform -translate-x-full lg:translate-x-0" aria-label="Sidebar">
-    
+    <ul class="space-y-2">
+        @for (menuItem of sidebarMenu; track menuItem.label) {
+            <li>
+                <a
+                  [routerLink]="menuItem.routerLink"
+                  routerLinkActive="bg-coinly-primary"
+                  class="flex items-center py-2 px-4 text-coinly-light hover:bg-coinly-primary transition-colors">
+                  <span class="w-5 mr-3 text-coinly-highlight"><i class="{{ menuItem.icon }} mr-3"></i></span>
+                  <span>{{ menuItem.label }}</span>
+                </a>
+            </li>
+        }
+    </ul>
 </aside>
