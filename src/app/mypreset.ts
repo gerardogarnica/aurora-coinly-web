@@ -30,6 +30,22 @@ const MyPreset = definePreset(Aura, {
             950: '{blue.950}'
         },
         colorScheme: {
+            light: {
+                surface: {
+                    0: '#f5f5f5',
+                    50: 'var(--color-coinly-highlight)',
+                    100: 'var(--color-coinly-highlight)',
+                    200: '{zinc.200}',
+                    300: '{zinc.300}',
+                    400: '{zinc.400}',
+                    500: '{zinc.500}',
+                    600: '{zinc.600}',
+                    700: '{zinc.700}',
+                    800: '{zinc.800}',
+                    900: '{zinc.900}',
+                    950: '{zinc.950}'
+                }
+            },
             formField: {
                 borderColor: '{primary.500}',
                 hoverBorderColor: '{secondary.900}',
@@ -37,20 +53,6 @@ const MyPreset = definePreset(Aura, {
                 focusRingWidth: '2px',
                 focusRingStyle: 'solid',
                 focusRingShadow: '0 0 0 2px {primary.500}'
-            },
-            colorPicker: {
-                colorScheme: {
-                    light: {
-                        preview: {
-                            width: '100px'
-                        }
-                    },
-                    dark: {
-                        preview: {
-                            previewWidth: '100px'
-                        }
-                    }
-                }
             }
         },
         focusRing: {

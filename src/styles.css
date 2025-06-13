@@ -35,3 +35,12 @@ body {
 
     --font-quicksand: 'Quicksand', sans-serif;
 }
+
+:root {
+    /* Tables */
+    --p-datatable-header-cell-background: var(--color-coinly-secondary)!important; 
+    --p-datatable-header-cell-color: var(--color-coinly-light)!important;
+    --p-datatable-header-cell-selected-background: var(--color-coinly-secondary)!important;
+    --p-datatable-header-cell-selected-color: var(--color-coinly-light)!important;
+    --p-datatable-header-cell-hover-background: var(--color-coinly-light)!important;
+}
