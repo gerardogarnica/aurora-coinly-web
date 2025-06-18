@@ -45,14 +45,6 @@ const MyPreset = definePreset(Aura, {
                     900: '{zinc.900}',
                     950: '{zinc.950}'
                 }
-            },
-            formField: {
-                borderColor: '{primary.500}',
-                hoverBorderColor: '{secondary.900}',
-                focusRingColor: '{secondary.900}',
-                focusRingWidth: '2px',
-                focusRingStyle: 'solid',
-                focusRingShadow: '0 0 0 2px {primary.500}'
             }
         },
         focusRing: {

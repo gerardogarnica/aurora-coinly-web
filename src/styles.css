@@ -37,10 +37,17 @@ body {
 }
 
 :root {
+    --p-highlight-background: var(--color-coinly-secondary)!important;
+    --p-highlight-color: var(--color-coinly-highlight)!important;
+    --p-content-hover-background: var(--color-coinly-light)!important;
+
     /* Tables */
     --p-datatable-header-cell-background: var(--color-coinly-secondary)!important; 
     --p-datatable-header-cell-color: var(--color-coinly-light)!important;
     --p-datatable-header-cell-selected-background: var(--color-coinly-secondary)!important;
     --p-datatable-header-cell-selected-color: var(--color-coinly-light)!important;
     --p-datatable-header-cell-hover-background: var(--color-coinly-light)!important;
+
+    /* Color Picker */
+    --p-colorpicker-preview-width: 100%!important;
 }

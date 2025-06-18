@@ -1,0 +1,140 @@
+<app-page-title
+  title="Categories"
+  subtitle="Manage your categories to organize your transactions and keep your finances on track.">
+</app-page-title>
+
+<app-page-header>
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-2">
+    <div class="flex items-center">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          id="searchCategories"
+          placeholder="Search categories"
+          maxlength="100"
+          pSize="small"
+          (input)="onSearch($event, dt)"
+          [style]="{ width: '300px' }" />
+      </p-iconfield>
+    </div>
+    <div class="md:w-auto inline-flex items-center select-none gap-2">
+      <p-toggleswitch
+        inputId="showDeleted"
+        (onChange)="onShowInactiveChange($event)" />
+      <label for="showDeleted" class="w-full">Show inactive</label>
+    </div>
+  </div>
+
+  <div class="w-full sm:w-auto justify-end">
+    <p-button
+      label="Add new Category"
+      icon="pi pi-plus"
+      title="Add new Category"
+      size="small"
+      (onClick)="onAddCategory()"
+    />
+  </div>
+</app-page-header>
+
+<p-table
+  #dt
+  [value]="categories()"
+  [rows]="10"
+  [globalFilterFields]="['name', 'notes']"
+  [scrollable]="true"
+  scrollHeight="580px"
+  [paginator]="true"
+  [rowHover]="true">
+  <ng-template #header>
+    <tr>
+      <th pSortableColumn="name">
+        Name
+        <p-sortIcon field="name" />
+      </th>
+      <th pSortableColumn="type">
+        Type
+        <p-sortIcon field="type" />
+      </th>
+      <th class="text-center!" pSortableColumn="maxDaysToReverse">
+        Reverse Days
+        <p-sortIcon field="maxDaysToReverse" />
+      </th>
+      <th pSortableColumn="notes">
+        Notes
+        <p-sortIcon field="notes" />
+      </th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-category>
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-2 rounded-full" [style.background-color]="category.color"></span>
+          {{ category.name }}
+        </div>
+      </td>
+      <td>
+        <p-tag
+          [value]="category.type"
+          [icon]="getTypeIcon(category.type)"
+          [severity]="getTypeSeverity(category.type)" />
+      </td>
+      <td>
+        <span class="block text-center">
+          {{ category.maxDaysToReverse }}
+        </span>
+      </td>
+      <td>
+        <div class="max-w-[350px] truncate" [attr.title]="category.notes">
+          {{ category.notes }}
+        </div>
+      </td>
+      <td>
+        <p-tag
+          [value]="category.isDeleted ? 'Inactive' : 'Active'"
+          [severity]="getStatusSeverity(category.isDeleted)" />
+      </td>
+      <td>
+        <p-button
+          icon="pi pi-pencil"
+          class="mr-2"
+          size="small"
+          title="Edit"
+          [raised]="true"
+          [rounded]="true"
+          (onClick)="onEditCategory(category)" />
+        <p-button
+          icon="pi pi-trash"
+          severity="danger"
+          size="small"
+          title="Delete"
+          [raised]="true"
+          [rounded]="true"
+          [disabled]="category.isDeleted"
+          (onClick)="onDeleteCategory(category)" />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="6" class="text-center!">No categories found.</td>
+    </tr>
+  </ng-template>
+  <ng-template #summary>
+    <div class="py-4">
+      In total there are <span class="font-bold text-coinly-info-dark">{{ categories() ? categories().length : 0 }} categories</span>.
+    </div>
+  </ng-template>
+</p-table>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
+
+<app-category-form
+  [category]="selectedCategory()"
+  [showDialog]="showDialog"
+  (cancelAction)="onCategoryFormDialogClose()">
+</app-category-form>
