@@ -22,7 +22,7 @@
       <p-toggleswitch
         inputId="showDeleted"
         (onChange)="onShowInactiveChange($event)" />
-      <label for="showDeleted" class="w-full">Show inactive</label>
+      <label for="showDeleted" class="w-full">Show deleted</label>
     </div>
   </div>
 
@@ -43,8 +43,7 @@
   [rows]="10"
   [globalFilterFields]="['name', 'notes']"
   [scrollable]="true"
-  scrollHeight="580px"
-  [paginator]="true"
+  scrollHeight="600px"
   [rowHover]="true">
   <ng-template #header>
     <tr>
@@ -64,7 +63,7 @@
         Notes
         <p-sortIcon field="notes" />
       </th>
-      <th>Status</th>
+      <th class="text-center!">Status</th>
       <th></th>
     </tr>
   </ng-template>
@@ -93,28 +92,33 @@
         </div>
       </td>
       <td>
-        <p-tag
-          [value]="category.isDeleted ? 'Inactive' : 'Active'"
-          [severity]="getStatusSeverity(category.isDeleted)" />
+        <div class="flex justify-center">
+          <p-tag
+            [value]="category.isDeleted ? 'Deleted' : 'Active'"
+            [severity]="getStatusSeverity(category.isDeleted)" />
+        </div>
       </td>
       <td>
-        <p-button
-          icon="pi pi-pencil"
-          class="mr-2"
-          size="small"
-          title="Edit"
-          [raised]="true"
-          [rounded]="true"
-          (onClick)="onEditCategory(category)" />
-        <p-button
-          icon="pi pi-trash"
-          severity="danger"
-          size="small"
-          title="Delete"
-          [raised]="true"
-          [rounded]="true"
-          [disabled]="category.isDeleted"
-          (onClick)="onDeleteCategory(category)" />
+        <div class="flex justify-center">
+          <p-button
+            icon="pi pi-pencil"
+            class="mr-2"
+            size="small"
+            title="Edit"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="category.isDeleted"
+            (onClick)="onEditCategory(category)" />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            title="Delete"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="category.isDeleted"
+            (onClick)="onDeleteCategory(category)" />
+        </div>
       </td>
     </tr>
   </ng-template>
@@ -124,7 +128,7 @@
     </tr>
   </ng-template>
   <ng-template #summary>
-    <div class="py-4">
+    <div class="py-8">
       In total there are <span class="font-bold text-coinly-info-dark">{{ categories() ? categories().length : 0 }} categories</span>.
     </div>
   </ng-template>

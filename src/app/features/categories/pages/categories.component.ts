@@ -65,7 +65,6 @@ export default class CategoriesComponent {
   onShowInactiveChange(event: any) {
     this.showDeleted.set(event.checked);
     this.loadCategories();
-    console.log('Show deleted categories:', this.showDeleted());
   }
 
   getTypeIcon(type: TransactionType): string {
@@ -105,7 +104,6 @@ export default class CategoriesComponent {
   }
 
   onDeleteCategory(category: Category) {
-    console.log('Deleting category:', category);
     this.selectedCategory.set(category);
 
     this.confirmationService.confirm({

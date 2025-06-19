@@ -57,7 +57,7 @@
       }
     </div>
 
-    <div class="flex flex-col gap-2 w-1/5">
+    <div class="flex flex-col gap-2">
       <label for="maxDaysToReverse">Max Days to Reverse <span class="text-coinly-info">(0-15)</span></label>
       <p-input-number
         inputId="maxDaysToReverse"
@@ -66,6 +66,7 @@
         [max]="15"
         showButtons="true"
         [buttonLayout]="'horizontal'"
+        [style]="{ width: '40%' }"
         size="small" />
       @if (categoryForm.get('maxDaysToReverse')?.hasError('required') && categoryForm.get('maxDaysToReverse')?.touched) {
         <p class="text-red-500">Max Days to Reverse is required</p>
