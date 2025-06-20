@@ -1,0 +1,184 @@
+<app-page-title
+  title="Wallets"
+  subtitle="Manage your wallets for your personal accounts.">
+</app-page-title>
+
+<app-page-header>
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-2">
+    <div class="flex items-center">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          id="searchWallets"
+          placeholder="Search wallets"
+          maxlength="100"
+          pSize="small"
+          (input)="onSearch($event, dt)"
+          [style]="{ width: '300px' }" />
+      </p-iconfield>
+    </div>
+    <div class="md:w-auto inline-flex items-center select-none gap-2">
+      <p-toggleswitch
+        inputId="showDeleted"
+        (onChange)="onShowInactiveChange($event)" />
+      <label for="showDeleted" class="w-full">Show deleted</label>
+    </div>
+  </div>
+
+  <div class="w-full sm:w-auto justify-end">
+    <p-button
+      label="Add new Wallet"
+      icon="pi pi-plus"
+      title="Add new Wallet"
+      size="small"
+      (onClick)="onAddWallet()"
+    />
+  </div>
+</app-page-header>
+
+<p-table
+  #dt
+  [value]="wallets()"
+  [rows]="10"
+  [globalFilterFields]="['name', 'notes']"
+  [scrollable]="true"
+  scrollHeight="600px"
+  [rowHover]="true">
+  <ng-template #header>
+    <tr>
+      <th pSortableColumn="name">
+        Name
+        <p-sortIcon field="name" />
+      </th>
+      <th class="text-center!" pSortableColumn="type">
+        Type
+        <p-sortIcon field="type" />
+      </th>
+      <th class="text-center!">Balance</th>
+      <th class="text-center!">Allow Negative Balance</th>
+      <th pSortableColumn="notes">
+        Notes
+        <p-sortIcon field="notes" />
+      </th>
+      <th class="text-center!">Status</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-wallet>
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-2 rounded-full" [style.background-color]="wallet.color"></span>
+          {{ wallet.name }}
+        </div>
+      </td>
+      <td>
+        <span class="block text-center">
+          {{ wallet.type }}
+        </span>
+      </td>
+      <td>
+        <div class="flex flex-col items-center divide-y divide-coinly-secondary">
+          <span class="w-full py-2 text-center">
+            Available:
+            @if (wallet.availableAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.availableAmount | currency: wallet.currencyCode }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.availableAmount | currency: wallet.currencyCode }}
+              </span>
+            }
+          </span>
+          <span class="w-full py-2 text-center">
+            Savings:
+            @if (wallet.savingsAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.savingsAmount | currency: wallet.currencyCode }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.savingsAmount | currency: wallet.currencyCode }}
+              </span>
+            }
+          </span>
+          <span class="w-full py-2 text-center font-bold">
+            Total:
+            @if (wallet.totalAmount > 0) {
+              <span class="text-coinly-success">
+                {{ wallet.totalAmount | currency: wallet.currencyCode }}
+              </span>
+            } @else {
+              <span class="text-coinly-danger">
+                {{ wallet.totalAmount | currency: wallet.currencyCode }}
+              </span>
+            }
+          </span>
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-tag
+            [icon]="getAllowNegativeIcon(wallet.allowNegative)"
+            [severity]="getAllowNegativeSeverity(wallet.allowNegative)"
+            [rounded]="true" />
+        </div>
+      </td>
+      <td>
+        <div class="max-w-[350px] truncate" [attr.title]="wallet.notes">
+          {{ wallet.notes }}
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-tag
+            [value]="wallet.isDeleted ? 'Deleted' : 'Active'"
+            [severity]="getStatusSeverity(wallet.isDeleted)" />
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-button
+            icon="pi pi-pencil"
+            class="mr-2"
+            size="small"
+            title="Edit"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="wallet.isDeleted"
+            (onClick)="onEditWallet(wallet)" />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            title="Delete"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="!wallet.canDelete"
+            (onClick)="onDeleteWallet(wallet)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="7" class="text-center!">No wallets found.</td>
+    </tr>
+  </ng-template>
+  <ng-template #summary>
+    <div class="py-8">
+      In total there are <span class="font-bold text-coinly-info-dark">{{ wallets() ? wallets().length : 0 }} wallets</span>.
+    </div>
+  </ng-template>
+</p-table>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
+
+<app-new-wallet-form
+  [wallet]="selectedWallet()"
+  [showDialog]="showDialog"
+  (cancelAction)="onWalletFormDialogClose()">
+</app-new-wallet-form>
