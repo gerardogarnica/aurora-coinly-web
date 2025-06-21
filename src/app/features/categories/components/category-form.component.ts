@@ -102,11 +102,11 @@ export class CategoryFormComponent {
 
                 this.updateCategory(updateData);
             } else {
-                const newcategory: CreateCategory = {
+                const newCategory: CreateCategory = {
                     ...formValue
                 };
 
-                this.createCategory(newcategory);
+                this.createCategory(newCategory);
             }
         }
     }
@@ -117,15 +117,19 @@ export class CategoryFormComponent {
             .subscribe({
                 next: () => {
                     this.processStatus = 'success';
+
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Category created',
                         detail: `The category ${category.name} has been successfully created.`,
                         life: 2000
                     });
+
                     this.hideDialogForm();
                 },
                 error: (error: string) => {
+                    this.processStatus = 'error';
+
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error creating category',
@@ -142,16 +146,19 @@ export class CategoryFormComponent {
             .subscribe({
                 next: () => {
                     this.processStatus = 'success';
+
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Category updated',
                         detail: `The category ${category.name} has been successfully updated.`,
                         life: 2000
                     });
+
                     this.hideDialogForm();
                 },
                 error: (error: string) => {
                     this.processStatus = 'error';
+
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error updating category',
