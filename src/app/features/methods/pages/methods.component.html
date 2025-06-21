@@ -1,0 +1,186 @@
+<app-page-title
+  title="Payment Methods"
+  subtitle="Manage your payment methods for paying your expenses.">
+</app-page-title>
+
+<app-page-header>
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-2">
+    <div class="flex items-center">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          id="searchMethods"
+          placeholder="Search methods"
+          maxlength="100"
+          pSize="small"
+          (input)="onSearch($event, dt)"
+          [style]="{ width: '300px' }" />
+      </p-iconfield>
+    </div>
+    <div class="md:w-auto inline-flex items-center select-none gap-2">
+      <p-toggleswitch
+        inputId="showDeleted"
+        (onChange)="onShowInactiveChange($event)" />
+      <label for="showDeleted" class="w-full">Show deleted</label>
+    </div>
+  </div>
+
+  <div class="w-full sm:w-auto justify-end">
+    <p-button
+      label="Add new Method"
+      icon="pi pi-plus"
+      title="Add new Method"
+      size="small"
+      [raised]="true"
+      (onClick)="onAddMethod()"
+    />
+  </div>
+</app-page-header>
+
+<p-table
+  #dt
+  [value]="methods()"
+  [rows]="10"
+  [globalFilterFields]="['name', 'wallet.name', 'notes']"
+  [scrollable]="true"
+  scrollHeight="600px"
+  [rowHover]="true">
+  <ng-template #header>
+    <tr>
+      <th pSortableColumn="name">
+        Name
+        <p-sortIcon field="name" />
+      </th>
+      <th pSortableColumn="wallet.name">
+        Wallet
+        <p-sortIcon field="wallet.name" />
+      </th>
+      <th class="text-center!" pSortableColumn="maxDaysToReverse">
+        Reverse Days
+        <p-sortIcon field="maxDaysToReverse" />
+      </th>
+      <th class="text-center!">Automark as Paid</th>
+      <th class="text-center!">Allow Recurring</th>
+      <th class="text-center!">Is Default</th>
+      <th pSortableColumn="notes">
+        Notes
+        <p-sortIcon field="notes" />
+      </th>
+      <th class="text-center!">Status</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-method>
+    <tr>
+      <td>
+        {{ method.name }}
+      </td>
+      <td>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-2 rounded-full" [style.background-color]="method.wallet.color"></span>
+          {{ method.wallet.name }}
+        </div>
+      </td>
+      <td>
+        <span class="block text-center">
+          {{ method.maxDaysToReverse }}
+        </span>
+      </td>
+      <td>
+        <div class="flex flex-col items-center gap-2">
+          <p-tag
+            [icon]="getTagIcon(method.autoMarkAsPaid)"
+            [value]="method.autoMarkAsPaid ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(method.autoMarkAsPaid)"
+            [rounded]="true" />
+
+          @if (!method.autoMarkAsPaid) {
+            <span class="text-xs font-bold">Suggested day of payment: {{ method.suggestedPaymentDay }}</span>
+            <span class="text-xs font-bold">Statement cutoff day: {{ method.statementCutoffDay }}</span>
+          }
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-tag
+            [icon]="getTagIcon(method.allowRecurring)"
+            [value]="method.allowRecurring ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(method.allowRecurring)"
+            [rounded]="true" />
+        </div>
+      </td>
+      <td>
+        <div class="flex flex-col items-center gap-2">
+          <p-tag
+            [icon]="getTagIcon(method.isDefault)"
+            [value]="method.isDefault ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(method.isDefault)"
+            [rounded]="true" />
+
+          @if (!method.isDefault) {
+            <p-button
+              label="Set as Default"
+              title="Set as Default"
+              size="small"
+              [raised]="true"
+              (onClick)="onSetDefaultMethod(method)" />
+          }
+        </div>
+      </td>
+      <td>
+        <div class="max-w-[350px] truncate" [attr.title]="method.notes">
+          {{ method.notes }}
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-tag
+            [value]="method.isDeleted ? 'Deleted' : 'Active'"
+            [severity]="getTagSeverity(!method.isDeleted)" />
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-button
+            icon="pi pi-pencil"
+            class="mr-2"
+            size="small"
+            title="Edit"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="method.isDeleted"
+            (onClick)="onEditMethod(method)" />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            title="Delete"
+            [raised]="true"
+            [rounded]="true"
+            [disabled]="method.isDeleted || method.isDefault"
+            (onClick)="onDeleteMethod(method)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="9" class="text-center!">No payment methods found.</td>
+    </tr>
+  </ng-template>
+  <ng-template #summary>
+    <div class="py-8">
+      In total there are <span class="font-bold text-coinly-info-dark">{{ methods() ? methods().length : 0 }} payment methods</span>.
+    </div>
+  </ng-template>
+</p-table>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
+
+<app-method-form
+  [method]="selectedMethod()"
+  [showDialog]="showDialog"
+  (cancelAction)="onMethodFormDialogClose()">
+</app-method-form>

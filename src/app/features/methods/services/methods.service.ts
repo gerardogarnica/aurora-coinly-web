@@ -4,10 +4,10 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 import { ErrorsService } from '@core/services/errors.service';
-import { Method } from '../models/method.model';
+import { CreateMethod, Method, UpdateMethod } from '@features/methods/models/method.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class MethodService {
   private readonly httpClient = inject(HttpClient);
@@ -24,6 +24,19 @@ export class MethodService {
   getMethods(showDeleted: boolean) {
     let url = `${this.apiUrl}?deleted=${showDeleted}`;
     return this.httpClient.get<Method[]>(url).pipe(
+      catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
+    );
+  }
+
+  createMethod(paymentMethod: CreateMethod) {
+    return this.httpClient.post<string>(this.apiUrl, paymentMethod).pipe(
+      catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
+    );
+  }
+
+  updateMethod(paymentMethod: UpdateMethod) {
+    let url = `${this.apiUrl}/${paymentMethod.paymentMethodId}`;
+    return this.httpClient.put(url, paymentMethod).pipe(
       catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
     );
   }
