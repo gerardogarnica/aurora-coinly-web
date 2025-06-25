@@ -14,6 +14,8 @@ export interface Wallet {
   canDelete: boolean;
   isDeleted: boolean;
   notes?: string;
+  openedOn: Date;
+  lastOperationOn: Date;
   transactions?: WalletTransactionModel[];
 }
 
