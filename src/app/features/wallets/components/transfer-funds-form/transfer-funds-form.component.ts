@@ -1,10 +1,11 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { TransferBetweenWalletsRequest, Wallet } from '@features/wallets/models/wallet.model';
 import { WalletService } from '@features/wallets/services/wallet.service';
 import { ProcessStatus } from '@shared/models/process-status.model';
+import { CommonUtils } from '@shared/utils/common.utils';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -19,7 +20,7 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-transfer-funds-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonModule, ConfirmDialog, DatePickerModule, DialogModule, InputNumberModule, SelectModule, ToastModule],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, CurrencyPipe, MessageService],
   templateUrl: './transfer-funds-form.component.html'
 })
 export class TransferFundsFormComponent {
@@ -28,6 +29,7 @@ export class TransferFundsFormComponent {
   @Output() cancelAction = new EventEmitter<void>();
 
   walletService = inject(WalletService);
+  currencyPipe = inject(CurrencyPipe);
   formBuilder = inject(FormBuilder);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
@@ -43,13 +45,8 @@ export class TransferFundsFormComponent {
   transferForm: FormGroup = this.formBuilder.group({
     destinationWalletId: ['', [Validators.required]],
     amount: [0.00, [Validators.required, Validators.min(0.01), Validators.max(this.amountMax)]],
-    transferedOn: [this.getCurrentDate(), [Validators.required]]
+    transferedOn: [CommonUtils.currentDate(), [Validators.required]]
   });
-
-  getCurrentDate(): Date {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  }
 
   setAmountMax() {
     this.amountMax = this.wallet?.allowNegative
@@ -58,16 +55,16 @@ export class TransferFundsFormComponent {
   }
 
   setTransferedOnMinMaxDates() {
-    this.transferedOnMaxDate = this.getCurrentDate();
+    this.transferedOnMaxDate = CommonUtils.currentDate();
 
-    let sourceWalletMinDate = new Date(this.wallet?.lastOperationOn || this.getCurrentDate());
+    let sourceWalletMinDate = new Date(this.wallet?.lastOperationOn || CommonUtils.currentDate());
     const nextDay = new Date(sourceWalletMinDate.setDate(sourceWalletMinDate.getDate() + 1));
     nextDay.setHours(0, 0, 0, 0);
 
     this.transferedOnMinDate = nextDay;
 
     if (this.selectedDestinationWallet) {
-      let destinationWalletMinDate = new Date(this.selectedDestinationWallet.lastOperationOn || this.getCurrentDate());
+      let destinationWalletMinDate = new Date(this.selectedDestinationWallet.lastOperationOn || CommonUtils.currentDate());
       const destinationWalletNextDay = new Date(destinationWalletMinDate.setDate(destinationWalletMinDate.getDate() + 1));
       destinationWalletNextDay.setHours(0, 0, 0, 0);
 
@@ -100,6 +97,13 @@ export class TransferFundsFormComponent {
       });
   }
 
+  getFormattedAmount(): string {
+    return CommonUtils.formatAmount(
+      this.transferForm.value.amount,
+      this.wallet?.currencyCode || 'USD',
+      this.currencyPipe);
+  }
+
   showDialogForm() {
     this.resetForm();
     this.getWallets();
@@ -119,7 +123,7 @@ export class TransferFundsFormComponent {
     this.transferForm.reset({
       destinationWalletId: '',
       amount: 0.00,
-      transferedOn: this.getCurrentDate()
+      transferedOn: CommonUtils.currentDate()
     });
 
     this.processStatus = 'init';
@@ -148,7 +152,7 @@ export class TransferFundsFormComponent {
     }
 
     this.confirmationService.confirm({
-      message: 'Are you sure you want to transfer <b>' + this.transferForm.value.amount + '</b> to <b>' + this.selectedDestinationWallet?.name + '</b> wallet?',
+      message: `Are you sure you want to transfer <b>${this.getFormattedAmount()}</b> to <b>${this.selectedDestinationWallet?.name}</b> wallet?`,
       header: 'Confirm transfer',
       icon: 'pi pi-question-circle',
       rejectButtonProps: {
@@ -188,7 +192,7 @@ export class TransferFundsFormComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Transfer successful',
-            detail: `The amount of ${transfer.amount} has been successfully transferred to the destination wallet.`,
+            detail: `The amount of ${this.getFormattedAmount()} has been successfully transferred to ${this.selectedDestinationWallet?.name} wallet.`,
             life: 2000
           });
 

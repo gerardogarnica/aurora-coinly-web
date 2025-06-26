@@ -9,14 +9,14 @@
   maskStyleClass="backdrop-blur-sm"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
-  <form [formGroup]="assignForm" class="space-y-4" (ngSubmit)="onAssign()">
+  <form [formGroup]="assignForm" class="space-y-2" (ngSubmit)="onAssign()">
     <div class="flex flex-col p-4 font-bold text-2xl" [style.background-color]="wallet?.color">
       {{ wallet?.name }} ({{ wallet?.type }})
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label for="amount">Amount to assign</label>
+      <div class="flex flex-col ">
+        <label for="amount">Amount to assign <span class="text-coinly-info">(max {{ amountMax | currency }})</span></label>
         <p-input-number
           inputId="amount"
           formControlName="amount"
@@ -31,7 +31,7 @@
           <p class="text-red-500">Amount is required</p>
         }
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="assignedOn">Assigned date</label>
         <p-datepicker
           id="assignedOn"
@@ -40,7 +40,8 @@
           [minDate]="assignedOnMinDate"
           [maxDate]="assignedOnMaxDate"
           [readonlyInput]="true"
-          [showButtonBar]="true" />
+          [showButtonBar]="true"
+          fluid />
         @if (assignForm.get('assignedOn')?.hasError('required') && assignForm.get('assignedOn')?.touched) {
           <p class="text-red-500">Assigned date is required</p>
         }

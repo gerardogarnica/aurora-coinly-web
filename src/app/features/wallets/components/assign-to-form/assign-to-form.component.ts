@@ -1,10 +1,11 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AssignToAvailableWalletRequest, AssignToSavingsWalletRequest, Wallet } from '@features/wallets/models/wallet.model';
 import { WalletService } from '@features/wallets/services/wallet.service';
 import { ProcessStatus } from '@shared/models/process-status.model';
+import { CommonUtils } from '@shared/utils/common.utils';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +19,7 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-assign-to-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonModule, ConfirmDialog, DatePickerModule, DialogModule, InputNumberModule, ToastModule],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, CurrencyPipe, MessageService],
   templateUrl: './assign-to-form.component.html'
 })
 export class AssignToFormComponent {
@@ -28,45 +29,42 @@ export class AssignToFormComponent {
   @Output() cancelAction = new EventEmitter<void>();
 
   walletService = inject(WalletService);
+  currencyPipe = inject(CurrencyPipe);
   formBuilder = inject(FormBuilder);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
 
-  processStatus: ProcessStatus = 'none';
-
   amountMax: number = 999999.99;
   assignedOnMinDate: Date | undefined;
   assignedOnMaxDate: Date | undefined;
+  processStatus: ProcessStatus = 'none';
 
   assignForm: FormGroup = this.formBuilder.group({
     amount: [0.00, [Validators.required, Validators.min(0.01), Validators.max(this.amountMax)]],
-    assignedOn: [this.getCurrentDate(), [Validators.required]]
+    assignedOn: [CommonUtils.currentDate(), [Validators.required]]
   });
-
-  getCurrentDate(): Date {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  }
 
   setAmountMax() {
     if (this.assignToType === 'available') {
       this.amountMax = this.wallet?.savingsAmount || 0;
     } else {
-      if (this.wallet?.allowNegative) {
-        return;
-      }
-
-      this.amountMax = this.wallet?.availableAmount || 0;
+      this.amountMax = this.wallet?.allowNegative
+        ? 999999.99 // No limit if negative amounts are allowed
+        : this.wallet?.availableAmount || 0;
     }
   }
 
   setAssignedOnMinMaxDates() {
-    this.assignedOnMaxDate = this.getCurrentDate();
+    this.assignedOnMaxDate = CommonUtils.currentDate();
 
-    let minDate = new Date(this.wallet?.lastOperationOn || this.getCurrentDate());
+    let minDate = new Date(this.wallet?.lastOperationOn || CommonUtils.currentDate());
     const nextDay = new Date(minDate.setDate(minDate.getDate() + 1));
     nextDay.setHours(0, 0, 0, 0);
     this.assignedOnMinDate = nextDay;
+
+    this.assignForm.patchValue({
+      assignedOn: this.assignedOnMaxDate
+    });
   }
 
   getComponentTitle(): string {
@@ -79,6 +77,13 @@ export class AssignToFormComponent {
 
   getToAmount(): number {
     return this.assignToType === 'available' ? this.wallet?.availableAmount || 0 : this.wallet?.savingsAmount || 0;
+  }
+
+  getFormattedAmount(): string {
+    return CommonUtils.formatAmount(
+      this.assignForm.value.amount,
+      this.wallet?.currencyCode || 'USD',
+      this.currencyPipe);
   }
 
   showDialogForm() {
@@ -98,10 +103,12 @@ export class AssignToFormComponent {
   resetForm() {
     this.assignForm.reset({
       amount: 0.00,
-      assignedOn: this.getCurrentDate()
+      assignedOn: CommonUtils.currentDate()
     });
 
     this.processStatus = 'init';
+    this.assignedOnMinDate = undefined;
+    this.assignedOnMaxDate = undefined;
   }
 
   onAssign() {
@@ -114,7 +121,7 @@ export class AssignToFormComponent {
     }
 
     this.confirmationService.confirm({
-      message: 'Are you sure you want to assign <b>' + this.assignForm.value.amount + '</b> to <b>' + this.assignToType + '</b>?',
+      message: `Are you sure you want to assign <b>${this.getFormattedAmount()}</b> to <b>${this.assignToType}</b>?`,
       header: 'Confirm assignment',
       icon: 'pi pi-question-circle',
       rejectButtonProps: {
@@ -164,7 +171,7 @@ export class AssignToFormComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Amount assigned',
-            detail: 'Amount assigned to available successfully',
+            detail: `The amount of ${this.getFormattedAmount()} has been successfully assigned to available.`,
             life: 2000
           });
 
@@ -193,7 +200,7 @@ export class AssignToFormComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Amount assigned',
-            detail: 'Amount assigned to savings successfully',
+            detail: `The amount of ${this.getFormattedAmount()} has been successfully assigned to savings.`,
             life: 2000
           });
 
