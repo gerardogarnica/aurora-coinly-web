@@ -1,0 +1,104 @@
+<p-dialog
+  header="Transfer Funds"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '40vw', 'min-height': '650px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  maskStyleClass="backdrop-blur-sm"
+  (onShow)="showDialogForm()"
+  (onHide)="hideDialogForm()">
+  <form [formGroup]="transferForm" class="space-y-4" (ngSubmit)="onTransfer()">
+    <div class="flex flex-col p-4 font-bold text-2xl" [style.background-color]="wallet?.color">
+      {{ wallet?.name }} ({{ wallet?.type }})
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="destinationWalletId">Transfer to</label>
+      <p-select
+        id="destinationWalletId"
+        formControlName="destinationWalletId"
+        [options]="destinationWallets"
+        [checkmark]="true"
+        optionLabel="name"
+        optionValue="walletId"
+        (onChange)="onDestinationWalletChange()"
+        size="small" />
+      @if (transferForm.get('destinationWalletId')?.hasError('required') && transferForm.get('destinationWalletId')?.touched) {
+        <p class="mt-1 text-coinly-danger">Transfer to is required</p>
+      }
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="amount">Amount to transfer <span class="text-coinly-info">(max {{ amountMax | currency }})</span></label>
+        <p-input-number
+          inputId="amount"
+          formControlName="amount"
+          mode="decimal"
+          [min]="0.01"
+          [max]="amountMax"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          size="small"
+          fluid />
+        @if (transferForm.get('amount')?.hasError('required') && transferForm.get('amount')?.touched) {
+          <p class="text-red-500">Amount is required</p>
+        }
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="assignedOn">Transfer date</label>
+        <p-datepicker
+          id="transferedOn"
+          formControlName="transferedOn"
+          size="small"
+          [minDate]="transferedOnMinDate"
+          [maxDate]="transferedOnMaxDate"
+          [readonlyInput]="true"
+          [showButtonBar]="true" />
+        @if (transferForm.get('transferedOn')?.hasError('required') && transferForm.get('transferedOn')?.touched) {
+          <p class="text-red-500">Transfer date is required</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mt-8">
+      <div class="flex flex-col gap-2 text-center">
+        <span class="font-bold underline">Transfer from: {{ wallet?.name }}</span>
+        <span>Current: {{ wallet?.totalAmount | currency }}</span>
+        <i class="pi pi-arrow-down"></i>
+        <span>New</span>
+        <span class="font-bold text-3xl text-coinly-danger">{{ (wallet?.totalAmount ?? 0) - (transferForm.get('amount')?.value ?? 0) | currency }}</span>
+      </div>
+      <div class="flex flex-col gap-2 text-center">
+        @if (selectedDestinationWallet) {
+          <span class="font-bold underline">Transfer to: {{ selectedDestinationWallet.name }}</span>
+          <span>Current: {{ selectedDestinationWallet.totalAmount | currency }}</span>
+          <i class="pi pi-arrow-down"></i>
+          <span>New</span>
+          <span class="font-bold text-3xl text-coinly-success">{{ (selectedDestinationWallet.totalAmount) + (transferForm.get('amount')?.value ?? 0) | currency }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        severity="danger"
+        size="small"
+        (click)="showDialog = false" />
+      <p-button
+        label="Assign"
+        icon="pi pi-save"
+        severity="success"
+        size="small"
+        [disabled]="!transferForm.valid || this.processStatus === 'loading'"
+        (click)="onTransfer()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
