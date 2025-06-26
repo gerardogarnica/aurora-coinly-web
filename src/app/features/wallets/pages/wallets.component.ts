@@ -1,8 +1,11 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { AssignToFormComponent } from '@features/wallets/components/assign-to-form/assign-to-form.component';
 import { NewWalletFormComponent } from '@features/wallets/components/new-wallet-form/new-wallet-form.component';
+import { TransferFundsFormComponent } from '@features/wallets/components/transfer-funds-form/transfer-funds-form.component';
 import { Wallet } from '@features/wallets/models/wallet.model';
+import { WalletType } from '@features/wallets/models/wallet.types';
 import { WalletService } from '@features/wallets/services/wallet.service';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
 import { PageTitleComponent } from '@shared/components/page-title.component';
@@ -21,7 +24,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, NewWalletFormComponent, PageHeaderComponent, PageTitleComponent, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, PageTitleComponent, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './wallets.component.html'
 })
@@ -36,7 +39,10 @@ export default class WalletsComponent {
   selectedWallet = signal<Wallet | undefined>(undefined);
   showDeleted = signal(false);
 
-  showDialog = false;
+  assignToType: 'available' | 'savings' = 'available';
+  showAddDialog = false;
+  showAssignToDialog = false;
+  showTransferToDialog = false;
 
   ngOnInit() {
     this.loadWallets();
@@ -70,33 +76,58 @@ export default class WalletsComponent {
     this.loadWallets();
   }
 
-  getAllowNegativeIcon(allowNegative: boolean): string {
-    return allowNegative ? 'pi pi-check' : 'pi pi-times';
+  getTypeIcon(type: WalletType): string {
+    switch (type) {
+      case WalletType.Bank:
+        return 'pi pi-building-columns';
+      case WalletType.Cash:
+        return 'pi pi-money-bill';
+      case WalletType.EMoney:
+        return 'pi pi-credit-card';
+      default:
+        return 'pi pi-wallet';
+    }
   }
 
-  getAllowNegativeSeverity(allowNegative: boolean): string {
-    return allowNegative ? 'success' : 'danger';
+  getTagIcon(isSuccess: boolean): string {
+    return isSuccess ? 'pi pi-check' : 'pi pi-times';
   }
 
-  getStatusSeverity(isDeleted: boolean): string {
-    return isDeleted ? 'danger' : 'success';
+  getTagSeverity(isSuccess: boolean): string {
+    return isSuccess ? 'success' : 'danger';
   }
 
   onAddWallet() {
     this.selectedWallet.set(undefined);
-    this.showDialog = true;
+    this.showAddDialog = true;
+  }
+
+  onTransferFunds(wallet: Wallet) {
+    this.selectedWallet.set(wallet);
+    this.showTransferToDialog = true;
+  }
+
+  onToSavings(wallet: Wallet) {
+    this.selectedWallet.set(wallet);
+    this.assignToType = 'savings';
+    this.showAssignToDialog = true;
+  }
+
+  onToAvailable(wallet: Wallet) {
+    this.selectedWallet.set(wallet);
+    this.assignToType = 'available';
+    this.showAssignToDialog = true;
   }
 
   onEditWallet(wallet: Wallet) {
     this.selectedWallet.set(wallet);
-    this.showDialog = true;
   }
 
   onDeleteWallet(wallet: Wallet) {
     this.selectedWallet.set(wallet);
 
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + wallet.name + '?',
+      message: 'Are you sure you want to delete <b>' + wallet.name + '</b>?',
       header: 'Delete wallet',
       icon: 'pi pi-question-circle',
       rejectButtonProps: {
@@ -138,8 +169,18 @@ export default class WalletsComponent {
     });
   }
 
-  onWalletFormDialogClose() {
-    this.showDialog = false;
+  onAddWalletFormDialogClose() {
+    this.showAddDialog = false;
+    this.loadWallets();
+  }
+
+  onAssignToFormDialogClose() {
+    this.showAssignToDialog = false;
+    this.loadWallets();
+  }
+
+  onTransferFundsFormDialogClose() {
+    this.showTransferToDialog = false;
     this.loadWallets();
   }
 }

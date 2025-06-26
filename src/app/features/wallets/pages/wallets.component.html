@@ -32,6 +32,7 @@
       icon="pi pi-plus"
       title="Add new Wallet"
       size="small"
+      [raised]="true"
       (onClick)="onAddWallet()"
     />
   </div>
@@ -55,7 +56,8 @@
         Type
         <p-sortIcon field="type" />
       </th>
-      <th class="text-center!">Balance</th>
+      <th class="text-center!">Total</th>
+      <th class="text-center!">Current Balances</th>
       <th class="text-center!">Allow Negative Balance</th>
       <th pSortableColumn="notes">
         Notes
@@ -68,61 +70,78 @@
   <ng-template #body let-wallet>
     <tr>
       <td>
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-2 rounded-full" [style.background-color]="wallet.color"></span>
+        <div class="flex items-center gap-3 font-bold text-base">
+          <span class="p-3 pb-2 rounded-md text-black" [style.background-color]="wallet.color">
+            <i [class]="getTypeIcon(wallet.type)"></i>
+          </span>
           {{ wallet.name }}
         </div>
       </td>
-      <td>
-        <span class="block text-center">
-          {{ wallet.type }}
-        </span>
+      <td class="text-center!">
+        {{ wallet.type }}
       </td>
       <td>
-        <div class="flex flex-col items-center divide-y divide-coinly-secondary">
-          <span class="w-full py-2 text-center">
-            Available:
+        <div class="flex flex-col items-center">
+          @if (wallet.totalAmount > 0) {
+            <span class="text-3xl font-bold text-coinly-success">{{ wallet.totalAmount | currency: wallet.currencyCode }}</span>
+          } @else {
+            <span class="text-3xl font-bold text-coinly-danger">{{ wallet.totalAmount | currency: wallet.currencyCode }}</span>
+          }
+          <p-button
+            label="Transfer"
+            icon="pi pi-arrow-right-arrow-left"
+            title="Transfer Funds"
+            size="small"
+            class="py-2"
+            [raised]="true"
+            [disabled]="wallet.availableAmount <= 0 && !wallet.allowNegative"
+            (onClick)="onTransferFunds(wallet)" />
+        </div>
+      </td>
+      <td>
+        <div class="grid grid-cols-2 gap-4 min-w-[260px]">
+          <div class="flex flex-col items-center">
+            <span class="font-medium">Available</span>
             @if (wallet.availableAmount > 0) {
-              <span class="text-coinly-success">
-                {{ wallet.availableAmount | currency: wallet.currencyCode }}
-              </span>
+              <span class="font-bold text-coinly-success">{{ wallet.availableAmount | currency: wallet.currencyCode }}</span>
             } @else {
-              <span class="text-coinly-danger">
-                {{ wallet.availableAmount | currency: wallet.currencyCode }}
-              </span>
+              <span class="font-bold text-coinly-danger">{{ wallet.availableAmount | currency: wallet.currencyCode }}</span>
             }
-          </span>
-          <span class="w-full py-2 text-center">
-            Savings:
+            <p-button
+              label="To Savings"
+              icon="pi pi-arrow-right"
+              title="Assign to Savings"
+              size="small"
+              class="py-2"
+              [raised]="true"
+              [disabled]="wallet.availableAmount <= 0"
+              (onClick)="onToSavings(wallet)" />
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="font-medium">Savings</span>
             @if (wallet.savingsAmount > 0) {
-              <span class="text-coinly-success">
-                {{ wallet.savingsAmount | currency: wallet.currencyCode }}
-              </span>
+              <span class="font-bold text-coinly-success">{{ wallet.savingsAmount | currency: wallet.currencyCode }}</span>
             } @else {
-              <span class="text-coinly-danger">
-                {{ wallet.savingsAmount | currency: wallet.currencyCode }}
-              </span>
+              <span class="font-bold text-coinly-danger">{{ wallet.savingsAmount | currency: wallet.currencyCode }}</span>
             }
-          </span>
-          <span class="w-full py-2 text-center font-bold">
-            Total:
-            @if (wallet.totalAmount > 0) {
-              <span class="text-coinly-success">
-                {{ wallet.totalAmount | currency: wallet.currencyCode }}
-              </span>
-            } @else {
-              <span class="text-coinly-danger">
-                {{ wallet.totalAmount | currency: wallet.currencyCode }}
-              </span>
-            }
-          </span>
+            <p-button
+              label="To Available"
+              icon="pi pi-arrow-left"
+              title="Assign to Available"
+              size="small"
+              class="py-2"
+              [raised]="true"
+              [disabled]="wallet.savingsAmount <= 0"
+              (onClick)="onToAvailable(wallet)" />
+          </div>
         </div>
       </td>
       <td>
         <div class="flex justify-center">
           <p-tag
-            [icon]="getAllowNegativeIcon(wallet.allowNegative)"
-            [severity]="getAllowNegativeSeverity(wallet.allowNegative)"
+            [icon]="getTagIcon(wallet.allowNegative)"
+            [value]="wallet.allowNegative ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(wallet.allowNegative)"
             [rounded]="true" />
         </div>
       </td>
@@ -135,7 +154,7 @@
         <div class="flex justify-center">
           <p-tag
             [value]="wallet.isDeleted ? 'Deleted' : 'Active'"
-            [severity]="getStatusSeverity(wallet.isDeleted)" />
+            [severity]="getTagSeverity(!wallet.isDeleted)" />
         </div>
       </td>
       <td>
@@ -179,6 +198,19 @@
 
 <app-new-wallet-form
   [wallet]="selectedWallet()"
-  [showDialog]="showDialog"
-  (cancelAction)="onWalletFormDialogClose()">
+  [showDialog]="showAddDialog"
+  (cancelAction)="onAddWalletFormDialogClose()">
 </app-new-wallet-form>
+
+<app-assign-to-form
+  [wallet]="selectedWallet()"
+  [showDialog]="showAssignToDialog"
+  [assignToType]="assignToType"
+  (cancelAction)="onAssignToFormDialogClose()">
+</app-assign-to-form>
+
+<app-transfer-funds-form
+  [wallet]="selectedWallet()"
+  [showDialog]="showTransferToDialog"
+  (cancelAction)="onTransferFundsFormDialogClose()">
+</app-transfer-funds-form>
