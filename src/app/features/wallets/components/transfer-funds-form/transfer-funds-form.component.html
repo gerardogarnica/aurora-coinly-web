@@ -6,7 +6,6 @@
   [draggable]="false"
   [resizable]="false"
   [dismissableMask]="true"
-  maskStyleClass="backdrop-blur-sm"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
   <form [formGroup]="transferForm" class="space-y-2" (ngSubmit)="onTransfer()">

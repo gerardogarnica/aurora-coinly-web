@@ -6,12 +6,11 @@
   [draggable]="false"
   [resizable]="false"
   [dismissableMask]="true"
-  maskStyleClass="backdrop-blur-sm"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
-  <form [formGroup]="walletForm" class="space-y-4" (ngSubmit)="onSave()">
+  <form [formGroup]="walletForm" class="space-y-2" (ngSubmit)="onSave()">
     <div class="grid grid-cols-[3fr_1fr] gap-4">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="name">Name <span class="text-coinly-info">(required, 3-100 characters)</span></label>
         <input
           pInputText
@@ -31,7 +30,7 @@
           <p class="mt-1 text-coinly-danger">Name cannot exceed 100 characters</p>
         }
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="color">Color</label>
         <p-colorpicker
           id="color"
@@ -43,7 +42,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
       <label for="openedOn">Open date</label>
       <p-datepicker
         id="openedOn"
@@ -54,12 +53,12 @@
         [readonlyInput]="true"
         [showButtonBar]="true" />
       @if (walletForm.get('openedOn')?.hasError('required') && walletForm.get('openedOn')?.touched) {
-        <p class="text-red-500">Open Date is required</p>
+        <p class="text-red-500">Open date is required</p>
       }
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="type">Type</label>
         <p-select
           id="type"
@@ -74,7 +73,7 @@
             <p class="text-red-500">Type is required</p>
         }
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="allowNegative" class="w-full">Allow negative balance</label>
         <p-toggleswitch
           inputId="allowNegative"
@@ -83,7 +82,7 @@
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="currencyCode">Currency</label>
         <p-select
           id="currencyCode"
@@ -97,7 +96,7 @@
             <p class="text-red-500">Currency is required</p>
         }
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <label for="amount">Initial balance</label>
         <p-input-number
           inputId="amount"
@@ -110,12 +109,12 @@
           size="small"
           fluid />
         @if (walletForm.get('amount')?.hasError('required') && walletForm.get('amount')?.touched) {
-            <p class="text-red-500">Amount is required</p>
+            <p class="text-red-500">Initial balance is required</p>
         }
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
       <label for="notes">Notes</label>
       <textarea
         pTextarea

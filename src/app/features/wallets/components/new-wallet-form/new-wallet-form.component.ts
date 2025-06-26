@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CreateWallet, Wallet } from '@features/wallets/models/wallet.model';
 import { WalletService } from '@features/wallets/services/wallet.service';
 import { ProcessStatus } from '@shared/models/process-status.model';
+import { CommonUtils } from '@shared/utils/common.utils';
 
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -56,18 +57,13 @@ export class NewWalletFormComponent {
     allowNegative: [false, [Validators.required]],
     color: ['#0000ff', [Validators.required]],
     notes: ['', Validators.maxLength(1000)],
-    openedOn: [this.getCurrentDate(), [Validators.required]]
+    openedOn: [CommonUtils.currentDate(), [Validators.required]]
   });
 
-  getCurrentDate(): Date {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  }
-
   setOpenedAtMinMaxDates() {
-    this.openedAtMaxDate = this.getCurrentDate();
+    this.openedAtMaxDate = CommonUtils.currentDate();
 
-    this.openedAtMinDate = this.getCurrentDate();
+    this.openedAtMinDate = CommonUtils.currentDate();
     this.openedAtMinDate.setFullYear(this.openedAtMinDate.getFullYear() - 1);
   }
 
@@ -107,7 +103,7 @@ export class NewWalletFormComponent {
       allowNegative: false,
       color: '#0000ff',
       notes: '',
-      openedOn: this.getCurrentDate()
+      openedOn: CommonUtils.currentDate()
     });
 
     this.processStatus = 'init';
@@ -139,6 +135,7 @@ export class NewWalletFormComponent {
       .subscribe({
         next: () => {
           this.processStatus = 'success';
+
           this.messageService.add({
             severity: 'success',
             summary: 'Wallet created',
@@ -149,6 +146,8 @@ export class NewWalletFormComponent {
           this.hideDialogForm();
         },
         error: (error: string) => {
+          this.processStatus = 'error';
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error creating wallet',
