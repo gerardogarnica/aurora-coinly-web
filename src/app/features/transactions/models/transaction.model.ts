@@ -21,3 +21,25 @@ export interface Transaction {
     isRecurring: boolean;
     installmentNumber: number;
 }
+
+export interface CreateExpenseTransaction {
+    categoryId: string;
+    paymentMethodId: string;
+    description: string;
+    transactionDate: Date;
+    maxPaymentDate: Date;
+    currencyCode: string;
+    amount: number;
+    notes?: string;
+    walletId?: string;
+}
+
+export interface CreateIncomeTransaction {
+    categoryId: string;
+    description: string;
+    transactionDate: Date;
+    currencyCode: string;
+    amount: number;
+    notes?: string;
+    walletId: string;
+}
