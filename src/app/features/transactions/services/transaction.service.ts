@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 import { ErrorsService } from '@core/services/errors.service';
-import { Transaction } from '@features/transactions/models/transaction.model';
+import { CreateExpenseTransaction, CreateIncomeTransaction, Transaction } from '@features/transactions/models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +14,17 @@ export class TransactionService {
   private readonly errorsService = inject(ErrorsService);
   private readonly apiUrl = '/aurora/coinly/transactions';
 
-  constructor() { }
+  createExpense(transaction: CreateExpenseTransaction) {
+    let url = `${this.apiUrl}/expense`;
+    return this.httpClient.post<string>(url, transaction).pipe(
+      catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
+    );
+  }
+
+  createIncome(transaction: CreateIncomeTransaction) {
+    let url = `${this.apiUrl}/income`;
+    return this.httpClient.post<string>(url, transaction).pipe(
+      catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
+    );
+  }
 }

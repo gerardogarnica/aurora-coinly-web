@@ -27,10 +27,10 @@ export interface CreateExpenseTransaction {
     paymentMethodId: string;
     description: string;
     transactionDate: Date;
-    maxPaymentDate: Date;
     currencyCode: string;
     amount: number;
     notes?: string;
+    makePayment: boolean;
     walletId?: string;
 }
 
