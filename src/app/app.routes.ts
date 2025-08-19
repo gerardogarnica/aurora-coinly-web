@@ -30,13 +30,28 @@ export const routes: Routes = [
                 loadComponent: () => import('@features/wallets/pages/wallets.component')                
             },
             {
+                path: '',
+                redirectTo: 'dashboard',
+                pathMatch: 'full'
+            }
+        ]
+    },
+    {
+        path: 'auth',
+        loadComponent: () => import('@shared/layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        children: [
+            {
+                path: 'login',
+                loadComponent: () => import('@features/auth/pages/login/login.component')
+            },
+            {
                 path: '**',
-                redirectTo: 'dashboard'
+                redirectTo: 'login'
             }
         ]
     },
     {
         path: '**',
-        redirectTo: ''
+        loadComponent: () => import('@shared/pages/not-found.component').then(m => m.NotFoundComponent)
     }
 ];
