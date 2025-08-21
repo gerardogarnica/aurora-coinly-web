@@ -1,8 +1,12 @@
 import { Routes } from '@angular/router';
+import { privateGuard } from '@core/guards/private.guard';
+import { publicGuard } from '@core/guards/public.guard';
 
 export const routes: Routes = [
     {
         path: '',
+        canActivate: [privateGuard],
+        canActivateChild: [privateGuard],
         loadComponent: () => import('@shared/layout/main-layout.component').then(m => m.MainLayoutComponent),
         children: [
             {
@@ -38,6 +42,8 @@ export const routes: Routes = [
     },
     {
         path: 'auth',
+        canActivate: [publicGuard],
+        canActivateChild: [publicGuard],
         loadComponent: () => import('@shared/layout/auth-layout.component').then(m => m.AuthLayoutComponent),
         children: [
             {

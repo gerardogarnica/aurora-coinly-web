@@ -21,7 +21,7 @@ export class TokenService {
     const key = this.getKeyName(type);
 
     setCookie(key, token, {
-      expires,
+      expires: new Date(expires),
       path: '/',
       sameSite: 'strict'
     });
