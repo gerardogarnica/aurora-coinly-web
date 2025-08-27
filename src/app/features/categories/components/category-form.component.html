@@ -43,18 +43,33 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="type">Type</label>
-      <p-select
-        id="type"
-        formControlName="type"
-        [options]="categoryTypes"
-        [checkmark]="true"
-        optionLabel="label"
-        optionValue="value" />
-      @if (categoryForm.get('type')?.hasError('required') && categoryForm.get('type')?.touched) {
-        <p class="text-red-500">Type is required</p>
-      }
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="type">Type</label>
+        <p-select
+          id="type"
+          formControlName="type"
+          [options]="categoryTypes"
+          [checkmark]="true"
+          optionLabel="label"
+          optionValue="value" />
+        @if (categoryForm.get('type')?.hasError('required') && categoryForm.get('type')?.touched) {
+          <p class="text-red-500">Type is required</p>
+        }
+      </div>
+      <div class="flex flex-col">
+        <label for="group">Group</label>
+        <p-select
+          id="group"
+          formControlName="group"
+          [options]="categoryGroups"
+          [checkmark]="true"
+          optionLabel="label"
+          optionValue="value" />
+        @if (categoryForm.get('group')?.hasError('required') && categoryForm.get('group')?.touched) {
+          <p class="text-red-500">Group is required</p>
+        }
+      </div>
     </div>
 
     <div class="flex flex-col gap-2">

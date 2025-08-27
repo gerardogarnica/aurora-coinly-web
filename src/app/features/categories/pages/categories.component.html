@@ -55,6 +55,10 @@
         Type
         <p-sortIcon field="type" />
       </th>
+      <th pSortableColumn="group">
+        Group
+        <p-sortIcon field="group" />
+      </th>
       <th class="text-center!" pSortableColumn="maxDaysToReverse">
         Reverse Days
         <p-sortIcon field="maxDaysToReverse" />
@@ -80,6 +84,11 @@
           [value]="category.type"
           [icon]="getTypeIcon(category.type)"
           [severity]="getTypeSeverity(category.type)" />
+      </td>
+      <td>
+        <p-tag
+          [value]="category.group"
+          [icon]="getGroupIcon(category.group)" />
       </td>
       <td>
         <span class="block text-center">

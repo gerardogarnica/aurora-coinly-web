@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
+import { Category, CreateCategory, UpdateCategory, CategoryGroup } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { ProcessStatus } from '@shared/models/process-status.model';
 
@@ -37,10 +37,17 @@ export class CategoryFormComponent {
         { label: 'Income', value: 'Income' }
     ];
 
+    categoryGroups: { label: string; value: CategoryGroup }[] =
+        Object.values(CategoryGroup).map((value) => ({
+            label: value.replace(/([a-z])([A-Z])/g, '$1 $2'), // "FoodAndDining" -> "Food And Dining"
+            value
+        }));
+
     categoryForm: FormGroup = this.formBuilder.group({
         name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
         color: ['#0000ff', [Validators.required]],
         type: [{ value: 'Expense', disabled: false }, Validators.required],
+        group: ['', Validators.required],
         maxDaysToReverse: [15, [Validators.required, Validators.min(0), Validators.max(15)]],
         notes: ['', Validators.maxLength(1000)]
     });
@@ -57,6 +64,7 @@ export class CategoryFormComponent {
                 name: this.category.name,
                 color: this.category.color,
                 type: this.category.type,
+                group: this.category.group,
                 maxDaysToReverse: this.category.maxDaysToReverse,
                 notes: this.category.notes
             });
@@ -80,6 +88,7 @@ export class CategoryFormComponent {
             name: '',
             color: '#0000ff',
             type: 'Expense',
+            group: '',
             maxDaysToReverse: 15,
             notes: ''
         });

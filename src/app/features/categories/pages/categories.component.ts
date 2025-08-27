@@ -1,7 +1,7 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 
 import { CategoryFormComponent } from '@features/categories/components/category-form.component';
-import { Category } from '@features/categories/models/category.model';
+import { Category, CategoryGroup } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { TransactionType } from '@features/transactions/models/transaction.types';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
@@ -75,6 +75,53 @@ export default class CategoriesComponent {
         return 'pi pi-arrow-up';
       default:
         return 'pi pi-info-circle';
+    }
+  }
+
+  getGroupIcon(group: CategoryGroup): string {
+    switch (group) {
+      case CategoryGroup.Clothing:
+        return 'pi pi-shopping-bag';
+      case CategoryGroup.Education:
+        return 'pi pi-book';
+      case CategoryGroup.Entertainment:
+        return 'pi pi-video';
+      case CategoryGroup.Finances:
+        return 'pi pi-dollar';
+      case CategoryGroup.FoodAndDining:
+        return 'pi pi-bell';
+      case CategoryGroup.Groceries:
+        return 'pi pi-shopping-cart';
+      case CategoryGroup.Health:
+        return 'pi pi-heart-fill';
+      case CategoryGroup.Housing:
+        return 'pi pi-home';
+      case CategoryGroup.Income:
+        return 'pi pi-money-bill';
+      case CategoryGroup.Insurance:
+        return 'pi pi-shield';
+      case CategoryGroup.Miscellaneous:
+        return 'pi pi-asterisk';
+      case CategoryGroup.Other:
+        return 'pi pi-tags';
+      case CategoryGroup.PersonalCare:
+        return 'pi pi-user';
+      case CategoryGroup.Pets:
+        return 'pi pi-pause';
+      case CategoryGroup.Savings:
+        return 'pi pi-building-columns';
+      case CategoryGroup.Subscriptions:
+        return 'pi pi-sync';
+      case CategoryGroup.Transportation:
+        return 'pi pi-truck';
+      case CategoryGroup.Travel:
+        return 'pi pi-map-marker';
+      case CategoryGroup.Utilities:
+        return 'pi pi-lightbulb';
+      case CategoryGroup.Vehicle:
+        return 'pi pi-car';
+      default:
+        return 'pi pi-tags';
     }
   }
 
