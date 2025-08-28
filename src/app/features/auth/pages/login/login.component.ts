@@ -1,5 +1,6 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from '@features/auth/services/auth.service';
 import { ProcessStatus } from '@shared/models/process-status.model';
@@ -20,6 +21,7 @@ export default class LoginComponent {
   authService = inject(AuthService);
   formBuilder = inject(FormBuilder);
   messageService = inject(MessageService);
+  router = inject(Router);
 
   processStatus: ProcessStatus = 'none';
 
@@ -48,7 +50,11 @@ export default class LoginComponent {
       .subscribe({
         next: () => {
           this.processStatus = 'success';
-          // Redirect to dashboard or another page after successful login
+
+          // Redirect to dashboard after successful login
+          this.router.navigate(['/dashboard']).then(() => {
+            this.resetForm();
+          });
         },
         error: (error: string) => {
           this.processStatus = 'error';
