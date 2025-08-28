@@ -124,6 +124,7 @@
               title="Set as Default"
               size="small"
               [raised]="true"
+              [disabled]="method.isDeleted"
               (onClick)="onSetDefaultMethod(method)" />
           }
         </div>

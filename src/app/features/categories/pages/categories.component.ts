@@ -6,6 +6,7 @@ import { CategoryService } from '@features/categories/services/category.service'
 import { TransactionType } from '@features/transactions/models/transaction.types';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
 import { PageTitleComponent } from '@shared/components/page-title.component';
+import { CommonUtils } from '@shared/utils/common.utils';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -79,50 +80,7 @@ export default class CategoriesComponent {
   }
 
   getGroupIcon(group: CategoryGroup): string {
-    switch (group) {
-      case CategoryGroup.Clothing:
-        return 'pi pi-shopping-bag';
-      case CategoryGroup.Education:
-        return 'pi pi-book';
-      case CategoryGroup.Entertainment:
-        return 'pi pi-video';
-      case CategoryGroup.Finances:
-        return 'pi pi-dollar';
-      case CategoryGroup.FoodAndDining:
-        return 'pi pi-bell';
-      case CategoryGroup.Groceries:
-        return 'pi pi-shopping-cart';
-      case CategoryGroup.Health:
-        return 'pi pi-heart-fill';
-      case CategoryGroup.Housing:
-        return 'pi pi-home';
-      case CategoryGroup.Income:
-        return 'pi pi-money-bill';
-      case CategoryGroup.Insurance:
-        return 'pi pi-shield';
-      case CategoryGroup.Miscellaneous:
-        return 'pi pi-asterisk';
-      case CategoryGroup.Other:
-        return 'pi pi-tags';
-      case CategoryGroup.PersonalCare:
-        return 'pi pi-user';
-      case CategoryGroup.Pets:
-        return 'pi pi-pause';
-      case CategoryGroup.Savings:
-        return 'pi pi-building-columns';
-      case CategoryGroup.Subscriptions:
-        return 'pi pi-sync';
-      case CategoryGroup.Transportation:
-        return 'pi pi-truck';
-      case CategoryGroup.Travel:
-        return 'pi pi-map-marker';
-      case CategoryGroup.Utilities:
-        return 'pi pi-lightbulb';
-      case CategoryGroup.Vehicle:
-        return 'pi pi-car';
-      default:
-        return 'pi pi-tags';
-    }
+    return CommonUtils.getGroupIcon(group);
   }
 
   getTypeSeverity(type: TransactionType): string {
