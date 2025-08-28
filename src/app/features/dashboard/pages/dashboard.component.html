@@ -1,1 +1,70 @@
-<p>dashboard works!</p>
+<app-page-title
+  title="Dashboard"
+  subtitle="General overview of your finances">
+</app-page-title>
+
+<!-- Summary cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+  <app-summary-card
+    [backgroundColor]="'bg-coinly-primary'"
+    title="Current Balance"
+    icon="pi pi-wallet"
+    [value]="dashboardData()?.totalBalance ?? 0"
+    [currency]="dashboardData()?.currency ?? ''"
+    [showPercentageChange]="false"
+    [footerText]="'From all wallets'"
+  ></app-summary-card>
+
+  <app-summary-card
+    [backgroundColor]="'bg-coinly-success-dark'"
+    title="Incomes"
+    icon="pi pi-file-import"
+    [value]="dashboardData()?.totalIncome?.amount ?? 0"
+    [currency]="dashboardData()?.currency ?? ''"
+    [percentageChange]="dashboardData()?.totalIncome?.percentageChange ?? 0"
+  ></app-summary-card>
+
+  <app-summary-card
+    [backgroundColor]="'bg-coinly-danger-dark'"
+    title="Expenses"
+    icon="pi pi-file-export"
+    [value]="dashboardData()?.totalExpenses?.amount ?? 0"
+    [currency]="dashboardData()?.currency ?? ''"
+    [percentageChange]="dashboardData()?.totalExpenses?.percentageChange ?? 0"
+  ></app-summary-card>
+
+  <app-summary-card
+    [backgroundColor]="'bg-coinly-secondary'"
+    title="Savings"
+    icon="pi pi-building-columns"
+    [value]="dashboardData()?.totalSavings?.amount ?? 0"
+    [currency]="dashboardData()?.currency ?? ''"
+    [percentageChange]="dashboardData()?.totalSavings?.percentageChange ?? 0"
+  ></app-summary-card>
+</div>
+
+<!-- Charts row -->
+<div class="grid grid-cols-1 md:grid-cols-7 gap-6 mb-8">
+  <div class="bg-white col-span-4 rounded-xl shadow p-6">
+    <app-monthly-trends
+    ></app-monthly-trends>
+  </div>
+
+  <div class="bg-white col-span-3 rounded-xl shadow p-6">
+    <app-category-expenses
+    ></app-category-expenses>
+  </div>
+</div>
+
+<!-- Recent transactions and upcoming payments -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  <app-recent-transactions
+    [transactions]="dashboardData()?.recentTransactions ?? []"
+  ></app-recent-transactions>
+
+  <app-upcoming-payments
+    [transactions]="dashboardData()?.upcomingPayments ?? []"
+  ></app-upcoming-payments>
+</div>
+
+<p-toast position="center" />

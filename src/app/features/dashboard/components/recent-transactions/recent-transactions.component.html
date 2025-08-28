@@ -1,0 +1,31 @@
+<div class="bg-white rounded-xl shadow p-6">
+    <div class="flex items-center justify-between mb-4">
+        <span class="text-lg font-bold text-coinly-primary">Last transactions</span>
+        <a [routerLink]="['/transactions']" class="text-coinly-info hover:underline text-sm">See all</a>
+    </div>
+
+    <div class="divide-y divide-coinly-light">
+        @for (transaction of transactions; track transaction.transactionId) {
+            <div class="grid grid-cols-3 py-3 gap-2">
+                <div class="flex items-start gap-3">
+                    <p-avatar
+                        class="pi"
+                        [ngClass]="getTransactionIcon(transaction)"
+                        shape="circle"
+                        [style]="{'background-color': getTransactionIconBackgroundColor(transaction), 'color': getTransactionIconTextColor(transaction)}" />
+                    <div class="flex flex-col">
+                        <span class="font-bold">{{ transaction.description }}</span>
+                        <span class="text-xs text-gray-500">{{ transaction.category.name }}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="font-bold">{{ transaction.transactionDate | date: 'dd/MM/yyyy' }}</span>
+                    <span class="text-xs text-gray-500">{{ transaction.paymentMethod.name }}</span>
+                </div>
+                <span class="text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
+                    {{ transaction.amount | currency: transaction.currency }}
+                </span>
+            </div>
+        }
+    </div>
+</div>
