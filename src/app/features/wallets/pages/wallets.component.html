@@ -59,10 +59,6 @@
       <th class="text-center!">Total</th>
       <th class="text-center!">Current Balances</th>
       <th class="text-center!">Allow Negative Balance</th>
-      <th pSortableColumn="notes">
-        Notes
-        <p-sortIcon field="notes" />
-      </th>
       <th class="text-center!">Status</th>
       <th></th>
     </tr>
@@ -70,15 +66,20 @@
   <ng-template #body let-wallet>
     <tr>
       <td>
-        <div class="flex items-center gap-3 font-bold text-base">
-          <span class="p-3 pb-2 rounded-md text-black" [style.background-color]="wallet.color">
-            <i [class]="getTypeIcon(wallet.type)"></i>
-          </span>
-          {{ wallet.name }}
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ wallet.name }}</span>
+          <span class="max-w-[300px] text-xs text-coinly-disabled text-wrap">{{ wallet.notes }}</span>
         </div>
       </td>
-      <td class="text-center!">
-        {{ wallet.type }}
+      <td>
+        <div class="flex items-center gap-2">
+          <p-avatar
+            class="pi"
+            shape="circle"
+            [icon]="getTypeIcon(wallet.type)"
+            [style]="{ 'background-color': `${wallet.color}66`, 'color': wallet.color }" />
+          {{ wallet.type }}
+        </div>
       </td>
       <td>
         <div class="flex flex-col items-center">
@@ -143,11 +144,6 @@
             [value]="wallet.allowNegative ? 'Yes' : 'No'"
             [severity]="getTagSeverity(wallet.allowNegative)"
             [rounded]="true" />
-        </div>
-      </td>
-      <td>
-        <div class="max-w-[350px] truncate" [attr.title]="wallet.notes">
-          {{ wallet.notes }}
         </div>
       </td>
       <td>

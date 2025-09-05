@@ -3,10 +3,12 @@ import { Component, inject, signal, ViewChild } from '@angular/core';
 import { MethodFormComponent } from '@features/methods/components/method-form.component';
 import { Method } from '@features/methods/models/method.model';
 import { MethodService } from '@features/methods/services/methods.service';
+import { WalletType } from '@features/wallets/models/wallet.types';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
 import { PageTitleComponent } from '@shared/components/page-title.component';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -20,7 +22,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-methods',
   standalone: true,
-  imports: [MethodFormComponent, PageHeaderComponent, PageTitleComponent, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [MethodFormComponent, PageHeaderComponent, PageTitleComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './methods.component.html'
 })
@@ -64,6 +66,19 @@ export default class MethodsComponent {
   onShowInactiveChange(event: any) {
     this.showDeleted.set(event.checked);
     this.loadMethods();
+  }
+
+  getTypeIcon(type: WalletType): string {
+    switch (type) {
+      case WalletType.Bank:
+        return 'pi pi-building-columns';
+      case WalletType.Cash:
+        return 'pi pi-money-bill';
+      case WalletType.EMoney:
+        return 'pi pi-credit-card';
+      default:
+        return 'pi pi-wallet';
+    }
   }
 
   getTagIcon(isSuccess: boolean): string {

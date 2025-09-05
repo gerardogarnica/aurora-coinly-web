@@ -10,7 +10,7 @@ import { Component, Input } from '@angular/core';
       {{ title }}
     </h1>
     @if (subtitle) {
-    <p class="text-base text-gray-600 mt-2">
+    <p class="text-base text-coinly-disabled mt-2">
       {{ subtitle }}
       </p>
     }

@@ -8,6 +8,7 @@ import { PageHeaderComponent } from '@shared/components/page-header.component';
 import { PageTitleComponent } from '@shared/components/page-title.component';
 import { CommonUtils } from '@shared/utils/common.utils';
 
+import { AvatarModule } from 'primeng/avatar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -22,7 +23,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CategoryFormComponent, PageHeaderComponent, PageTitleComponent, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CategoryFormComponent, PageHeaderComponent, PageTitleComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './categories.component.html'
 })

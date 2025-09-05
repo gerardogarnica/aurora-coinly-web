@@ -20,7 +20,9 @@
                 </div>
                 <div class="flex flex-col items-center">
                     <span class="font-bold">{{ transaction.transactionDate | date: 'dd/MM/yyyy' }}</span>
-                    <span class="text-xs text-gray-500">{{ transaction.paymentMethod.name }}</span>
+                    <span class="text-xs text-gray-500">
+                        {{ transaction.paymentMethod ? transaction.paymentMethod.name : '---' }}
+                    </span>
                 </div>
                 <span class="text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
                     {{ transaction.amount | currency: transaction.currency }}

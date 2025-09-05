@@ -63,10 +63,6 @@
         Reverse Days
         <p-sortIcon field="maxDaysToReverse" />
       </th>
-      <th pSortableColumn="notes">
-        Notes
-        <p-sortIcon field="notes" />
-      </th>
       <th class="text-center!">Status</th>
       <th></th>
     </tr>
@@ -74,9 +70,9 @@
   <ng-template #body let-category>
     <tr>
       <td>
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-2 rounded-full" [style.background-color]="category.color"></span>
-          {{ category.name }}
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ category.name }}</span>
+          <span class="max-w-[400px] text-xs text-coinly-disabled text-wrap">{{ category.notes }}</span>
         </div>
       </td>
       <td>
@@ -86,19 +82,19 @@
           [severity]="getTypeSeverity(category.type)" />
       </td>
       <td>
-        <p-tag
-          [value]="category.group"
-          [icon]="getGroupIcon(category.group)" />
+        <div class="flex items-center gap-2">
+          <p-avatar
+            class="pi"
+            shape="circle"
+            [icon]="getGroupIcon(category.group)"
+            [style]="{ 'background-color': `${category.color}66`, 'color': category.color }" />
+          {{ category.group }}
+        </div>
       </td>
       <td>
         <span class="block text-center">
           {{ category.maxDaysToReverse }}
         </span>
-      </td>
-      <td>
-        <div class="max-w-[350px] truncate" [attr.title]="category.notes">
-          {{ category.notes }}
-        </div>
       </td>
       <td>
         <div class="flex justify-center">

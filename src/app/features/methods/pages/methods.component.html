@@ -63,10 +63,6 @@
       <th class="text-center!">Automark as Paid</th>
       <th class="text-center!">Allow Recurring</th>
       <th class="text-center!">Is Default</th>
-      <th pSortableColumn="notes">
-        Notes
-        <p-sortIcon field="notes" />
-      </th>
       <th class="text-center!">Status</th>
       <th></th>
     </tr>
@@ -74,12 +70,19 @@
   <ng-template #body let-method>
     <tr>
       <td>
-        {{ method.name }}
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ method.name }}</span>
+          <span class="max-w-[300px] text-xs text-coinly-disabled text-wrap">{{ method.notes }}</span>
+        </div>
       </td>
       <td>
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-2 rounded-full" [style.background-color]="method.wallet.color"></span>
-          {{ method.wallet.name }}
+        <div class="min-w-40 flex items-center gap-2">
+          <p-avatar
+            class="pi"
+            shape="circle"
+            [icon]="getTypeIcon(method.wallet.type)"
+            [style]="{ 'background-color': `${method.wallet.color}66`, 'color': method.wallet.color }" />
+          <span class="text-wrap">{{ method.wallet.name }}</span>
         </div>
       </td>
       <td>
@@ -112,12 +115,6 @@
       </td>
       <td>
         <div class="flex flex-col items-center gap-2">
-          <p-tag
-            [icon]="getTagIcon(method.isDefault)"
-            [value]="method.isDefault ? 'Yes' : 'No'"
-            [severity]="getTagSeverity(method.isDefault)"
-            [rounded]="true" />
-
           @if (!method.isDefault) {
             <p-button
               label="Set as Default"
@@ -126,12 +123,12 @@
               [raised]="true"
               [disabled]="method.isDeleted"
               (onClick)="onSetDefaultMethod(method)" />
+          } @else {
+            <p-tag
+              [icon]="getTagIcon(method.isDefault)"
+              [severity]="getTagSeverity(method.isDefault)"
+              [rounded]="true" />
           }
-        </div>
-      </td>
-      <td>
-        <div class="max-w-[350px] truncate" [attr.title]="method.notes">
-          {{ method.notes }}
         </div>
       </td>
       <td>
@@ -167,7 +164,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="9" class="text-center!">No payment methods found.</td>
+      <td colspan="8" class="text-center!">No payment methods found.</td>
     </tr>
   </ng-template>
   <ng-template #summary>

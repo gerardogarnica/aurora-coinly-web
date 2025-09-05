@@ -11,6 +11,7 @@ import { PageHeaderComponent } from '@shared/components/page-header.component';
 import { PageTitleComponent } from '@shared/components/page-title.component';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -24,7 +25,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, PageTitleComponent, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, PageTitleComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './wallets.component.html'
 })
@@ -156,7 +157,7 @@ export default class WalletsComponent {
 
               this.loadWallets();
             },
-            error: (error: string) =>{
+            error: (error: string) => {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error deleting wallet',
