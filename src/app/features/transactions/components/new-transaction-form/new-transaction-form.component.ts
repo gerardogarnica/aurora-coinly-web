@@ -106,6 +106,11 @@ export class NewTransactionFormComponent {
       this.selectedPaymentMethod = undefined;
 
       let walletId = this.transactionForm.get('walletId')?.value;
+
+      if (!walletId) {
+        walletId = this.wallets.at(0)?.walletId || null;
+      }
+
       this.setWalletMethodChanged(this.wallets.find(wallet => wallet.walletId === walletId)!);
     }
   }
@@ -220,17 +225,10 @@ export class NewTransactionFormComponent {
       return; // No payment method selected, do nothing
     }
 
-    const walletCtrl = this.transactionForm.get('walletId');
     let walletId: string | null = null;
 
     if (makePayment) {
-      walletCtrl?.enable();
-      walletCtrl?.setValidators([Validators.required]);
-
       walletId = this.selectedPaymentMethod.wallet?.walletId || null;
-    } else {
-      walletCtrl?.disable();
-      walletCtrl?.clearValidators();
     }
 
     this.transactionForm.patchValue({
@@ -243,13 +241,25 @@ export class NewTransactionFormComponent {
   }
 
   setWalletMethodChanged(wallet: Wallet) {
+    const walletCtrl = this.transactionForm.get('walletId');
+
+    walletCtrl?.enable();
+    walletCtrl?.setValidators([Validators.required]);
+
     if (!wallet) {
       // Set the transaction date limits
       this.transactionMinDate = CommonUtils.currentDate();
       this.transactionMinDate.setFullYear(this.transactionMinDate.getFullYear() - 1);
 
+      walletCtrl?.disable();
+      walletCtrl?.clearValidators();
+
       return; // No wallet selected, do nothing
     }
+
+    this.transactionForm.patchValue({
+      walletId: wallet.walletId
+    });
 
     if (this.transactionType === TransactionType.Income) {
       this.amountMax = 999999.99;

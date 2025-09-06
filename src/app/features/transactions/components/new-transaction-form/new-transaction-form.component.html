@@ -24,40 +24,6 @@
         (onClick)="setTransactionType('Income')" />
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col">
-        <label for="amount">Amount</label>
-        <p-input-number
-          inputId="amount"
-          formControlName="amount"
-          mode="decimal"
-          [min]="0.01"
-          [max]="amountMax"
-          [minFractionDigits]="2"
-          [maxFractionDigits]="2"
-          size="small"
-          fluid />
-        @if (transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched) {
-          <p class="text-red-500">Amount is required</p>
-        }
-      </div>
-
-      <div class="flex flex-col">
-        <label for="transactionDate">Date</label>
-        <p-datepicker
-          id="transactionDate"
-          formControlName="transactionDate"
-          size="small"
-          [minDate]="transactionMinDate"
-          [maxDate]="transactionMaxDate"
-          [readonlyInput]="true"
-          [showButtonBar]="true" />
-        @if (transactionForm.get('transactionDate')?.hasError('required') && transactionForm.get('transactionDate')?.touched) {
-          <p class="text-red-500">Date is required</p>
-        }
-      </div>
-    </div>
-
     @if (transactionType === 'Expense') {
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col">
@@ -77,7 +43,7 @@
           }
         </div>
 
-        <div class="flex items-center">
+        <div class="flex items-center pt-5">
           <p-toggleswitch
             inputId="makePayment"
             formControlName="makePayment"
@@ -88,22 +54,6 @@
     }
 
     <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col">
-        <label for="categoryId">Category</label>
-        <p-select
-          id="categoryId"
-          formControlName="categoryId"
-          [options]="categoriesByType"
-          [checkmark]="true"
-          optionLabel="name"
-          optionValue="categoryId"
-          placeholder="Select a category"
-          size="small" />
-        @if (transactionForm.get('categoryId')?.hasError('required') && transactionForm.get('categoryId')?.touched) {
-          <p class="mt-1 text-coinly-danger">Category is required</p>
-        }
-      </div>
-
       <div class="flex flex-col">
         <label for="walletId">Wallet</label>
         <p-select
@@ -118,6 +68,56 @@
           size="small" />
         @if (transactionForm.get('walletId')?.hasError('required') && transactionForm.get('walletId')?.touched) {
           <p class="text-red-500">Wallet is required</p>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <label for="transactionDate">Date</label>
+        <p-datepicker
+          id="transactionDate"
+          formControlName="transactionDate"
+          size="small"
+          [minDate]="transactionMinDate"
+          [maxDate]="transactionMaxDate"
+          [readonlyInput]="true"
+          [showButtonBar]="true" />
+        @if (transactionForm.get('transactionDate')?.hasError('required') && transactionForm.get('transactionDate')?.touched) {
+          <p class="text-red-500">Date is required</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="amount">Amount</label>
+        <p-input-number
+          inputId="amount"
+          formControlName="amount"
+          mode="decimal"
+          [min]="0.01"
+          [max]="amountMax"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          size="small"
+          fluid />
+        @if (transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched) {
+          <p class="text-red-500">Amount is required</p>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <label for="categoryId">Category</label>
+        <p-select
+          id="categoryId"
+          formControlName="categoryId"
+          [options]="categoriesByType"
+          [checkmark]="true"
+          optionLabel="name"
+          optionValue="categoryId"
+          placeholder="Select a category"
+          size="small" />
+        @if (transactionForm.get('categoryId')?.hasError('required') && transactionForm.get('categoryId')?.touched) {
+          <p class="mt-1 text-coinly-danger">Category is required</p>
         }
       </div>
     </div>

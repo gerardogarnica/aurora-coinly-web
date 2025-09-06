@@ -54,7 +54,6 @@ export class MonthlyTrendsComponent {
     return this.monthlyTrends.map(trend => {
       const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const labels = monthNames[trend.month - 1] + ' ' + trend.year;
-      console.log(labels);
       return labels;
     }) || [];
   }
