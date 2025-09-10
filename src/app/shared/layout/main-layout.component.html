@@ -1,8 +1,11 @@
-<div class="antialiased h-screen flex flex-col">
-    <app-navbar></app-navbar>
-    <div class="flex flex-1 w-full overflow-hidden">
-        <app-sidebar></app-sidebar>
-        <main class="flex-1 h-full lg:ml-64 px-8 pt-24 overflow-y-auto">
+<div class="antialiased flex min-h-screen">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 flex flex-col h-screen font-quicksand">
+        <app-navbar
+          [title]="pageHeaderTitle"
+          [subtitle]="pageHeaderSubtitle"
+        ></app-navbar>
+        <main class="flex-1 overflow-y-auto px-8 py-6">
             <router-outlet></router-outlet>
         </main>
     </div>

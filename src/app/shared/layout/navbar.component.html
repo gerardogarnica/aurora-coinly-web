@@ -1,17 +1,29 @@
-<nav class="fixed left-0 right-0 top-0 bg-coinly-primary p-4 flex justify-between items-center text-coinly-light font-quicksand z-50">
-    <div class="text-2xl font-bold tracking-wide">
-        <a routerLink="/" class="hover:text-coinly-highlight transition-colors">Aurora Coinly</a>
-    </div>
-    <div class="flex items-center space-x-4">
-        <p-button
-            icon="pi pi-bell"
-            variant="text"
-            [rounded]="true"
-        ></p-button>
-        <p-button
-            icon="pi pi-user"
-            variant="text"
-            [rounded]="true"
-        ></p-button>
-    </div>
-</nav>
+<!-- Header -->
+<header
+  class="sticky top-0 px-8 py-4 z-50 bg-coinly-light flex justify-between items-center border-b border-b-coinly-secondary">
+  <div>
+    <h1 class="text-2xl text-coinly-primary font-semibold">{{ title }}</h1>
+    <p class="text-coinly-disabled">{{ subtitle }}</p>
+  </div>
+  <div class="flex items-center space-x-4">
+    <p-button
+      label="New Transaction"
+      icon="pi pi-plus"
+      size="small"
+      [raised]="true"
+      (onClick)="onAddNewTransaction()" />
+    <p-button
+      icon="pi pi-bell"
+      variant="text"
+      [rounded]="true" />
+    <p-button
+      icon="pi pi-user"
+      variant="text"
+      [rounded]="true" />
+  </div>
+</header>
+
+<app-new-transaction-form
+  [showDialog]="showNewTransactionDialog"
+  (cancelAction)="onAddNewTransactionDialogClose()">
+</app-new-transaction-form>

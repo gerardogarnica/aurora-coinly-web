@@ -1,15 +1,44 @@
-<aside class="fixed top-0 left-0 z-40 w-64 h-screen bg-coinly-secondary border-r border-coinly-highlight pt-24 overflow-y-auto transition-transform -translate-x-full lg:translate-x-0" aria-label="Sidebar">
-    <ul class="space-y-2 font-quicksand">
-        @for (menuItem of sidebarMenu; track menuItem.label) {
+<aside
+    class="w-64 h-screen bg-coinly-secondary flex flex-col justify-between px-4 overflow-y-auto font-rubik text-coinly-light"
+    aria-label="Sidebar">
+    <!-- Navigation -->
+    <nav>
+        <div class="py-6">
+            <img src="coinly_logo.svg" alt="Aurora Coinly">
+        </div>
+
+        <ul class="space-y-2">
+            @for (menuItem of sidebarMenu; track menuItem.label) {
             <li>
-                <a
-                  [routerLink]="menuItem.routerLink"
-                  routerLinkActive="bg-coinly-primary font-bold"
-                  class="flex items-center py-3 px-4 text-coinly-light hover:bg-coinly-primary transition-colors">
-                  <i class="{{ menuItem.icon }} mr-3"></i>
-                  <span>{{ menuItem.label }}</span>
+                <a [routerLink]="menuItem.routerLink"
+                    routerLinkActive="bg-coinly-primary font-bold"
+                    class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
+                    <i class="{{ menuItem.icon }} mr-3"></i>
+                    <span>{{ menuItem.label }}</span>
                 </a>
             </li>
-        }
-    </ul>
+            }
+        </ul>
+    </nav>
+
+    <div class="space-y-2 py-6">
+        <!-- Settings -->
+        <div>
+            <a [routerLink]="['/dashboard']"
+                routerLinkActive="bg-coinly-primary font-bold"
+                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
+                <i class="pi pi-fw pi-cog mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- Logout -->
+        <div>
+            <a href="#"
+                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
+                <i class="pi pi-fw pi-sign-out mr-3"></i>
+                <span>Log out</span>
+            </a>
+        </div>
+    </div>
 </aside>

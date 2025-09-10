@@ -32,7 +32,7 @@ const MyPreset = definePreset(Aura, {
         colorScheme: {
             light: {
                 surface: {
-                    0: '#f5f5f5',
+                    0: '#ececec',
                     50: 'var(--color-coinly-highlight)',
                     100: 'var(--color-coinly-highlight)',
                     200: '{zinc.200}',

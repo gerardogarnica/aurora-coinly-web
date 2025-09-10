@@ -4,10 +4,8 @@
 @plugin "tailwindcss-primeui";
 
 body {
-    font-family: "DM Sans", 'Quicksand', sans-serif;
     scrollbar-width: thin;
-    font-size: 14px;
-    background-color: #f5f5f5;
+    scrollbar-color: var(--color-coinly-primary) var(--color-coinly-light);
 }
 
 @theme {
@@ -16,7 +14,7 @@ body {
     --color-coinly-secondary: oklch(0.63 0.12 229.05);
     --color-coinly-light: oklch(0.92 0.003 48.717);
     --color-coinly-highlight: oklch(0.95 0.03 237.63);
-    --color-coinly-disabled: oklch(0.71 0.02 261.3);
+    --color-coinly-disabled: oklch(0.45 0.03 256.8);
     --color-coinly-danger-light: oklch(0.81 0.11 19.78);
     --color-coinly-danger: oklch(0.58 0.24 28.48);
     --color-coinly-danger-dark: oklch(0.44 0.18 26.79);
@@ -34,6 +32,8 @@ body {
     --color-coinly-edit-dark: oklch(0.5 0.11 239.04);
 
     --font-quicksand: 'Quicksand', sans-serif;
+    --font-rubik: "Rubik", "DM Sans", sans-serif;
+    --font-dmsans: "DM Sans", sans-serif;
 }
 
 :root {
@@ -50,4 +50,12 @@ body {
 
     /* Color Picker */
     --p-colorpicker-preview-width: 100%!important;
+
+    /* Date Picker */
+    --p-datepicker-date-padding: 0!important;
+}
+
+::selection {
+  background-color: var(--color-coinly-primary);
+  color: #ffffff; /* Example: white text */
 }
