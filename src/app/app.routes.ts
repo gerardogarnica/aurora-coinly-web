@@ -11,27 +11,51 @@ export const routes: Routes = [
         children: [
             {
                 path: 'dashboard',
-                loadComponent: () => import('@features/dashboard/pages/dashboard.component')                
+                loadComponent: () => import('@features/dashboard/pages/dashboard.component'),
+                data: {
+                    title: 'Dashboard',
+                    subtitle: 'Here\'s an overview of all of your balances.'
+                }
             },
             {
                 path: 'categories',
-                loadComponent: () => import('@features/categories/pages/categories.component')                
+                loadComponent: () => import('@features/categories/pages/categories.component'),
+                data: {
+                    title: 'Categories',
+                    subtitle: 'Manage your categories to organize your transactions and keep your finances on track.'
+                }
             },
             {
                 path: 'methods',
-                loadComponent: () => import('@features/methods/pages/methods.component')                
+                loadComponent: () => import('@features/methods/pages/methods.component'),
+                data: {
+                    title: 'Methods',
+                    subtitle: 'Manage your payment methods for paying your expenses.'
+                }
             },
             {
                 path: 'reports',
-                loadComponent: () => import('@features/reports/pages/reports.component')                
+                loadComponent: () => import('@features/reports/pages/reports.component'),
+                data: {
+                    title: 'Reports',
+                    subtitle: 'View your financial reports.'
+                }
             },
             {
                 path: 'transactions',
-                loadComponent: () => import('@features/transactions/pages/transactions.component')                
+                loadComponent: () => import('@features/transactions/pages/transactions.component'),
+                data: {
+                    title: 'Transactions',
+                    subtitle: 'View your transaction history.'
+                }
             },
             {
                 path: 'wallets',
-                loadComponent: () => import('@features/wallets/pages/wallets.component')                
+                loadComponent: () => import('@features/wallets/pages/wallets.component'),
+                data: {
+                    title: 'Wallets',
+                    subtitle: 'Manage your wallets for your personal accounts.'
+                }
             },
             {
                 path: '',

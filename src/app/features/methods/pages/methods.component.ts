@@ -5,7 +5,6 @@ import { Method } from '@features/methods/models/method.model';
 import { MethodService } from '@features/methods/services/methods.service';
 import { WalletType } from '@features/wallets/models/wallet.types';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
-import { PageTitleComponent } from '@shared/components/page-title.component';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -22,7 +21,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-methods',
   standalone: true,
-  imports: [MethodFormComponent, PageHeaderComponent, PageTitleComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [MethodFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './methods.component.html'
 })

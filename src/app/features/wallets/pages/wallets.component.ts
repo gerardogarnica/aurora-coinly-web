@@ -8,7 +8,6 @@ import { Wallet } from '@features/wallets/models/wallet.model';
 import { WalletType } from '@features/wallets/models/wallet.types';
 import { WalletService } from '@features/wallets/services/wallet.service';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
-import { PageTitleComponent } from '@shared/components/page-title.component';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -25,7 +24,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, PageTitleComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './wallets.component.html'
 })

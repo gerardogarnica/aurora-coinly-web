@@ -7,7 +7,6 @@ import { SummaryCardComponent } from '@features/dashboard/components/summary-car
 import { UpcomingPaymentsComponent } from '@features/dashboard/components/upcoming-payments/upcoming-payments.component';
 import { DashboardSummary } from '@features/dashboard/models/dashboard.model';
 import { DashboardService } from '@features/dashboard/services/dashboard.service';
-import { PageTitleComponent } from '@shared/components/page-title.component';
 
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -15,7 +14,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RecentTransactionsComponent, CategoryExpensesComponent, MonthlyTrendsComponent, SummaryCardComponent, UpcomingPaymentsComponent, PageTitleComponent, ToastModule],
+  imports: [RecentTransactionsComponent, CategoryExpensesComponent, MonthlyTrendsComponent, SummaryCardComponent, UpcomingPaymentsComponent, ToastModule],
   providers: [MessageService],
   templateUrl: './dashboard.component.html'
 })
