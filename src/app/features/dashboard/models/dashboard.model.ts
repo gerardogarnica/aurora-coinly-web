@@ -1,4 +1,5 @@
 import { Transaction } from "@features/transactions/models/transaction.model";
+import { Wallet } from "@features/wallets/models/wallet.model";
 
 export interface DashboardSummary {
     currency: string;
@@ -8,8 +9,10 @@ export interface DashboardSummary {
     totalSavings: SummaryCard;
     monthlyTrends: MonthlyTrend[];
     expensesByCategory: CategoryExpense[];
+    expensesByGroup: CategoryGroupExpense[];
     recentTransactions: Transaction[];
     upcomingPayments: Transaction[];
+    wallets: Wallet[];
 }
 
 export interface SummaryCard {
@@ -27,5 +30,10 @@ export interface MonthlyTrend {
 
 export interface CategoryExpense {
     category: string;
+    amount: number;
+}
+
+export interface CategoryGroupExpense {
+    categoryGroup: string;
     amount: number;
 }

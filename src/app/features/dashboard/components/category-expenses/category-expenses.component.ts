@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CategoryExpense } from '@features/dashboard/models/dashboard.model';
+import { CategoryExpense, CategoryGroupExpense } from '@features/dashboard/models/dashboard.model';
 
 import { ChartModule } from 'primeng/chart';
 
@@ -11,17 +11,19 @@ import { ChartModule } from 'primeng/chart';
 })
 export class CategoryExpensesComponent {
   expensesByCategory: CategoryExpense[] = [];
+  expensesByGroup: CategoryGroupExpense[] = [];
   chartData: any;
   chartOptions: any;
 
-  setChartData(expensesByCategory: CategoryExpense[]) {
+  setChartData(expensesByCategory: CategoryExpense[], expensesByGroup: CategoryGroupExpense[]) {
     this.expensesByCategory = expensesByCategory;
+    this.expensesByGroup = expensesByGroup;
 
     this.chartData = {
-      labels: expensesByCategory.map(e => e.category),
+      labels: this.expensesByCategory.map(e => e.category),
       datasets: [
         {
-          data: expensesByCategory.map(e => e.amount),
+          data: this.expensesByCategory.map(e => e.amount),
           backgroundColor: [
             'rgba(59,130,246,0.8)', // Coinly info
             'rgba(34,197,94,0.8)', // Coinly success
@@ -60,8 +62,8 @@ export class CategoryExpensesComponent {
           labels: {
             boxWidth: 10,
             padding: 8,
-            font: { size: 11 },
-            usePointStyle: true,
+            font: { family: '"Rubik", "DM Sans", sans-serif', size: 12 },
+            usePointStyle: true
           }
         }
       }

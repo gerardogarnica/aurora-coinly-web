@@ -1,65 +1,101 @@
-<!-- Summary cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6 mb-8">
-  <app-summary-card
-    [backgroundColor]="'bg-coinly-primary'"
-    title="Balance"
-    icon="pi pi-wallet"
-    [value]="dashboardData()?.totalBalance ?? 0"
-    [currency]="dashboardData()?.currency ?? ''"
-    [showPercentageChange]="false"
-    [footerText]="'From all wallets'"
-  ></app-summary-card>
+<div class="grid grid-cols-12 gap-6">
+  <!-- Summary Cards -->
+  <div class="col-span-2 space-y-4">
+    <div>
+      <app-summary-card
+        [backgroundColor]="'bg-coinly-primary'"
+        title="Balance"
+        icon="pi pi-wallet"
+        [value]="dashboardData()?.totalBalance ?? 0"
+        [currency]="dashboardData()?.currency ?? ''"
+        [showPercentageChange]="false"
+        [footerText]="'From all wallets'"
+      ></app-summary-card>
+    </div>
 
-  <app-summary-card
-    [backgroundColor]="'bg-coinly-success-dark'"
-    title="Incomes"
-    icon="pi pi-file-import"
-    [value]="dashboardData()?.totalIncome?.amount ?? 0"
-    [currency]="dashboardData()?.currency ?? ''"
-    [percentageChange]="dashboardData()?.totalIncome?.percentageChange ?? 0"
-  ></app-summary-card>
+    <div>
+      <app-summary-card
+        [backgroundColor]="'bg-coinly-success-dark'"
+        title="Incomes"
+        icon="pi pi-file-import"
+        [value]="dashboardData()?.totalIncome?.amount ?? 0"
+        [currency]="dashboardData()?.currency ?? ''"
+        [percentageChange]="dashboardData()?.totalIncome?.percentageChange ?? 0"
+      ></app-summary-card>
+    </div>
 
-  <app-summary-card
-    [backgroundColor]="'bg-coinly-danger-dark'"
-    title="Expenses"
-    icon="pi pi-file-export"
-    [value]="dashboardData()?.totalExpenses?.amount ?? 0"
-    [currency]="dashboardData()?.currency ?? ''"
-    [percentageChange]="dashboardData()?.totalExpenses?.percentageChange ?? 0"
-  ></app-summary-card>
+    <div>
+      <app-summary-card
+        [backgroundColor]="'bg-coinly-danger-dark'"
+        title="Expenses"
+        icon="pi pi-file-export"
+        [value]="dashboardData()?.totalExpenses?.amount ?? 0"
+        [currency]="dashboardData()?.currency ?? ''"
+        [percentageChange]="dashboardData()?.totalExpenses?.percentageChange ?? 0"
+      ></app-summary-card>
+    </div>
 
-  <app-summary-card
-    [backgroundColor]="'bg-coinly-secondary'"
-    title="Savings"
-    icon="pi pi-building-columns"
-    [value]="dashboardData()?.totalSavings?.amount ?? 0"
-    [currency]="dashboardData()?.currency ?? ''"
-    [percentageChange]="dashboardData()?.totalSavings?.percentageChange ?? 0"
-  ></app-summary-card>
-</div>
-
-<!-- Charts row -->
-<div class="grid grid-cols-1 md:grid-cols-7 gap-6 mb-8">
-  <div class="bg-white col-span-4 rounded-xl shadow p-6">
-    <app-monthly-trends
-    ></app-monthly-trends>
+    <div>
+      <app-summary-card
+        [backgroundColor]="'bg-coinly-secondary'"
+        title="Savings"
+        icon="pi pi-building-columns"
+        [value]="dashboardData()?.totalSavings?.amount ?? 0"
+        [currency]="dashboardData()?.currency ?? ''"
+        [percentageChange]="dashboardData()?.totalSavings?.percentageChange ?? 0"
+      ></app-summary-card>
+    </div>
   </div>
 
-  <div class="bg-white col-span-3 rounded-xl shadow p-6">
-    <app-category-expenses
-    ></app-category-expenses>
+  <!-- Monthly trends chart -->
+  <div class="col-span-5 bg-white p-4 rounded-xl shadow-lg">
+    <app-monthly-trends />
   </div>
-</div>
 
-<!-- Recent transactions and upcoming payments -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-  <app-recent-transactions
-    [transactions]="dashboardData()?.recentTransactions ?? []"
-  ></app-recent-transactions>
+  <!-- Expenses by category chart -->
+  <div class="col-span-5 bg-white p-4 rounded-xl shadow-lg">
+    <app-category-expenses />
+  </div>
 
-  <app-upcoming-payments
-    [transactions]="dashboardData()?.upcomingPayments ?? []"
-  ></app-upcoming-payments>
+  <!-- Recent transactions -->
+  <div class="col-span-4 bg-white p-4 rounded-xl shadow-lg">
+    <app-recent-transactions
+      [transactions]="dashboardData()?.recentTransactions ?? []"
+    ></app-recent-transactions>
+  </div>
+
+  <!-- Wallets chart -->
+  <div class="col-span-4 bg-white p-4 rounded-xl shadow-lg">
+    <app-wallets-summary />
+  </div>
+
+  <!-- Upcoming payments -->
+  <div class="col-span-4 bg-white p-4 rounded-xl shadow-lg">
+    <app-upcoming-payments
+      [transactions]="dashboardData()?.upcomingPayments ?? []"
+    ></app-upcoming-payments>
+  </div>
+
+  <!-- <div class="col-span-5 bg-white rounded-lg shadow-sm p-6">
+      <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">Account Balance</h2>
+          <div class="flex space-x-1">
+              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">Day</button>
+              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">Week</button>
+              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">Month</button>
+              <button class="px-3 py-1 text-sm bg-teal-800 text-white rounded">Year</button>
+          </div>
+      </div>
+
+      <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400">Chart Area - Account Balance Over Time</span>
+      </div>
+
+      <div class="mt-4 text-center">
+          <span class="text-sm text-gray-600">28 Jun</span>
+          <div class="text-2xl font-bold text-gray-900">$1,892</div>
+      </div>
+  </div> -->
 </div>
 
 <p-toast position="center" />

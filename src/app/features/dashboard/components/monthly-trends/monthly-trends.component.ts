@@ -25,7 +25,7 @@ export class MonthlyTrendsComponent {
           data: monthlyTrends.map(t => t.income),
           backgroundColor: '#22c55e',
           borderColor: '#22c55e',
-          borderWidth: 1,
+          borderWidth: 5,
           tension: 0.4
         },
         {
@@ -33,7 +33,7 @@ export class MonthlyTrendsComponent {
           data: monthlyTrends.map(t => t.expenses),
           backgroundColor: '#ef4444',
           borderColor: '#ef4444',
-          borderWidth: 1,
+          borderWidth: 5,
           tension: 0.4
         }
       ]
@@ -43,17 +43,24 @@ export class MonthlyTrendsComponent {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
       responsive: true,
+      radius: 5,
       plugins: {
-        legend: { display: true },
-        title: { display: false }
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 20,
+            padding: 8,
+            font: { family: '"Rubik", "DM Sans", sans-serif', size: 12 }
+          }
+        }
       }
     };
   }
 
   getChartLabels(): string[] {
     return this.monthlyTrends.map(trend => {
-      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      const labels = monthNames[trend.month - 1] + ' ' + trend.year;
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const labels = monthNames[trend.month - 1] + ' ' + trend.year.toString().slice(-2);
       return labels;
     }) || [];
   }

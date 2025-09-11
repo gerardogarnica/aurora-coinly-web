@@ -5,6 +5,7 @@ import { MonthlyTrendsComponent } from '@features/dashboard/components/monthly-t
 import { RecentTransactionsComponent } from '@features/dashboard/components/recent-transactions/recent-transactions.component';
 import { SummaryCardComponent } from '@features/dashboard/components/summary-card/summary-card.component';
 import { UpcomingPaymentsComponent } from '@features/dashboard/components/upcoming-payments/upcoming-payments.component';
+import { WalletsSummaryComponent } from '@features/dashboard/components/wallets-summary/wallets-summary.component';
 import { DashboardSummary } from '@features/dashboard/models/dashboard.model';
 import { DashboardService } from '@features/dashboard/services/dashboard.service';
 
@@ -14,7 +15,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RecentTransactionsComponent, CategoryExpensesComponent, MonthlyTrendsComponent, SummaryCardComponent, UpcomingPaymentsComponent, ToastModule],
+  imports: [RecentTransactionsComponent, CategoryExpensesComponent, MonthlyTrendsComponent, SummaryCardComponent, UpcomingPaymentsComponent, WalletsSummaryComponent, ToastModule],
   providers: [MessageService],
   templateUrl: './dashboard.component.html'
 })
@@ -26,6 +27,7 @@ export default class DashboardComponent {
 
   @ViewChild(CategoryExpensesComponent) categoryExpensesComponent?: CategoryExpensesComponent;
   @ViewChild(MonthlyTrendsComponent) monthlyTrendsComponent?: MonthlyTrendsComponent;
+  @ViewChild(WalletsSummaryComponent) walletsSummaryComponent?: WalletsSummaryComponent;
 
   ngOnInit() {
     this.dashboardService
@@ -35,11 +37,15 @@ export default class DashboardComponent {
           this.dashboardData.set(data);
 
           setTimeout(() => {
-            this.categoryExpensesComponent?.setChartData(data.expensesByCategory);
+            this.categoryExpensesComponent?.setChartData(data.expensesByCategory, data.expensesByGroup);
           });
 
           setTimeout(() => {
             this.monthlyTrendsComponent?.setChartData(data.monthlyTrends);
+          });
+
+          setTimeout(() => {
+            this.walletsSummaryComponent?.setChartData(data.wallets);
           });
         },
         error: (error: string) => {
