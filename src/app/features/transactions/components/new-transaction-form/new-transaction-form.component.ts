@@ -305,7 +305,7 @@ export class NewTransactionFormComponent {
     this.setWalletMethodChanged(this.wallets.find(wallet => wallet.walletId === walletId)!);
   }
 
-  onSave() {
+  onSave(closeDialog: boolean) {
     if (!this.transactionForm.valid) {
       return;
     }
@@ -324,7 +324,7 @@ export class NewTransactionFormComponent {
         transactionDate: formValue.transactionDate.toISOString().slice(0, 10)
       };
 
-      this.createIncomeTransaction(transaction);
+      this.createIncomeTransaction(transaction, closeDialog);
     } else {
       const transaction: CreateExpenseTransaction = {
         ...formValue,
@@ -332,11 +332,11 @@ export class NewTransactionFormComponent {
         transactionDate: formValue.transactionDate.toISOString().slice(0, 10)
       };
 
-      this.createExpenseTransaction(transaction);
+      this.createExpenseTransaction(transaction, closeDialog);
     }
   }
 
-  createIncomeTransaction(transaction: CreateIncomeTransaction) {
+  createIncomeTransaction(transaction: CreateIncomeTransaction, closeDialog: boolean) {
     this.transactionService
       .createIncome(transaction)
       .subscribe({
@@ -350,7 +350,10 @@ export class NewTransactionFormComponent {
             life: 2000
           });
 
-          this.hideDialogForm();
+          closeDialog ? this.hideDialogForm() : this.resetForm();
+          if (!closeDialog) {
+            this.setTransactionType(TransactionType.Expense);
+          }
         },
         error: (error: string) => {
           this.processStatus = 'error';
@@ -365,7 +368,7 @@ export class NewTransactionFormComponent {
       });
   }
 
-  createExpenseTransaction(transaction: CreateExpenseTransaction) {
+  createExpenseTransaction(transaction: CreateExpenseTransaction, closeDialog: boolean) {
     this.transactionService
       .createExpense(transaction)
       .subscribe({
@@ -379,7 +382,10 @@ export class NewTransactionFormComponent {
             life: 2000
           });
 
-          this.hideDialogForm();
+          closeDialog ? this.hideDialogForm() : this.resetForm();
+          if (!closeDialog) {
+            this.setTransactionType(TransactionType.Expense);
+          }
         },
         error: (error: string) => {
           this.processStatus = 'error';

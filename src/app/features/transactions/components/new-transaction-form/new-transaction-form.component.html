@@ -8,7 +8,7 @@
   [dismissableMask]="true"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
-  <form [formGroup]="transactionForm" class="space-y-2" (ngSubmit)="onSave()">
+  <form [formGroup]="transactionForm" class="space-y-2" (ngSubmit)="onSave(true)">
     <div class="grid grid-cols-2">
       <p-button
         label="Expense"
@@ -166,12 +166,19 @@
         size="small"
         (click)="showDialog = false" />
       <p-button
-        label="Save"
+        label="Save and close"
         icon="pi pi-save"
         severity="success"
         size="small"
         [disabled]="!transactionForm.valid || this.processStatus === 'loading'"
-        (click)="onSave()" />
+        (click)="onSave(true)" />
+      <p-button
+        label="Save and add another"
+        icon="pi pi-save"
+        severity="secondary"
+        size="small"
+        [disabled]="!transactionForm.valid || this.processStatus === 'loading'"
+        (click)="onSave(false)" />
     </div>
   </form>
 </p-dialog>
