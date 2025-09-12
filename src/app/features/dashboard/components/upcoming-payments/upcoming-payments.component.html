@@ -5,8 +5,8 @@
 
 <div class="divide-y divide-coinly-light">
     @for (transaction of transactions; track transaction.transactionId) {
-    <div class="grid grid-cols-4 py-3 gap-2">
-        <div class="col-span-2 flex items-start gap-3">
+    <div class="grid grid-cols-4 py-3 items-center gap-2">
+        <div class="col-span-2 flex items-center gap-3">
             <div>
                 <p-avatar
                     [icon]="getTransactionIcon(transaction)"

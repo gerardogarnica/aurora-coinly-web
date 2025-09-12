@@ -5,8 +5,8 @@
 
 <div class="divide-y divide-coinly-light">
     @for (transaction of transactions; track transaction.transactionId) {
-    <div class="grid grid-cols-4 py-3 gap-2">
-        <div class="col-span-2 flex items-start gap-3">
+    <div class="grid grid-cols-4 py-3 items-center gap-2">
+        <div class="col-span-2 flex items-center gap-3">
             <div>
                 <p-avatar
                     [icon]="getTransactionIcon(transaction)"
@@ -14,15 +14,17 @@
                     [style]="{'background-color': getTransactionIconBackgroundColor(transaction), 'color': getTransactionIconTextColor(transaction)}" />
             </div>
             <div class="flex flex-col">
-                <span class="font-bold">{{ transaction.description }}</span>
+                <span class="font-bold text-ellipsis">{{ transaction.description }}</span>
                 <span class="text-xs text-gray-500">{{ transaction.category.name }}</span>
             </div>
         </div>
         <div class="flex flex-col items-center text-center">
             <span class="font-bold">{{ transaction.transactionDate | date: 'dd/MM/yyyy' }}</span>
-            <span class="text-xs text-gray-500">
-                {{ transaction.paymentMethod ? transaction.paymentMethod.name : '---' }}
-            </span>
+            <p-tag
+                [value]="transaction.status"
+                [severity]="getTransactionStatusSeverity(transaction.status)"
+                [rounded]="true"
+                [style]="{'font-size': '0.7rem'}" />
         </div>
         <span class="text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
             {{ transaction.amount | currency: transaction.currency }}
