@@ -13,7 +13,7 @@ body {
     --color-coinly-primary: oklch(0.47 0.1 242.95);
     --color-coinly-secondary: oklch(0.63 0.12 229.05);
     --color-coinly-light: oklch(0.92 0.003 48.717);
-    --color-coinly-highlight: oklch(0.95 0.03 237.63);
+    --color-coinly-highlight: oklch(0.9 0.06 237.53);
     --color-coinly-disabled: oklch(0.45 0.03 256.8);
     --color-coinly-danger-light: oklch(0.81 0.11 19.78);
     --color-coinly-danger: oklch(0.58 0.24 28.48);
@@ -39,14 +39,18 @@ body {
 :root {
     --p-highlight-background: var(--color-coinly-secondary)!important;
     --p-highlight-color: var(--color-coinly-highlight)!important;
-    --p-content-hover-background: var(--color-coinly-light)!important;
+    --p-content-hover-background: var(--color-coinly-highlight)!important;
+
+    /* Form fields focus */
+    --p-form-field-focus-ring-width: 10px!important;
+    --p-form-field-focus-ring-style: solid!important;
 
     /* Tables */
     --p-datatable-header-cell-background: var(--color-coinly-secondary)!important; 
     --p-datatable-header-cell-color: var(--color-coinly-light)!important;
     --p-datatable-header-cell-selected-background: var(--color-coinly-secondary)!important;
     --p-datatable-header-cell-selected-color: var(--color-coinly-light)!important;
-    --p-datatable-header-cell-hover-background: var(--color-coinly-light)!important;
+    --p-datatable-header-cell-hover-background: var(--color-coinly-highlight)!important;
 
     /* Color Picker */
     --p-colorpicker-preview-width: 100%!important;

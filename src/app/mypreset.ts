@@ -32,7 +32,7 @@ const MyPreset = definePreset(Aura, {
         colorScheme: {
             light: {
                 surface: {
-                    0: '#ececec',
+                    0: '#ffffff',
                     50: 'var(--color-coinly-highlight)',
                     100: 'var(--color-coinly-highlight)',
                     200: '{zinc.200}',
@@ -46,14 +46,6 @@ const MyPreset = definePreset(Aura, {
                     950: '{zinc.950}'
                 }
             }
-        },
-        focusRing: {
-            width: '2px',
-            style: 'solid',
-            radius: '8px',
-            color: '{secondary.950}',
-            shadow: '0 0 0 2px {secondary.950}',
-            offset: '1px'
         }
     }
 });
