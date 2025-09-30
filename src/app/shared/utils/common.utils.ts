@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { CategoryGroup } from '@features/categories/models/category.model';
+import { WalletType } from '@features/wallets/models/wallet.types';
 
 export class CommonUtils {
 
@@ -30,6 +31,24 @@ export class CommonUtils {
       'symbol',
       digits
     ) || '';
+  }
+
+  /**
+   * Obtiene el ícono asociado a un tipo de billetera.
+   * @param type El tipo de billetera.
+   * @returns El nombre del ícono correspondiente.
+   */
+  static getWalletIcon(type: WalletType): string {
+    switch (type) {
+      case WalletType.Bank:
+        return 'pi pi-building-columns';
+      case WalletType.Cash:
+        return 'pi pi-money-bill';
+      case WalletType.EMoney:
+        return 'pi pi-credit-card';
+      default:
+        return 'pi pi-wallet';
+    }
   }
 
   /**
