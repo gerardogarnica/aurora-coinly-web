@@ -1,1 +1,87 @@
-<p>transactions works!</p>
+<app-page-header>
+  <form [formGroup]="transactionSearchForm" class="space-y-2" (ngSubmit)="onSearch()">
+    <div class="w-full flex items-center gap-2">
+      <p-datepicker
+        id="date"
+        formControlName="date"
+        size="small"
+        view="month"
+        dateFormat="mm/yy"
+        [readonlyInput]="true" />
+    </div>
+  </form>
+
+  <div class="w-full sm:w-auto justify-end">
+    <p-button
+      [label]="selectedTransactions().length > 0 ? 'Pay (' + selectedTransactions().length + ') selected pendings' : 'Pay pendings'"
+      icon="pi pi-dollar"
+      [title]="selectedTransactions().length > 0 ? 'Pay (' + selectedTransactions().length + ') selected pendings' : 'Pay pendings'"
+      size="small"
+      [raised]="true"
+      (onClick)="onPayPendings()"
+      [disabled]="selectedTransactions().length === 0"
+    />
+  </div>
+</app-page-header>
+
+<div class="space-y-2">
+  @for (group of groupedTransactions(); track group.date) {
+    <div class="space-y-2">
+      <h2 class="font-bold text-lg text-coinly-primary mb-2">{{ group.date | date: 'fullDate' }}</h2>
+      @for (transaction of group.transactions; track transaction.transactionId) {
+        <div class="bg-white grid grid-cols-6 px-5 py-3 items-center rounded-2xl">
+          <div class="col-span-2 flex items-center gap-3">
+            <p-checkbox
+              (onChange)="onTransactionSelectionChange($event.checked, transaction)"
+              [(ngModel)]="transaction.transactionId"
+              [binary]="true"
+              [disabled]="transaction.status === TransactionStatus.Paid" />
+            <div>
+              <p-avatar
+                [icon]="getTransactionIcon(transaction)"
+                shape="circle"
+                [style]="{'background-color': `${transaction.category.color}66`, 'color': `${transaction.category.color}`}" />
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-ellipsis">{{ transaction.description }}</span>
+              <span class="text-xs text-coinly-disabled">{{ transaction.category.name }}</span>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-center gap-3">
+            <div>
+              <p-avatar
+                [icon]="getTransactionWalletIcon(transaction.wallet.type)"
+                shape="circle"
+                [style]="{'background-color': `${transaction.wallet.color}66`, 'color': `${transaction.wallet.color}`}" />
+            </div>
+            <span class="font-bold">
+              @if (isExpenseTransaction(transaction)) {
+                {{ transaction.paymentMethod.name }}
+              } @else {
+                {{ transaction.wallet.name }}
+              }
+            </span>
+          </div>
+          <div class="flex flex-col items-center text-center">
+            <p-tag
+              [value]="transaction.status"
+              [severity]="getTransactionStatusSeverity(transaction.status)"
+              [rounded]="true" />
+          </div>
+          <span class="text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
+            {{ transaction.amount | currency: transaction.currency }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
+
+<app-pay-transactions-form
+  [showDialog]="showPayTransactionDialog"
+  [selectedTransactions]="selectedTransactions()"
+  (cancelAction)="onPayPendingsDialogClose()">
+</app-pay-transactions-form>
