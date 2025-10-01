@@ -5,6 +5,7 @@ import { Method } from '@features/methods/models/method.model';
 import { MethodService } from '@features/methods/services/methods.service';
 import { WalletType } from '@features/wallets/models/wallet.types';
 import { PageHeaderComponent } from '@shared/components/page-header.component';
+import { CommonUtils } from '@shared/utils/common.utils';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -68,16 +69,7 @@ export default class MethodsComponent {
   }
 
   getTypeIcon(type: WalletType): string {
-    switch (type) {
-      case WalletType.Bank:
-        return 'pi pi-building-columns';
-      case WalletType.Cash:
-        return 'pi pi-money-bill';
-      case WalletType.EMoney:
-        return 'pi pi-credit-card';
-      default:
-        return 'pi pi-wallet';
-    }
+    return CommonUtils.getWalletIcon(type);
   }
 
   getTagIcon(isSuccess: boolean): string {
