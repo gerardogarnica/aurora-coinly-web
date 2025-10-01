@@ -8,3 +8,8 @@ export enum TransactionStatus {
   Paid = 'Paid',
   Removed = 'Removed'
 }
+
+export enum TransactionDateFilterType {
+  Transaction = 0,
+  Payment = 1
+}

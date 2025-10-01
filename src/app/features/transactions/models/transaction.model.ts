@@ -43,3 +43,9 @@ export interface CreateIncomeTransaction {
     notes?: string;
     walletId: string;
 }
+
+export interface PayPendingTransactions {
+    transactionIds: string[];
+    walletId: string;
+    paymentDate: Date;
+}
