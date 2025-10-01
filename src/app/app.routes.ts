@@ -13,8 +13,8 @@ export const routes: Routes = [
                 path: 'dashboard',
                 loadComponent: () => import('@features/dashboard/pages/dashboard.component'),
                 data: {
-                    title: 'Dashboard',
-                    subtitle: 'Here\'s an overview of all of your balances.'
+                    title: 'Overview',
+                    subtitle: 'Here\'s an dashboard of all of your incomes, expenses and balances.'
                 }
             },
             {
@@ -55,6 +55,14 @@ export const routes: Routes = [
                 data: {
                     title: 'Wallets',
                     subtitle: 'Manage your wallets for your personal accounts.'
+                }
+            },
+            {
+                path: 'settings',
+                loadComponent: () => import('@features/settings/pages/settings.component'),
+                data: {
+                    title: 'Settings',
+                    subtitle: 'Manage your application settings.'
                 }
             },
             {

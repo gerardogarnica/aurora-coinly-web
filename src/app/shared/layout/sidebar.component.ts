@@ -12,7 +12,7 @@ import { MenuItem } from 'primeng/api';
 export class SidebarComponent{
     sidebarMenu: MenuItem[] = [
         {
-            label: 'Dashboard',
+            label: 'Overview',
             icon: 'pi pi-fw pi-chart-bar',
             routerLink: ['/dashboard']
         },
