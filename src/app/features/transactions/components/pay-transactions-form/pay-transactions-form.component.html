@@ -1,0 +1,91 @@
+<p-dialog
+  header="Pay Pending Transactions"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [closeOnEscape]="false"
+  [style]="{ width: '40vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  (onShow)="showDialogForm()"
+  (onHide)="hideDialogForm()">
+  <form [formGroup]="payTransactionForm" class="space-y-2" (ngSubmit)="onPay()">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="walletId">Wallet</label>
+        <p-select
+          id="walletId"
+          formControlName="walletId"
+          [options]="wallets"
+          [checkmark]="true"
+          optionLabel="name"
+          optionValue="walletId"
+          placeholder="Select a wallet"
+          (onChange)="onWalletChange($event)"
+          size="small" />
+        @if (payTransactionForm.get('walletId')?.hasError('required') && payTransactionForm.get('walletId')?.touched) {
+          <p class="text-red-500">Wallet is required</p>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <label for="paymentDate">Payment Date</label>
+        <p-datepicker
+          id="paymentDate"
+          formControlName="paymentDate"
+          size="small"
+          [minDate]="paymentDateMinValue"
+          [maxDate]="paymentDateMaxValue"
+          [readonlyInput]="true"
+          [showButtonBar]="true" />
+        @if (payTransactionForm.get('paymentDate')?.hasError('required') && payTransactionForm.get('paymentDate')?.touched) {
+          <p class="text-red-500">Payment Date is required</p>
+        }
+      </div>
+    </div>
+
+    <div class="mt-6 border rounded-lg overflow-hidden shadow-sm">
+      <div class="divide-y divide-gray-200">
+        <!-- Encabezado del Grid -->
+        <div class="grid grid-cols-12 gap-4 bg-gray-50 p-3 font-bold text-sm text-gray-600">
+          <div class="col-span-2">Date</div>
+          <div class="col-span-4">Description</div>
+          <div class="col-span-2">Category</div>
+          <div class="col-span-2">Payment Method</div>
+          <div class="col-span-2 text-right">Amount</div>
+        </div>
+        <!-- Filas de Transacciones -->
+        @for (transaction of selectedTransactions; track transaction.transactionId) {
+          <div class="grid grid-cols-12 gap-4 p-3 items-center text-sm hover:bg-gray-50">
+            <div class="col-span-2">{{ transaction.transactionDate | date: 'shortDate' }}</div>
+            <div class="col-span-4 font-semibold">{{ transaction.description }}</div>
+            <div class="col-span-2">{{ transaction.category.name }}</div>
+            <div class="col-span-2">{{ transaction.paymentMethod.name || 'N/A' }}</div>
+            <div class="col-span-2 text-right font-bold text-red-500">
+              {{ transaction.amount | currency: transaction.currency }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-end pt-8 gap-2">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        severity="danger"
+        size="small"
+        (click)="showDialog = false" />
+      <p-button
+        label="Save and close"
+        icon="pi pi-save"
+        severity="success"
+        size="small"
+        [disabled]="!payTransactionForm.valid || this.processStatus === 'loading'"
+        (click)="onPay()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast position="center" />
