@@ -1,6 +1,6 @@
 <app-page-header>
   <form [formGroup]="transactionSearchForm" class="w-full">
-    <div class="grid grid-cols-6 gap-4">
+    <div class="grid grid-cols-8 gap-4">
       <div class="col-span-2 flex flex-col">
         <label for="rangeKey">Date Range</label>
         <div class="flex items-center gap-2">
@@ -32,11 +32,23 @@
         <label for="paymentMethod">Payment Method</label>
       </div>
 
-      <div class="flex flex-col">
+      <div class="col-span-2 flex flex-col">
         <label for="status">Status</label>
+        <div class="flex flex-wrap gap-4">
+          @for (status of statusOptions; track status) {
+            <div class="flex items-center gap-2">
+              <p-radiobutton
+                formControlName="selectedStatus"
+                name="selectedStatus"
+                [inputId]="status.key"
+                [value]="status.key" />
+              <label [for]="status.key"> {{ status.name }} </label>
+            </div>
+          }
+        </div>
       </div>
 
-      <div class="flex flex-col justify-end items-end">
+      <div class="col-span-2 flex flex-col justify-end items-end">
         <p-button
           [label]="selectedTransactions().length > 0 ? 'Pay (' + selectedTransactions().length + ') selected pendings' : 'Pay pendings'"
           icon="pi pi-dollar"
@@ -52,7 +64,7 @@
 </app-page-header>
 
 <div class="space-y-2">
-  @for (group of groupedTransactions(); track group.date) {
+  @for (group of filteredGroupedTransactions(); track group.date) {
     <div class="space-y-2">
       <h2 class="font-bold text-lg text-coinly-primary mb-2">{{ group.date | date: 'fullDate' }}</h2>
       @for (transaction of group.transactions; track transaction.transactionId) {

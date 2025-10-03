@@ -16,6 +16,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DatePicker } from 'primeng/datepicker';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -28,7 +29,7 @@ export interface GroupedTransaction {
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [PayTransactionsFormComponent, CommonModule, FormsModule, ReactiveFormsModule, PageHeaderComponent, AvatarModule, ButtonModule, CheckboxModule, ConfirmDialog, DatePicker, SelectModule, TagModule, ToastModule],
+  imports: [PayTransactionsFormComponent, CommonModule, FormsModule, ReactiveFormsModule, PageHeaderComponent, AvatarModule, ButtonModule, CheckboxModule, ConfirmDialog, DatePicker, RadioButtonModule, SelectModule, TagModule, ToastModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './transactions.component.html'
 })
@@ -40,6 +41,7 @@ export default class TransactionsComponent {
 
   errorMessage = signal<string | null>(null);
   groupedTransactions = signal<GroupedTransaction[]>([]);
+  filteredGroupedTransactions = signal<GroupedTransaction[]>([]);
   selectedTransactions = signal<Transaction[]>([]);
 
   dateRangeOptions: any[] = [
@@ -49,16 +51,26 @@ export default class TransactionsComponent {
     { label: 'Last 90 days', value: 'last90days' },
     { label: 'Custom', value: 'custom' }
   ];
+  statusOptions: any[] = [
+    { name: 'All', key: 'all' },
+    { name: 'Only paids', key: 'paid' },
+    { name: 'Only pendings', key: 'pending' }
+  ];
   showPayTransactionDialog = false;
 
   TransactionStatus = TransactionStatus;
 
   transactionSearchForm: FormGroup = this.formBuilder.group({
     rangeKey: ['thisMonth', Validators.required],
-    dateRange: [[{ value: [], disabled: true }], Validators.required]
+    dateRange: [[{ value: [], disabled: true }], Validators.required],
+    selectedStatus: ['all', Validators.required]
   });
 
   ngOnInit() {
+    this.transactionSearchForm.get('selectedStatus')!.valueChanges.subscribe(() => {
+      this.applyStatusFilter();
+    });
+
     const rangeKey = this.transactionSearchForm.get('rangeKey')!.value;
     const dateRangeControl = this.transactionSearchForm.get('dateRange');
 
@@ -145,18 +157,44 @@ export default class TransactionsComponent {
             groupedMap.get(dateKey)!.push(transaction);
           }
 
-          const result: GroupedTransaction[] = Array.from(groupedMap, ([date, transactions]) => ({
-            date,
-            transactions
-          }));
+          const result: GroupedTransaction[] = Array.from(groupedMap, ([date, transactions]) => ({ date, transactions }));
 
           this.groupedTransactions.set(result);
+          this.applyStatusFilter();
+
           this.errorMessage.set(null);
         },
         error: (error: string) => {
           this.errorMessage.set(error);
         }
       });
+  }
+
+  applyStatusFilter() {
+    const statusToFilter = this.transactionSearchForm.get('selectedStatus')?.value;
+    const originalGroups = this.groupedTransactions();
+
+    if (statusToFilter === 'all') {
+      this.filteredGroupedTransactions.set(originalGroups);
+      return;
+    }
+
+    const filteredResult: GroupedTransaction[] = [];
+
+    for (const group of originalGroups) {
+      const filteredTransactions = group.transactions.filter(
+        t => t.status.toLowerCase() === statusToFilter
+      );
+
+      if (filteredTransactions.length > 0) {
+        filteredResult.push({
+          date: group.date,
+          transactions: filteredTransactions
+        });
+      }
+    }
+
+    this.filteredGroupedTransactions.set(filteredResult);
   }
 
   getTransactionIcon(transaction: Transaction): string {
