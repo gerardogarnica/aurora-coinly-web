@@ -38,38 +38,104 @@ export default class TransactionsComponent {
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
 
+  errorMessage = signal<string | null>(null);
   groupedTransactions = signal<GroupedTransaction[]>([]);
   selectedTransactions = signal<Transaction[]>([]);
 
+  dateRangeOptions: any[] = [
+    { label: 'This month', value: 'thisMonth' },
+    { label: 'Past month', value: 'pastMonth' },
+    { label: 'Last 30 days', value: 'last30days' },
+    { label: 'Last 90 days', value: 'last90days' },
+    { label: 'Custom', value: 'custom' }
+  ];
   showPayTransactionDialog = false;
 
   TransactionStatus = TransactionStatus;
 
   transactionSearchForm: FormGroup = this.formBuilder.group({
-    date: [CommonUtils.currentDate(), [Validators.required]]
+    rangeKey: ['thisMonth', Validators.required],
+    dateRange: [[{ value: [], disabled: true }], Validators.required]
   });
 
   ngOnInit() {
+    const rangeKey = this.transactionSearchForm.get('rangeKey')!.value;
+    const dateRangeControl = this.transactionSearchForm.get('dateRange');
+
+    if (rangeKey === 'custom') {
+      dateRangeControl?.enable();
+    } else {
+      dateRangeControl?.disable();
+      this.setDateRange(rangeKey);
+    }
+  }
+
+  onDateRangeChange(event: any) {
+    const rangeKey = event.value;
+    const dateRangeControl = this.transactionSearchForm.get('dateRange');
+
+    if (rangeKey === 'custom') {
+      dateRangeControl?.enable();
+    } else {
+      dateRangeControl?.disable();
+      this.setDateRange(rangeKey);
+    }
+  }
+
+  setDateRange(rangeKey: string) {
+    const today = CommonUtils.currentDate();
+    let startDate: Date = CommonUtils.currentDate();
+    let endDate: Date = CommonUtils.currentDate();
+
+    switch (rangeKey) {
+      case 'custom':
+        startDate = this.transactionSearchForm.get('dateRange')!.value[0];
+        endDate = this.transactionSearchForm.get('dateRange')!.value[1];
+
+        if (!startDate || !endDate) {
+          return;
+        }
+
+        break;
+
+      case 'pastMonth':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+        break;
+
+      case 'last30days':
+        startDate.setDate(endDate.getDate() - 30);
+        break;
+
+      case 'last90days':
+        startDate.setDate(endDate.getDate() - 90);
+        break;
+
+      case 'thisMonth':
+      default:
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        break;
+    }
+
+    this.transactionSearchForm.get('dateRange')!.setValue([startDate, endDate]);
     this.loadTransactions();
   }
 
-  onSearch() { }
-
   loadTransactions() {
-    const selectedDate = new Date(this.transactionSearchForm.value.date);
+    const [startDate, endDate] = this.transactionSearchForm.get('dateRange')?.value;
 
-    const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1);
-    const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+    if (!startDate || !endDate) {
+      return;
+    }
 
     this.transactionService
-      .getTransactions(firstDayOfMonth, lastDayOfMonth, TransactionDateFilterType.Transaction)
+      .getTransactions(startDate, endDate, TransactionDateFilterType.Transaction)
       .subscribe({
         next: (transactions) => {
           const groupedMap = new Map<string, Transaction[]>();
 
-          const sortedTransactions = [...transactions].sort((a, b) =>
-            new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
-          );
+          const sortedTransactions = [...transactions].reverse();
 
           for (const transaction of sortedTransactions) {
             const dateKey = new Date(transaction.transactionDate).toISOString().slice(0, 10); // 'YYYY-MM-DD'
@@ -85,9 +151,10 @@ export default class TransactionsComponent {
           }));
 
           this.groupedTransactions.set(result);
+          this.errorMessage.set(null);
         },
         error: (error: string) => {
-          console.error(error);
+          this.errorMessage.set(error);
         }
       });
   }
