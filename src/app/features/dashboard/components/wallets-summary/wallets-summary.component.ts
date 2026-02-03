@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Wallet } from '@features/wallets/models/wallet.model';
+import { DashboardWallet } from '@features/dashboard/models/dashboard.model';
 
 import { ChartModule } from 'primeng/chart';
 
@@ -10,11 +10,11 @@ import { ChartModule } from 'primeng/chart';
   templateUrl: './wallets-summary.component.html'
 })
 export class WalletsSummaryComponent {
-  wallets: Wallet[] = [];
+  wallets: DashboardWallet[] = [];
   chartData: any;
   chartOptions: any;
 
-  setChartData(wallets: Wallet[]) {
+  setChartData(wallets: DashboardWallet[]) {
     this.wallets = wallets;
 
     this.chartData = {

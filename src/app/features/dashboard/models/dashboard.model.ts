@@ -1,5 +1,5 @@
-import { Transaction } from "@features/transactions/models/transaction.model";
-import { Wallet } from "@features/wallets/models/wallet.model";
+import { CategoryGroup } from "@features/categories/models/category.model";
+import { TransactionStatus, TransactionType } from "@features/transactions/models/transaction.types";
 
 export interface DashboardSummary {
     currency: string;
@@ -10,9 +10,9 @@ export interface DashboardSummary {
     monthlyTrends: MonthlyTrend[];
     expensesByCategory: CategoryExpense[];
     expensesByGroup: CategoryGroupExpense[];
-    recentTransactions: Transaction[];
-    upcomingPayments: Transaction[];
-    wallets: Wallet[];
+    recentTransactions: DashboardTransaction[];
+    upcomingPayments: DashboardTransaction[];
+    wallets: DashboardWallet[];
 }
 
 export interface SummaryCard {
@@ -36,4 +36,35 @@ export interface CategoryExpense {
 export interface CategoryGroupExpense {
     categoryGroup: string;
     amount: number;
+}
+
+export interface DashboardTransaction {
+    transactionId: string;
+    description: string;
+    transactionDate: Date;
+    maxPaymentDate: Date;
+    paymentMethodName: string;
+    currency: string;
+    amount: number;
+    type: TransactionType;
+    status: TransactionStatus;
+    category: DashboardTransactionCategory;
+}
+
+export interface DashboardTransactionCategory {
+    categoryId: string;
+    name: string;
+    type: TransactionType;
+    color: string;
+    group: CategoryGroup;
+}
+
+export interface DashboardWallet {
+    walletId: string;
+    name: string;
+    currencyCode: string;
+    availableAmount: number;
+    savingsAmount: number;
+    totalAmount: number;
+    color: string;
 }
