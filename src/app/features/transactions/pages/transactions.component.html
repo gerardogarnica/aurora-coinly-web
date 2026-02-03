@@ -1,9 +1,9 @@
 <app-page-header>
   <form [formGroup]="transactionSearchForm" class="w-full">
-    <div class="grid grid-cols-8 gap-4">
-      <div class="col-span-2 flex flex-col">
+    <div class="grid grid-cols-12 gap-3 md:gap-4">
+      <div class="col-span-12 sm:col-span-6 lg:col-span-4 flex flex-col">
         <label for="rangeKey">Date Range</label>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <p-select
             id="rangeKey"
             formControlName="rangeKey"
@@ -11,6 +11,9 @@
             optionLabel="label"
             optionValue="value"
             (onChange)="onDateRangeChange($event)"
+            [filter]="true"
+            panelStyleClass="select-panel-lg"
+            styleClass="w-full"
             size="small" />
           <p-datepicker
             id="dateRange"
@@ -20,21 +23,43 @@
             dateFormat="dd/mm/yy"
             [readonlyInput]="true"
             (onSelect)="setDateRange('custom')"
-            [style]="{'width': '200px'}" />
+            styleClass="w-full" />
         </div>
       </div>
 
-      <div class="flex flex-col">
+      <div class="col-span-12 sm:col-span-6 md:col-span-3 flex flex-col">
         <label for="category">Category</label>
+        <p-select
+          id="category"
+          placeholder="All"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          panelStyleClass="select-panel-lg"
+          styleClass="w-full"
+          size="small" />
       </div>
 
-      <div class="flex flex-col">
+      <div class="col-span-12 sm:col-span-6 md:col-span-3 flex flex-col">
         <label for="paymentMethod">Payment Method</label>
+        <p-select
+          id="paymentMethod"
+          formControlName="paymentMethodId"
+          [options]="paymentMethodOptions()"
+          placeholder="All"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          panelStyleClass="select-panel-lg"
+          styleClass="w-full"
+          size="small" />
       </div>
 
-      <div class="col-span-2 flex flex-col">
+      <div class="col-span-12 lg:col-span-4 flex flex-col">
         <label for="status">Status</label>
-        <div class="flex flex-wrap gap-4">
+        <div class="flex flex-wrap gap-3 mt-2">
           @for (status of statusOptions; track status) {
             <div class="flex items-center gap-2">
               <p-radiobutton
@@ -48,7 +73,7 @@
         </div>
       </div>
 
-      <div class="col-span-2 flex flex-col justify-end items-end">
+      <div class="col-span-12 lg:col-span-2 flex flex-col justify-end items-start lg:items-end">
         <p-button
           [label]="selectedTransactions().length > 0 ? 'Pay (' + selectedTransactions().length + ') selected pendings' : 'Pay pendings'"
           icon="pi pi-dollar"
@@ -72,7 +97,7 @@
           <div class="col-span-2 flex items-center gap-3">
             <p-checkbox
               (onChange)="onTransactionSelectionChange($event.checked, transaction)"
-              [(ngModel)]="transaction.transactionId"
+              (checked)="isTransactionSelected(transaction)"
               [binary]="true"
               [disabled]="transaction.status === TransactionStatus.Paid" />
             <div>

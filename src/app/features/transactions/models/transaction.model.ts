@@ -1,12 +1,10 @@
 import { TransactionType, TransactionStatus } from '../models/transaction.types';
-import { Category } from '@features/categories/models/category.model';
-import { Method } from '@features/methods/models/method.model';
-import { Wallet } from '@features/wallets/models/wallet.model';
+import { CategoryGroup } from '@features/categories/models/category.model';
+import { WalletType } from '@features/wallets/models/wallet.types';
 
 export interface Transaction {
     transactionId: string;
     description: string;
-    category: Category;
     transactionDate: Date;
     maxPaymentDate: Date;
     paymentDate?: Date;
@@ -15,11 +13,32 @@ export interface Transaction {
     type: TransactionType;
     status: TransactionStatus;
     isPaid: boolean;
-    paymentMethod: Method;
-    wallet: Wallet;
+    category: TransactionCategory;
+    paymentMethod: TransactionPaymentMethod;
+    wallet: TransactionWallet;
     notes?: string;
     isRecurring: boolean;
     installmentNumber: number;
+}
+
+export interface TransactionCategory {
+    categoryId: string;
+    name: string;
+    type: TransactionType;
+    color: string;
+    group: CategoryGroup;
+}
+
+export interface TransactionPaymentMethod {
+    paymentMethodId: string;
+    name: string;
+}
+
+export interface TransactionWallet {
+    walletId: string;
+    name: string;
+    type: WalletType;
+    color: string;
 }
 
 export interface CreateExpenseTransaction {

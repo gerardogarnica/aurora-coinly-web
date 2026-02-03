@@ -43,6 +43,7 @@ export default class TransactionsComponent {
   groupedTransactions = signal<GroupedTransaction[]>([]);
   filteredGroupedTransactions = signal<GroupedTransaction[]>([]);
   selectedTransactions = signal<Transaction[]>([]);
+  paymentMethodOptions = signal<{ label: string; value: string }[]>([]);
 
   dateRangeOptions: any[] = [
     { label: 'This month', value: 'thisMonth' },
@@ -62,13 +63,17 @@ export default class TransactionsComponent {
 
   transactionSearchForm: FormGroup = this.formBuilder.group({
     rangeKey: ['thisMonth', Validators.required],
-    dateRange: [[{ value: [], disabled: true }], Validators.required],
-    selectedStatus: ['all', Validators.required]
+    dateRange: [{ value: [], disabled: true }, Validators.required],
+    selectedStatus: ['all', Validators.required],
+    paymentMethodId: [null]
   });
 
   ngOnInit() {
     this.transactionSearchForm.get('selectedStatus')!.valueChanges.subscribe(() => {
-      this.applyStatusFilter();
+      this.applyFilters();
+    });
+    this.transactionSearchForm.get('paymentMethodId')!.valueChanges.subscribe(() => {
+      this.applyFilters();
     });
 
     const rangeKey = this.transactionSearchForm.get('rangeKey')!.value;
@@ -159,8 +164,10 @@ export default class TransactionsComponent {
 
           const result: GroupedTransaction[] = Array.from(groupedMap, ([date, transactions]) => ({ date, transactions }));
 
+          this.selectedTransactions.set([]);
           this.groupedTransactions.set(result);
-          this.applyStatusFilter();
+          this.populatePaymentMethodOptions();
+          this.applyFilters();
 
           this.errorMessage.set(null);
         },
@@ -170,11 +177,29 @@ export default class TransactionsComponent {
       });
   }
 
-  applyStatusFilter() {
+  populatePaymentMethodOptions() {
+    const allTransactions = this.groupedTransactions().flatMap(g => g.transactions);
+    const uniquePaymentMethods = new Map<string, { name: string }>();
+
+    allTransactions.forEach(t => {
+      if (t.paymentMethod && !uniquePaymentMethods.has(t.paymentMethod.paymentMethodId)) {
+        uniquePaymentMethods.set(t.paymentMethod.paymentMethodId, { name: t.paymentMethod.name });
+      }
+    });
+
+    const options = Array.from(uniquePaymentMethods.entries())
+      .map(([id, { name }]) => ({ label: name, value: id }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    this.paymentMethodOptions.set(options);
+  }
+
+  applyFilters() {
     const statusToFilter = this.transactionSearchForm.get('selectedStatus')?.value;
+    const paymentMethodIdToFilter = this.transactionSearchForm.get('paymentMethodId')?.value;
     const originalGroups = this.groupedTransactions();
 
-    if (statusToFilter === 'all') {
+    if (statusToFilter === 'all' && !paymentMethodIdToFilter) {
       this.filteredGroupedTransactions.set(originalGroups);
       return;
     }
@@ -182,9 +207,12 @@ export default class TransactionsComponent {
     const filteredResult: GroupedTransaction[] = [];
 
     for (const group of originalGroups) {
-      const filteredTransactions = group.transactions.filter(
-        t => t.status.toLowerCase() === statusToFilter
-      );
+      const filteredTransactions = group.transactions.filter(t => {
+        const statusMatch = statusToFilter === 'all' || t.status.toLowerCase() === statusToFilter;
+        const paymentMethodMatch = !paymentMethodIdToFilter || t.paymentMethod?.paymentMethodId === paymentMethodIdToFilter;
+
+        return statusMatch && paymentMethodMatch;
+      });
 
       if (filteredTransactions.length > 0) {
         filteredResult.push({
