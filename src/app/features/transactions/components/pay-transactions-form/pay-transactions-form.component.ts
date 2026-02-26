@@ -127,9 +127,10 @@ export class PayTransactionsFormComponent {
     const payPendingTransactions: PayPendingTransactions = {
       transactionIds: this.selectedTransactions.map(t => t.transactionId),
       walletId: formValue.walletId,
-      paymentDate: formValue.paymentDate
+      paymentDate: formValue.paymentDate.toISOString().slice(0, 10)
     };
 
+    console.log(payPendingTransactions);
     this.payPendingTransactions(payPendingTransactions);
   }
 
@@ -160,5 +161,12 @@ export class PayTransactionsFormComponent {
           });
         }
       });
+  }
+
+  get totalAmount(): number {
+    if (!this.selectedTransactions) {
+      return 0;
+    }
+    return this.selectedTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
   }
 }

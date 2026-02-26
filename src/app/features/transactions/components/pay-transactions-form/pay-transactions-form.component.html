@@ -3,16 +3,16 @@
   [(visible)]="showDialog"
   [modal]="true"
   [closeOnEscape]="false"
-  [style]="{ width: '40vw' }"
+  [style]="{ width: '50vw' }"
   [draggable]="false"
   [resizable]="false"
   [dismissableMask]="true"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
-  <form [formGroup]="payTransactionForm" class="space-y-2" (ngSubmit)="onPay()">
+  <form [formGroup]="payTransactionForm" class="space-y-4" (ngSubmit)="onPay()">
     <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col">
-        <label for="walletId">Wallet</label>
+      <div class="flex flex-col gap-2">
+        <label for="walletId">Wallet <span class="text-coinly-info">(required)</span></label>
         <p-select
           id="walletId"
           formControlName="walletId"
@@ -24,12 +24,12 @@
           (onChange)="onWalletChange($event)"
           size="small" />
         @if (payTransactionForm.get('walletId')?.hasError('required') && payTransactionForm.get('walletId')?.touched) {
-          <p class="text-red-500">Wallet is required</p>
+          <p class="mt-1 text-coinly-danger">Wallet is required</p>
         }
       </div>
 
-      <div class="flex flex-col">
-        <label for="paymentDate">Payment Date</label>
+      <div class="flex flex-col gap-2">
+        <label for="paymentDate">Payment Date <span class="text-coinly-info">(required)</span></label>
         <p-datepicker
           id="paymentDate"
           formControlName="paymentDate"
@@ -39,37 +39,46 @@
           [readonlyInput]="true"
           [showButtonBar]="true" />
         @if (payTransactionForm.get('paymentDate')?.hasError('required') && payTransactionForm.get('paymentDate')?.touched) {
-          <p class="text-red-500">Payment Date is required</p>
+          <p class="mt-1 text-coinly-danger">Payment Date is required</p>
         }
       </div>
     </div>
 
-    <div class="mt-6 border rounded-lg overflow-hidden shadow-sm">
-      <div class="divide-y divide-gray-200">
-        <!-- Encabezado del Grid -->
-        <div class="grid grid-cols-12 gap-4 bg-gray-50 p-3 font-bold text-sm text-gray-600">
-          <div class="col-span-2">Date</div>
-          <div class="col-span-4">Description</div>
-          <div class="col-span-2">Category</div>
-          <div class="col-span-2">Payment Method</div>
-          <div class="col-span-2 text-right">Amount</div>
-        </div>
-        <!-- Filas de Transacciones -->
+    <div class="mt-4 border rounded-lg overflow-hidden shadow-sm flex flex-col">
+      <!-- Header fijo -->
+      <div class="grid grid-cols-12 gap-4 bg-coinly-highlight p-3 font-bold text-sm text-coinly-primary border-b border-coinly-light">
+        <div class="col-span-2">Date</div>
+        <div class="col-span-4">Description</div>
+        <div class="col-span-2">Category</div>
+        <div class="col-span-2">Payment Method</div>
+        <div class="col-span-2 text-right">Amount</div>
+      </div>
+
+      <!-- Body con scroll -->
+      <div class="overflow-y-auto max-h-60 divide-y divide-coinly-light">
         @for (transaction of selectedTransactions; track transaction.transactionId) {
-          <div class="grid grid-cols-12 gap-4 p-3 items-center text-sm hover:bg-gray-50">
+          <div class="grid grid-cols-12 gap-4 p-3 items-center text-sm hover:bg-coinly-light">
             <div class="col-span-2">{{ transaction.transactionDate | date: 'shortDate' }}</div>
             <div class="col-span-4 font-semibold">{{ transaction.description }}</div>
-            <div class="col-span-2">{{ transaction.category.name }}</div>
-            <div class="col-span-2">{{ transaction.paymentMethod.name || 'N/A' }}</div>
-            <div class="col-span-2 text-right font-bold text-red-500">
+            <div class="col-span-2 text-coinly-disabled">{{ transaction.category.name }}</div>
+            <div class="col-span-2 text-coinly-disabled">{{ transaction.paymentMethod.name || 'N/A' }}</div>
+            <div class="col-span-2 text-right font-bold text-coinly-danger">
               {{ transaction.amount | currency: transaction.currency }}
             </div>
           </div>
         }
       </div>
+
+      <!-- Footer fijo (total) -->
+      <div class="grid grid-cols-12 gap-4 p-3 items-center text-sm bg-coinly-highlight font-bold border-t border-coinly-light">
+        <div class="col-span-10 text-right text-coinly-primary">TOTAL</div>
+        <div class="col-span-2 text-right text-lg text-coinly-danger">
+          {{ totalAmount | currency: 'USD' }}
+        </div>
+      </div>
     </div>
 
-    <div class="flex justify-end pt-8 gap-2">
+    <div class="flex justify-end pt-4 gap-2">
       <p-button
         label="Cancel"
         icon="pi pi-times"
