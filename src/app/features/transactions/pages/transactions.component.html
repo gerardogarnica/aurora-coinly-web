@@ -1,7 +1,7 @@
 <app-page-header>
   <form [formGroup]="transactionSearchForm" class="w-full">
     <div class="grid grid-cols-12 gap-3 md:gap-4">
-      <div class="col-span-12 sm:col-span-6 lg:col-span-4 flex flex-col">
+      <div class="col-span-12 sm:col-span-6 xl:col-span-3 flex flex-col">
         <label for="rangeKey">Date Range</label>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <p-select
@@ -13,7 +13,7 @@
             (onChange)="onDateRangeChange($event)"
             [filter]="true"
             panelStyleClass="select-panel-lg"
-            styleClass="w-full"
+            styleClass="w-full sm:w-auto sm:min-w-36 shrink-0"
             size="small" />
           <p-datepicker
             id="dateRange"
@@ -23,14 +23,16 @@
             dateFormat="dd/mm/yy"
             [readonlyInput]="true"
             (onSelect)="setDateRange('custom')"
-            styleClass="w-full" />
+            styleClass="w-full min-w-48" />
         </div>
       </div>
 
-      <div class="col-span-12 sm:col-span-6 md:col-span-3 flex flex-col">
+      <div class="col-span-12 sm:col-span-6 xl:col-span-2 flex flex-col">
         <label for="category">Category</label>
         <p-select
           id="category"
+          formControlName="categoryId"
+          [options]="categoryOptions()"
           placeholder="All"
           [showClear]="true"
           optionLabel="label"
@@ -41,7 +43,7 @@
           size="small" />
       </div>
 
-      <div class="col-span-12 sm:col-span-6 md:col-span-3 flex flex-col">
+      <div class="col-span-12 sm:col-span-6 xl:col-span-2 flex flex-col">
         <label for="paymentMethod">Payment Method</label>
         <p-select
           id="paymentMethod"
@@ -57,7 +59,7 @@
           size="small" />
       </div>
 
-      <div class="col-span-12 lg:col-span-4 flex flex-col">
+      <div class="col-span-12 sm:col-span-6 xl:col-span-3 flex flex-col">
         <label for="status">Status</label>
         <div class="flex flex-wrap gap-3 mt-2">
           @for (status of statusOptions; track status) {
@@ -73,7 +75,7 @@
         </div>
       </div>
 
-      <div class="col-span-12 lg:col-span-2 flex flex-col justify-end items-start lg:items-end">
+      <div class="col-span-12 sm:col-span-6 xl:col-span-2 flex flex-col justify-end items-start xl:items-end">
         <p-button
           [label]="selectedTransactions().length > 0 ? 'Pay (' + selectedTransactions().length + ') selected pendings' : 'Pay pendings'"
           icon="pi pi-dollar"

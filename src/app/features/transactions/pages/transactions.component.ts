@@ -44,6 +44,7 @@ export default class TransactionsComponent {
   filteredGroupedTransactions = signal<GroupedTransaction[]>([]);
   selectedTransactions = signal<Transaction[]>([]);
   paymentMethodOptions = signal<{ label: string; value: string }[]>([]);
+  categoryOptions = signal<{ label: string; value: string }[]>([]);
 
   dateRangeOptions: any[] = [
     { label: 'This month', value: 'thisMonth' },
@@ -65,7 +66,8 @@ export default class TransactionsComponent {
     rangeKey: ['thisMonth', Validators.required],
     dateRange: [{ value: [], disabled: true }, Validators.required],
     selectedStatus: ['all', Validators.required],
-    paymentMethodId: [null]
+    paymentMethodId: [null],
+    categoryId: [null]
   });
 
   ngOnInit() {
@@ -73,6 +75,9 @@ export default class TransactionsComponent {
       this.applyFilters();
     });
     this.transactionSearchForm.get('paymentMethodId')!.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+    this.transactionSearchForm.get('categoryId')!.valueChanges.subscribe(() => {
       this.applyFilters();
     });
 
@@ -167,6 +172,7 @@ export default class TransactionsComponent {
           this.selectedTransactions.set([]);
           this.groupedTransactions.set(result);
           this.populatePaymentMethodOptions();
+          this.populateCategoryOptions();
           this.applyFilters();
 
           this.errorMessage.set(null);
@@ -194,12 +200,30 @@ export default class TransactionsComponent {
     this.paymentMethodOptions.set(options);
   }
 
+  populateCategoryOptions() {
+    const allTransactions = this.groupedTransactions().flatMap(g => g.transactions);
+    const uniqueCategories = new Map<string, { name: string }>();
+
+    allTransactions.forEach(t => {
+      if (t.category && !uniqueCategories.has(t.category.categoryId)) {
+        uniqueCategories.set(t.category.categoryId, { name: t.category.name });
+      }
+    });
+
+    const options = Array.from(uniqueCategories.entries())
+      .map(([id, { name }]) => ({ label: name, value: id }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    this.categoryOptions.set(options);
+  }
+
   applyFilters() {
     const statusToFilter = this.transactionSearchForm.get('selectedStatus')?.value;
     const paymentMethodIdToFilter = this.transactionSearchForm.get('paymentMethodId')?.value;
+    const categoryIdToFilter = this.transactionSearchForm.get('categoryId')?.value;
     const originalGroups = this.groupedTransactions();
 
-    if (statusToFilter === 'all' && !paymentMethodIdToFilter) {
+    if (statusToFilter === 'all' && !paymentMethodIdToFilter && !categoryIdToFilter) {
       this.filteredGroupedTransactions.set(originalGroups);
       return;
     }
@@ -210,8 +234,9 @@ export default class TransactionsComponent {
       const filteredTransactions = group.transactions.filter(t => {
         const statusMatch = statusToFilter === 'all' || t.status.toLowerCase() === statusToFilter;
         const paymentMethodMatch = !paymentMethodIdToFilter || t.paymentMethod?.paymentMethodId === paymentMethodIdToFilter;
+        const categoryMatch = !categoryIdToFilter || t.category?.categoryId === categoryIdToFilter;
 
-        return statusMatch && paymentMethodMatch;
+        return statusMatch && paymentMethodMatch && categoryMatch;
       });
 
       if (filteredTransactions.length > 0) {
