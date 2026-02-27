@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { Category } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
 import { Method } from '@features/methods/models/method.model';
@@ -39,6 +40,7 @@ export class NewTransactionFormComponent {
 
   categoryService = inject(CategoryService);
   methodService = inject(MethodService);
+  transactionNotificationService = inject(TransactionNotificationService);
   transactionService = inject(TransactionService);
   walletService = inject(WalletService);
   formBuilder = inject(FormBuilder);
@@ -342,6 +344,7 @@ export class NewTransactionFormComponent {
       .subscribe({
         next: () => {
           this.processStatus = 'success';
+          this.transactionNotificationService.notifyTransactionCreated();
 
           this.messageService.add({
             severity: 'success',
@@ -374,6 +377,7 @@ export class NewTransactionFormComponent {
       .subscribe({
         next: () => {
           this.processStatus = 'success';
+          this.transactionNotificationService.notifyTransactionCreated();
 
           this.messageService.add({
             severity: 'success',

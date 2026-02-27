@@ -1,6 +1,8 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { AssignToFormComponent } from '@features/wallets/components/assign-to-form/assign-to-form.component';
 import { NewWalletFormComponent } from '@features/wallets/components/new-wallet-form/new-wallet-form.component';
 import { TransferFundsFormComponent } from '@features/wallets/components/transfer-funds-form/transfer-funds-form.component';
@@ -32,9 +34,11 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 export default class WalletsComponent {
   @ViewChild('dt') dt!: Table;
 
+  transactionNotificationService = inject(TransactionNotificationService);
   walletService = inject(WalletService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
+  destroyRef = inject(DestroyRef);
 
   wallets = signal<Wallet[]>([]);
   selectedWallet = signal<Wallet | undefined>(undefined);
@@ -46,6 +50,10 @@ export default class WalletsComponent {
   showTransferToDialog = false;
 
   ngOnInit() {
+    this.transactionNotificationService.transactionCreated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadWallets());
+
     this.loadWallets();
   }
 

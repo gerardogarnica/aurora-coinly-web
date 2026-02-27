@@ -1,5 +1,7 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { CategoryExpensesComponent } from '@features/dashboard/components/category-expenses/category-expenses.component';
 import { MonthlyTrendsComponent } from '@features/dashboard/components/monthly-trends/monthly-trends.component';
 import { RecentTransactionsComponent } from '@features/dashboard/components/recent-transactions/recent-transactions.component';
@@ -22,6 +24,8 @@ import { ToastModule } from 'primeng/toast';
 export default class DashboardComponent {
   dashboardService = inject(DashboardService);
   messageService = inject(MessageService);
+  transactionNotificationService = inject(TransactionNotificationService);
+  destroyRef = inject(DestroyRef);
 
   dashboardData = signal<DashboardSummary | undefined>(undefined);
 
@@ -30,6 +34,14 @@ export default class DashboardComponent {
   @ViewChild(WalletsSummaryComponent) walletsSummaryComponent?: WalletsSummaryComponent;
 
   ngOnInit() {
+    this.transactionNotificationService.transactionCreated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadDashboard());
+
+    this.loadDashboard();
+  }
+
+  loadDashboard() {
     this.dashboardService
       .getDashboard()
       .subscribe({

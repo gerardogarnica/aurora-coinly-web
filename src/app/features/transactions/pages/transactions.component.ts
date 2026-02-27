@@ -1,7 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { PayTransactionsFormComponent } from '@features/transactions/components/pay-transactions-form/pay-transactions-form.component';
 import { Transaction } from '@features/transactions/models/transaction.model';
 import { TransactionDateFilterType, TransactionStatus, TransactionType } from '@features/transactions/models/transaction.types';
@@ -34,10 +36,12 @@ export interface GroupedTransaction {
   templateUrl: './transactions.component.html'
 })
 export default class TransactionsComponent {
+  transactionNotificationService = inject(TransactionNotificationService);
   transactionService = inject(TransactionService);
   formBuilder = inject(FormBuilder);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
+  destroyRef = inject(DestroyRef);
 
   errorMessage = signal<string | null>(null);
   groupedTransactions = signal<GroupedTransaction[]>([]);
@@ -71,6 +75,10 @@ export default class TransactionsComponent {
   });
 
   ngOnInit() {
+    this.transactionNotificationService.transactionCreated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadTransactions());
+
     this.transactionSearchForm.get('selectedStatus')!.valueChanges.subscribe(() => {
       this.applyFilters();
     });
