@@ -25,8 +25,22 @@ Aurora Coinly Web is a personal finance management SPA built with **Angular 19**
   - `guards/` — `privateGuard` (requires auth), `publicGuard` (auth redirects away)
   - `interceptors/` — `authInterceptor` with automatic token refresh using `checkToken()` HttpContext
   - `services/` — `TokenService` (cookie-based JWT storage via `typescript-cookie`), `ErrorsService`
-- **`features/`** — Feature modules: `auth`, `categories`, `dashboard`, `methods`, `reports`, `settings`, `transactions`, `wallets`, `profile`. Each follows the pattern: `components/`, `models/`, `pages/`, `services/`
-- **`shared/`** — `layout/` (MainLayout, AuthLayout, Navbar, Sidebar), `components/`, `models/`, `utils/`
+- **`features/`** — Feature modules, each following the pattern: `components/`, `models/`, `pages/`, `services/` (not all subfolders present in every module)
+  - `auth/` — Login page, auth models (`models/`, `pages/login/`, `services/`)
+  - `categories/` — Category management (`components/`, `models/`, `pages/`, `services/`)
+  - `dashboard/` — Main dashboard with widget components (`components/category-expenses/`, `components/monthly-trends/`, `components/recent-transactions/`, `components/summary-card/`, `components/upcoming-payments/`, `components/wallets-summary/`, `models/`, `pages/`, `services/`)
+  - `methods/` — Payment methods management (`components/`, `models/`, `pages/`, `services/`)
+  - `profile/` — User profile (`models/`, `services/` — no pages or components)
+  - `reports/` — Financial reports (`pages/` only)
+  - `settings/` — App settings (`pages/` only)
+  - `transactions/` — Transaction management (`components/new-transaction-form/`, `components/pay-transactions-form/`, `models/`, `pages/`, `services/`)
+  - `wallets/` — Wallet management (`components/assign-to-form/`, `components/edit-wallet-form/`, `components/new-wallet-form/`, `components/transfer-funds-form/`, `models/`, `pages/`, `services/`)
+- **`shared/`** — Reusable pieces shared across features
+  - `layout/` — App shell components: `MainLayoutComponent`, `AuthLayoutComponent`, `NavbarComponent`, `SidebarComponent`
+  - `components/` — Reusable UI components: `PageHeaderComponent`
+  - `models/` — Shared models: `ProcessStatus`
+  - `pages/` — Shared pages: `NotFoundComponent` (404 page)
+  - `utils/` — Helper functions: `common.utils.ts`
 
 ### Key Patterns
 - **All components are standalone** — no NgModules for components. `SharedModule` only re-exports `CommonModule` and `RouterModule`.
