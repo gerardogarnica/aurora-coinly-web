@@ -1,0 +1,97 @@
+<p-toast position="center" />
+
+<app-page-header>
+  <div></div>
+  @if (!isEditing && processStatus() === 'success') {
+    <p-button label="Edit" icon="pi pi-pencil" title="Edit profile" size="small" (onClick)="onEdit()" />
+  }
+</app-page-header>
+
+@if (processStatus() === 'loading') {
+  <div class="flex justify-center py-8">
+    <i class="pi pi-spin pi-spinner text-2xl text-coinly-primary"></i>
+  </div>
+}
+
+@if (processStatus() === 'error') {
+  <div class="text-red-500 text-center py-8">
+    Failed to load profile. Please try again later.
+  </div>
+}
+
+@if (processStatus() === 'success' && user(); as user) {
+  <p-card>
+    @if (!isEditing) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1">Email</label>
+          <p class="text-coinly-dark">{{ user.email }}</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1">Full Name</label>
+          <p class="text-coinly-dark">{{ user.fullName }}</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1">First Name</label>
+          <p class="text-coinly-dark">{{ user.firstName }}</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1">Last Name</label>
+          <p class="text-coinly-dark">{{ user.lastName }}</p>
+        </div>
+      </div>
+    } @else {
+      <form [formGroup]="profileForm" (ngSubmit)="onSave()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">Email</label>
+            <p class="text-coinly-dark">{{ user.email }}</p>
+          </div>
+          <div></div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1" for="firstName">First Name</label>
+            <input pInputText id="firstName" formControlName="firstName" class="w-full" placeholder="Enter the first name" maxlength="50" variant="outlined" pSize="small" />
+            @if (profileForm.controls.firstName.touched && profileForm.controls.firstName.errors) {
+              @if (profileForm.controls.firstName.errors['required']) {
+                <p class="mt-1 text-coinly-danger">First name is required.</p>
+              } @else if (profileForm.controls.firstName.errors['minlength']) {
+                <p class="mt-1 text-coinly-danger">First name must be at least 3 characters.</p>
+              } @else if (profileForm.controls.firstName.errors['maxlength']) {
+                <p class="mt-1 text-coinly-danger">First name must be at most 100 characters.</p>
+              }
+            }
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1" for="lastName">Last Name</label>
+            <input pInputText id="lastName" formControlName="lastName" class="w-full" placeholder="Enter the last name" maxlength="50" variant="outlined" pSize="small" />
+            @if (profileForm.controls.lastName.touched && profileForm.controls.lastName.errors) {
+              @if (profileForm.controls.lastName.errors['required']) {
+                <p class="mt-1 text-coinly-danger">Last name is required.</p>
+              } @else if (profileForm.controls.lastName.errors['minlength']) {
+                <p class="mt-1 text-coinly-danger">Last name must be at least 3 characters.</p>
+              } @else if (profileForm.controls.lastName.errors['maxlength']) {
+                <p class="mt-1 text-coinly-danger">Last name must be at most 100 characters.</p>
+              }
+            }
+          </div>
+        </div>
+        <div class="flex gap-2 mt-6">
+          <p-button
+            label="Cancel"
+            icon="pi pi-times"
+            severity="danger"
+            size="small"
+            (onClick)="onCancel()" />
+          <p-button
+            label="Save"
+            icon="pi pi-save"
+            type="submit"
+            severity="success"
+            size="small"
+            [disabled]="!profileForm.valid || this.processStatus() === 'loading'"
+            [loading]="saveStatus() === 'loading'" />
+        </div>
+      </form>
+    }
+  </p-card>
+}

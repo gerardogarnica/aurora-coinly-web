@@ -23,7 +23,7 @@ export class ProfileService {
   }
 
   updateProfile(firstName: string, lastName: string) {
-    let url = `${this.apiUrl}/profile`;
+    let url = `${this.apiUrl}`;
     return this.httpClient.put(url, { firstName, lastName }, { context: checkToken() }).pipe(
       catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
     );

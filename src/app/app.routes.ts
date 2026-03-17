@@ -58,6 +58,14 @@ export const routes: Routes = [
                 }
             },
             {
+                path: 'profile',
+                loadComponent: () => import('@features/profile/pages/profile.component'),
+                data: {
+                    title: 'Profile',
+                    subtitle: 'View and manage your personal information.'
+                }
+            },
+            {
                 path: 'settings',
                 loadComponent: () => import('@features/settings/pages/settings.component'),
                 data: {

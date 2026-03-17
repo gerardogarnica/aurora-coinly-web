@@ -22,6 +22,16 @@
     </nav>
 
     <div class="space-y-2 py-6">
+        <!-- Profile -->
+        <div>
+            <a [routerLink]="['/profile']"
+                routerLinkActive="bg-coinly-primary font-bold"
+                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
+                <i class="pi pi-fw pi-user mr-3"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+
         <!-- Settings -->
         <div>
             <a [routerLink]="['/settings']"
