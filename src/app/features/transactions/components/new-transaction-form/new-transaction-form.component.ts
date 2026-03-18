@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -48,6 +48,8 @@ export class NewTransactionFormComponent {
   messageService = inject(MessageService);
 
   amountMax: number = 999999.99;
+  loadStatus = signal<ProcessStatus>('init');
+  private pendingLoads = 0;
   processStatus: ProcessStatus = 'none';
   selectedPaymentMethod?: Method;
   transactionType?: TransactionType;
@@ -124,8 +126,10 @@ export class NewTransactionFormComponent {
         next: (categories) => {
           this.categories = categories;
           this.categoriesByType = categories.filter(category => category.type === this.transactionType);
+          this.checkLoadComplete();
         },
         error: (error: string) => {
+          this.loadStatus.set('error');
           this.messageService.add({
             severity: 'error',
             summary: 'Error loading categories',
@@ -148,8 +152,10 @@ export class NewTransactionFormComponent {
             this.selectedPaymentMethod = this.paymentMethods.find(method => method.isDefault === true);
             this.setPaymentMethodChanged();
           }
+          this.checkLoadComplete();
         },
         error: (error: string) => {
+          this.loadStatus.set('error');
           this.messageService.add({
             severity: 'error',
             summary: 'Error loading payment methods',
@@ -170,8 +176,10 @@ export class NewTransactionFormComponent {
           if (this.selectedPaymentMethod) {
             this.setWalletMethodChanged(this.wallets.find(wallet => wallet.walletId === this.selectedPaymentMethod?.wallet.walletId)!);
           }
+          this.checkLoadComplete();
         },
         error: (error: string) => {
+          this.loadStatus.set('error');
           this.messageService.add({
             severity: 'error',
             summary: 'Error loading wallets',
@@ -184,10 +192,19 @@ export class NewTransactionFormComponent {
 
   showDialogForm() {
     this.resetForm();
+    this.loadStatus.set('loading');
+    this.pendingLoads = 3;
     this.getCategories();
     this.getPaymentMethods();
     this.getWallets();
     this.setTransactionType(TransactionType.Expense);
+  }
+
+  private checkLoadComplete() {
+    this.pendingLoads--;
+    if (this.pendingLoads === 0) {
+      this.loadStatus.set('success');
+    }
   }
 
   hideDialogForm() {

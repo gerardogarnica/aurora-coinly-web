@@ -8,6 +8,20 @@
   [dismissableMask]="true"
   (onShow)="showDialogForm()"
   (onHide)="hideDialogForm()">
+
+  @if (loadStatus() === 'loading') {
+    <div class="flex justify-center py-8">
+      <i class="pi pi-spin pi-spinner text-2xl text-coinly-primary"></i>
+    </div>
+  }
+
+  @if (loadStatus() === 'error') {
+    <div class="text-coinly-danger text-center py-8">
+      Failed to load form data. Please try again later.
+    </div>
+  }
+
+  @if (loadStatus() === 'success') {
   <form [formGroup]="transactionForm" class="space-y-2" (ngSubmit)="onSave(true)">
     <div class="grid grid-cols-2">
       <p-button
@@ -39,7 +53,7 @@
             (onChange)="onPaymentMethodChange($event)"
             size="small" />
           @if (transactionForm.get('paymentMethodId')?.hasError('required') && transactionForm.get('paymentMethodId')?.touched) {
-            <p class="text-red-500">Payment Method is required</p>
+            <p class="text-coinly-danger">Payment Method is required</p>
           }
         </div>
 
@@ -67,7 +81,7 @@
           (onChange)="onWalletChange($event)"
           size="small" />
         @if (transactionForm.get('walletId')?.hasError('required') && transactionForm.get('walletId')?.touched) {
-          <p class="text-red-500">Wallet is required</p>
+          <p class="text-coinly-danger">Wallet is required</p>
         }
       </div>
 
@@ -82,7 +96,7 @@
           [readonlyInput]="true"
           [showButtonBar]="true" />
         @if (transactionForm.get('transactionDate')?.hasError('required') && transactionForm.get('transactionDate')?.touched) {
-          <p class="text-red-500">Date is required</p>
+          <p class="text-coinly-danger">Date is required</p>
         }
       </div>
     </div>
@@ -101,7 +115,7 @@
           size="small"
           fluid />
         @if (transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched) {
-          <p class="text-red-500">Amount is required</p>
+          <p class="text-coinly-danger">Amount is required</p>
         }
       </div>
 
@@ -181,6 +195,7 @@
         (click)="onSave(false)" />
     </div>
   </form>
+  }
 </p-dialog>
 
 <p-confirmDialog [style]="{ width: '450px' }" />
