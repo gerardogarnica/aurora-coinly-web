@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { startWith, switchMap } from 'rxjs';
 
@@ -23,16 +23,12 @@ import { ToastModule } from 'primeng/toast';
   templateUrl: './dashboard.component.html'
 })
 export default class DashboardComponent {
-  dashboardService = inject(DashboardService);
-  messageService = inject(MessageService);
-  transactionNotificationService = inject(TransactionNotificationService);
-  destroyRef = inject(DestroyRef);
+  private readonly dashboardService = inject(DashboardService);
+  private readonly messageService = inject(MessageService);
+  private readonly transactionNotificationService = inject(TransactionNotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   dashboardData = signal<DashboardSummary | undefined>(undefined);
-
-  @ViewChild(CategoryExpensesComponent) categoryExpensesComponent?: CategoryExpensesComponent;
-  @ViewChild(MonthlyTrendsComponent) monthlyTrendsComponent?: MonthlyTrendsComponent;
-  @ViewChild(WalletsSummaryComponent) walletsSummaryComponent?: WalletsSummaryComponent;
 
   ngOnInit() {
     this.transactionNotificationService.transactionCreated$
@@ -42,21 +38,7 @@ export default class DashboardComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: (data) => {
-          this.dashboardData.set(data);
-
-          setTimeout(() => {
-            this.categoryExpensesComponent?.setChartData(data.expensesByCategory, data.expensesByGroup);
-          });
-
-          setTimeout(() => {
-            this.monthlyTrendsComponent?.setChartData(data.monthlyTrends);
-          });
-
-          setTimeout(() => {
-            this.walletsSummaryComponent?.setChartData(data.wallets);
-          });
-        },
+        next: (data) => this.dashboardData.set(data),
         error: (error: string) => {
           this.messageService.add({
             severity: 'error',

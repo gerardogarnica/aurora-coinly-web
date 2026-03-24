@@ -49,12 +49,15 @@
 
   <!-- Monthly trends chart -->
   <div class="col-span-5 bg-white p-4 rounded-xl shadow-lg">
-    <app-monthly-trends />
+    <app-monthly-trends [monthlyTrends]="dashboardData()?.monthlyTrends ?? []" />
   </div>
 
   <!-- Expenses by category chart -->
   <div class="col-span-5 bg-white p-4 rounded-xl shadow-lg">
-    <app-category-expenses />
+    <app-category-expenses
+      [expensesByCategory]="dashboardData()?.expensesByCategory ?? []"
+      [expensesByGroup]="dashboardData()?.expensesByGroup ?? []"
+    />
   </div>
 
   <!-- Recent transactions -->
@@ -66,7 +69,7 @@
 
   <!-- Wallets chart -->
   <div class="col-span-4 bg-white p-4 rounded-xl shadow-lg">
-    <app-wallets-summary />
+    <app-wallets-summary [wallets]="dashboardData()?.wallets ?? []" />
   </div>
 
   <!-- Upcoming payments -->
