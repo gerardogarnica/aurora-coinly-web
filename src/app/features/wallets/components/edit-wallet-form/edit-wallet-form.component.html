@@ -1,1 +1,114 @@
-<p>edit-wallet-form works!</p>
+<p-dialog
+  header="Edit Wallet"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  (onShow)="showDialogForm()"
+  (onHide)="hideDialogForm()">
+  <form [formGroup]="walletForm" class="space-y-2" (ngSubmit)="onSave()">
+    <div class="grid grid-cols-[3fr_1fr] gap-4">
+      <div class="flex flex-col">
+        <label for="name">Name <span class="text-coinly-info">(required, 3-100 characters)</span></label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          placeholder="Enter name"
+          maxlength="100"
+          variant="outlined"
+          pSize="small" />
+        @if (walletForm.get('name')?.hasError('required') && walletForm.get('name')?.touched) {
+          <p class="mt-1 text-coinly-danger">Name is required</p>
+        }
+        @if (walletForm.get('name')?.hasError('minlength')) {
+          <p class="mt-1 text-coinly-danger">Name must be at least 3 characters</p>
+        }
+        @if (walletForm.get('name')?.hasError('maxlength')) {
+          <p class="mt-1 text-coinly-danger">Name cannot exceed 100 characters</p>
+        }
+      </div>
+      <div class="flex flex-col">
+        <label for="color">Color</label>
+        <p-colorpicker
+          id="color"
+          formControlName="color"
+          inputId="color" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label>Open date</label>
+        <span class="text-sm font-medium mt-1">{{ wallet?.openedOn | date: 'mediumDate' }}</span>
+      </div>
+      <div class="flex flex-col">
+        <label>Currency</label>
+        <span class="text-sm font-medium mt-1">{{ wallet?.currencyCode }}</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label>Type</label>
+        <span class="text-sm font-medium mt-1">{{ wallet?.type }}</span>
+      </div>
+      <div class="flex flex-col">
+        <label for="allowNegative" class="w-full">Allow negative balance</label>
+        <p-toggleswitch
+          inputId="allowNegative"
+          formControlName="allowNegative" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="flex flex-col">
+        <label>Total balance</label>
+        <span class="text-sm font-bold mt-1">{{ wallet?.totalAmount | currency: wallet?.currencyCode }}</span>
+      </div>
+      <div class="flex flex-col">
+        <label>Available balance</label>
+        <span class="text-sm font-bold mt-1">{{ wallet?.availableAmount | currency: wallet?.currencyCode }}</span>
+      </div>
+      <div class="flex flex-col">
+        <label>Savings balance</label>
+        <span class="text-sm font-bold mt-1">{{ wallet?.savingsAmount | currency: wallet?.currencyCode }}</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col">
+      <label for="notes">Notes</label>
+      <textarea
+        pTextarea
+        id="notes"
+        formControlName="notes"
+        rows="6"
+        placeholder="Enter any additional notes"
+        maxlength="1000"
+        pSize="small"></textarea>
+      @if (walletForm.get('notes')?.hasError('maxlength')) {
+        <p class="mt-1 text-coinly-danger">Notes cannot exceed 1,000 characters</p>
+      }
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        severity="danger"
+        size="small"
+        (click)="showDialog = false" />
+      <p-button
+        label="Save"
+        icon="pi pi-save"
+        severity="success"
+        size="small"
+        [disabled]="!walletForm.valid || processStatus === 'loading'"
+        (click)="onSave()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast position="center" />

@@ -202,6 +202,12 @@
   (cancelAction)="onAddWalletFormDialogClose()">
 </app-new-wallet-form>
 
+<app-edit-wallet-form
+  [wallet]="selectedWallet()"
+  [showDialog]="showEditDialog"
+  (cancelAction)="onEditWalletFormDialogClose()">
+</app-edit-wallet-form>
+
 <app-assign-to-form
   [wallet]="selectedWallet()"
   [showDialog]="showAssignToDialog"

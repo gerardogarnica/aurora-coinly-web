@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { AssignToFormComponent } from '@features/wallets/components/assign-to-form/assign-to-form.component';
+import { EditWalletFormComponent } from '@features/wallets/components/edit-wallet-form/edit-wallet-form.component';
 import { NewWalletFormComponent } from '@features/wallets/components/new-wallet-form/new-wallet-form.component';
 import { TransferFundsFormComponent } from '@features/wallets/components/transfer-funds-form/transfer-funds-form.component';
 import { WalletHistoryFormComponent } from '@features/wallets/components/wallet-history-form/wallet-history-form.component';
@@ -28,7 +29,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, WalletHistoryFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CommonModule, AssignToFormComponent, EditWalletFormComponent, NewWalletFormComponent, TransferFundsFormComponent, WalletHistoryFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './wallets.component.html'
 })
@@ -47,6 +48,7 @@ export default class WalletsComponent {
 
   assignToType: 'available' | 'savings' = 'available';
   showAddDialog = false;
+  showEditDialog = false;
   showAssignToDialog = false;
   showTransferToDialog = false;
   showHistoryDialog = false;
@@ -123,6 +125,12 @@ export default class WalletsComponent {
 
   onEditWallet(wallet: Wallet) {
     this.selectedWallet.set(wallet);
+    this.showEditDialog = true;
+  }
+
+  onEditWalletFormDialogClose() {
+    this.showEditDialog = false;
+    this.loadWallets();
   }
 
   onDeleteWallet(wallet: Wallet) {
