@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, EventEmitter, Input, Output, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { WalletTransactionModel } from '@features/wallets/models/wallet-transaction.model';
 import { Wallet } from '@features/wallets/models/wallet.model';
@@ -14,13 +14,15 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-wallet-history-form',
-  imports: [CommonModule, FormsModule, ButtonModule, DatePickerModule, DialogModule, TableModule, TagModule, ToastModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, DatePickerModule, DialogModule, SelectModule, TableModule, TagModule, ToastModule],
   providers: [MessageService],
   templateUrl: './wallet-history-form.component.html'
 })
@@ -32,36 +34,98 @@ export class WalletHistoryFormComponent {
   private readonly walletService = inject(WalletService);
   private readonly messageService = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly formBuilder = inject(FormBuilder);
 
   processStatus: ProcessStatus = 'none';
-  dateRange: Date[] = [];
   transactions: WalletTransactionModel[] = [];
   maxDate: Date = CommonUtils.currentDate();
 
+  dateRangeOptions = [
+    { label: 'This month', value: 'thisMonth' },
+    { label: 'Past month', value: 'pastMonth' },
+    { label: 'Last 30 days', value: 'last30days' },
+    { label: 'Last 90 days', value: 'last90days' },
+    { label: 'Custom', value: 'custom' }
+  ];
+
+  historyFilterForm: FormGroup = this.formBuilder.group({
+    rangeKey: ['last30days'],
+    dateRange: [{ value: [], disabled: true }]
+  });
+
   showDialogForm() {
     this.maxDate = CommonUtils.currentDate();
-
-    const today = CommonUtils.currentDate();
-    const thirtyDaysAgo = CommonUtils.currentDate();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    this.dateRange = [thirtyDaysAgo, today];
     this.transactions = [];
     this.processStatus = 'init';
 
-    this.onLoadHistory();
+    this.historyFilterForm.reset({ rangeKey: 'last30days', dateRange: [] });
+    this.historyFilterForm.get('dateRange')?.disable();
+
+    this.setDateRange('last30days');
   }
 
   hideDialogForm() {
     this.transactions = [];
-    this.dateRange = [];
     this.processStatus = 'none';
     this.showDialog = false;
     this.cancelAction.emit();
   }
 
+  onDateRangeChange(event: any) {
+    const rangeKey = event.value;
+    const dateRangeControl = this.historyFilterForm.get('dateRange');
+
+    if (rangeKey === 'custom') {
+      dateRangeControl?.enable();
+    } else {
+      dateRangeControl?.disable();
+      this.setDateRange(rangeKey);
+    }
+  }
+
+  setDateRange(rangeKey: string) {
+    const today = CommonUtils.currentDate();
+    let startDate: Date = CommonUtils.currentDate();
+    let endDate: Date = CommonUtils.currentDate();
+
+    switch (rangeKey) {
+      case 'custom':
+        startDate = this.historyFilterForm.get('dateRange')!.value[0];
+        endDate = this.historyFilterForm.get('dateRange')!.value[1];
+
+        if (!startDate || !endDate) {
+          return;
+        }
+        break;
+
+      case 'pastMonth':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+        break;
+
+      case 'last30days':
+        startDate.setDate(endDate.getDate() - 30);
+        break;
+
+      case 'last90days':
+        startDate.setDate(endDate.getDate() - 90);
+        break;
+
+      case 'thisMonth':
+      default:
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        break;
+    }
+
+    this.historyFilterForm.get('dateRange')!.setValue([startDate, endDate]);
+    this.onLoadHistory();
+  }
+
   onLoadHistory() {
-    if (this.dateRange.length < 2 || !this.dateRange[1] || !this.wallet) {
+    const [startDate, endDate] = this.historyFilterForm.get('dateRange')?.value ?? [];
+
+    if (!startDate || !endDate || !this.wallet) {
       return;
     }
 
@@ -72,7 +136,7 @@ export class WalletHistoryFormComponent {
     this.processStatus = 'loading';
 
     this.walletService
-      .getWalletHistory(this.wallet.walletId, this.dateRange[0], this.dateRange[1])
+      .getWalletHistory(this.wallet.walletId, startDate, endDate)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -101,6 +165,7 @@ export class WalletHistoryFormComponent {
         return 'secondary';
       case WalletTransactionType.AssignedToAvailable:
       case WalletTransactionType.Created:
+      default:
         return 'info';
     }
   }
