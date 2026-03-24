@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { startWith, switchMap } from 'rxjs';
 
 import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { CategoryExpensesComponent } from '@features/dashboard/components/category-expenses/category-expenses.component';
@@ -35,15 +36,11 @@ export default class DashboardComponent {
 
   ngOnInit() {
     this.transactionNotificationService.transactionCreated$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.loadDashboard());
-
-    this.loadDashboard();
-  }
-
-  loadDashboard() {
-    this.dashboardService
-      .getDashboard()
+      .pipe(
+        startWith(null),
+        switchMap(() => this.dashboardService.getDashboard()),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (data) => {
           this.dashboardData.set(data);

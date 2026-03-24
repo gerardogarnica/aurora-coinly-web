@@ -32,8 +32,8 @@ export class WalletsSummaryComponent {
       maintainAspectRatio: false,
       aspectRatio: 1,
       responsive: true,
-      rotation: '270',
-      circumference: '180',
+      rotation: 270,
+      circumference: 180,
       plugins: {
         legend: {
           position: 'top',
