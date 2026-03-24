@@ -6,6 +6,7 @@ import { TransactionNotificationService } from '@core/services/transaction-notif
 import { AssignToFormComponent } from '@features/wallets/components/assign-to-form/assign-to-form.component';
 import { NewWalletFormComponent } from '@features/wallets/components/new-wallet-form/new-wallet-form.component';
 import { TransferFundsFormComponent } from '@features/wallets/components/transfer-funds-form/transfer-funds-form.component';
+import { WalletHistoryFormComponent } from '@features/wallets/components/wallet-history-form/wallet-history-form.component';
 import { Wallet } from '@features/wallets/models/wallet.model';
 import { WalletType } from '@features/wallets/models/wallet.types';
 import { WalletService } from '@features/wallets/services/wallet.service';
@@ -27,7 +28,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
+  imports: [CommonModule, AssignToFormComponent, NewWalletFormComponent, TransferFundsFormComponent, WalletHistoryFormComponent, PageHeaderComponent, AvatarModule, ButtonModule, ConfirmDialog, IconFieldModule, InputIconModule, InputText, TableModule, TagModule, ToastModule, ToggleSwitchModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './wallets.component.html'
 })
@@ -48,6 +49,7 @@ export default class WalletsComponent {
   showAddDialog = false;
   showAssignToDialog = false;
   showTransferToDialog = false;
+  showHistoryDialog = false;
 
   ngOnInit() {
     this.transactionNotificationService.transactionCreated$
@@ -182,5 +184,14 @@ export default class WalletsComponent {
   onTransferFundsFormDialogClose() {
     this.showTransferToDialog = false;
     this.loadWallets();
+  }
+
+  onViewHistory(wallet: Wallet) {
+    this.selectedWallet.set(wallet);
+    this.showHistoryDialog = true;
+  }
+
+  onHistoryFormDialogClose() {
+    this.showHistoryDialog = false;
   }
 }

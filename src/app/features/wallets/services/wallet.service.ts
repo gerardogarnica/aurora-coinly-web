@@ -23,7 +23,7 @@ export class WalletService {
   }
 
   getWalletHistory(id: string, dateFrom: Date, dateTo: Date) {
-    let url = `${this.apiUrl}/${id}/history?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+    let url = `${this.apiUrl}/${id}/history?dateFrom=${dateFrom.toISOString().slice(0, 10)}&dateTo=${dateTo.toISOString().slice(0, 10)}`;
     return this.httpClient.get<Wallet>(url, { context: checkToken() }).pipe(
       catchError(error => throwError(() => this.errorsService.handleHttpError(error)))
     );

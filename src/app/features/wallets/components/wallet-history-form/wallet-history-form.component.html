@@ -1,0 +1,97 @@
+<p-dialog
+  [header]="'Transaction History — ' + wallet?.name"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '80vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  (onShow)="showDialogForm()"
+  (onHide)="hideDialogForm()">
+
+  <!-- Date range picker -->
+  <div class="flex items-end gap-3 mb-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Date Range</label>
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        [maxDate]="maxDate"
+        [readonlyInput]="true"
+        [showButtonBar]="true"
+        [style]="{ width: '280px' }"
+        size="small" />
+    </div>
+    <p-button
+      label="Load History"
+      icon="pi pi-search"
+      size="small"
+      [raised]="true"
+      [disabled]="dateRange.length < 2 || !dateRange[1] || processStatus === 'loading'"
+      (onClick)="onLoadHistory()" />
+  </div>
+
+  <div class="min-h-[400px]">
+  <!-- Loading state -->
+  @if (processStatus === 'loading') {
+    <div class="flex justify-center py-8">
+      <i class="pi pi-spin pi-spinner text-4xl text-coinly-primary"></i>
+    </div>
+  }
+
+  <!-- Results table -->
+  @if (processStatus === 'success') {
+    <p-table
+      [value]="transactions"
+      [scrollable]="true"
+      scrollHeight="400px"
+      [rowHover]="true">
+      <ng-template #header>
+        <tr>
+          <th class="text-center!">Date</th>
+          <th class="text-center!">Type</th>
+          <th>Description</th>
+          <th class="text-right!">Amount</th>
+          <th class="text-right!">Available Balance</th>
+          <th class="text-right!">Savings Balance</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-tx>
+        <tr>
+          <td class="text-center!">{{ tx.date | date:'dd/MM/yyyy' }}</td>
+          <td class="flex justify-center">
+            <p-tag
+              [value]="tx.type"
+              [severity]="getTransactionTypeSeverity(tx.type)"
+              [rounded]="true" />
+          </td>
+          <td>{{ tx.description }}</td>
+          <td class="text-right!">
+            <span [class]="tx.amount >= 0 ? 'font-bold text-coinly-success' : 'font-bold text-coinly-danger'">
+              {{ tx.amount | currency: wallet?.currencyCode }}
+            </span>
+          </td>
+          <td class="font-bold text-right!">{{ tx.availableBalance | currency: wallet?.currencyCode }}</td>
+          <td class="font-bold text-right!">{{ tx.savingsBalance | currency: wallet?.currencyCode }}</td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6" class="text-center!">No transactions found for the selected period.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+  </div>
+
+  <ng-template #footer>
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      severity="danger"
+      size="small"
+      (click)="hideDialogForm()" />
+  </ng-template>
+</p-dialog>
+
+<p-toast position="center" />

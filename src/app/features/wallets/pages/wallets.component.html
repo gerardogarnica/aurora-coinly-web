@@ -168,6 +168,15 @@
             [rounded]="true"
             [disabled]="!wallet.canDelete"
             (onClick)="onDeleteWallet(wallet)" />
+          <p-button
+            icon="pi pi-history"
+            severity="warn"
+            size="small"
+            title="View History"
+            class="ml-2"
+            [raised]="true"
+            [rounded]="true"
+            (onClick)="onViewHistory(wallet)" />
         </div>
       </td>
     </tr>
@@ -205,3 +214,9 @@
   [showDialog]="showTransferToDialog"
   (cancelAction)="onTransferFundsFormDialogClose()">
 </app-transfer-funds-form>
+
+<app-wallet-history-form
+  [wallet]="selectedWallet()"
+  [showDialog]="showHistoryDialog"
+  (cancelAction)="onHistoryFormDialogClose()">
+</app-wallet-history-form>
