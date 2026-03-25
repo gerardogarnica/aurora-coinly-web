@@ -1,4 +1,5 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, Output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -30,11 +31,12 @@ export class PayTransactionsFormComponent {
   @Input() selectedTransactions: Transaction[] = [];
   @Output() cancelAction = new EventEmitter<void>();
 
-  transactionService = inject(TransactionService);
-  walletService = inject(WalletService);
-  formBuilder = inject(FormBuilder);
-  confirmationService = inject(ConfirmationService);
-  messageService = inject(MessageService);
+  private transactionService = inject(TransactionService);
+  private walletService = inject(WalletService);
+  private formBuilder = inject(FormBuilder);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  private destroyRef = inject(DestroyRef);
 
   processStatus: ProcessStatus = 'none';
   paymentDateMinValue: Date = CommonUtils.currentDate();
@@ -50,6 +52,7 @@ export class PayTransactionsFormComponent {
   getWallets() {
     this.walletService
       .getWallets(false)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (wallets) => {
           this.wallets = wallets;
@@ -67,9 +70,8 @@ export class PayTransactionsFormComponent {
 
   showDialogForm() {
     this.resetForm();
+    this.paymentDateMaxValue = CommonUtils.currentDate();
     this.getWallets();
-
-    console.log('Transacciones seleccionadas en el diálogo:', this.selectedTransactions);
   }
 
   hideDialogForm() {
@@ -95,14 +97,10 @@ export class PayTransactionsFormComponent {
       return;
     }
 
-    this.setWalletMethodChanged(this.wallets.find(wallet => wallet.walletId === selectedWalletId)!);
+    this.updatePaymentDateConstraints(this.wallets.find(wallet => wallet.walletId === selectedWalletId)!);
   }
 
-  setWalletMethodChanged(wallet: Wallet) {
-    this.payTransactionForm.patchValue({
-      walletId: wallet.walletId
-    });
-
+  updatePaymentDateConstraints(wallet: Wallet) {
     let sourceWalletMinDate = new Date(wallet.lastOperationOn);
     const nextDay = new Date(sourceWalletMinDate.setDate(sourceWalletMinDate.getDate() + 1));
     nextDay.setHours(0, 0, 0, 0);
@@ -133,7 +131,6 @@ export class PayTransactionsFormComponent {
       paymentDate: formValue.paymentDate.toISOString().slice(0, 10)
     };
 
-    console.log(payPendingTransactions);
     this.payPendingTransactions(payPendingTransactions);
   }
 
@@ -167,9 +164,6 @@ export class PayTransactionsFormComponent {
   }
 
   get totalAmount(): number {
-    if (!this.selectedTransactions) {
-      return 0;
-    }
     return this.selectedTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
   }
 }

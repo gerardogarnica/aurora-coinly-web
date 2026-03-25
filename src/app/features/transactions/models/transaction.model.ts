@@ -66,5 +66,5 @@ export interface CreateIncomeTransaction {
 export interface PayPendingTransactions {
     transactionIds: string[];
     walletId: string;
-    paymentDate: Date;
+    paymentDate: string;
 }

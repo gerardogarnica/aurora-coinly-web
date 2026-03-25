@@ -83,13 +83,13 @@
         icon="pi pi-times"
         severity="danger"
         size="small"
-        (click)="showDialog = false" />
+        (click)="hideDialogForm()" />
       <p-button
         label="Save and close"
         icon="pi pi-save"
         severity="success"
         size="small"
-        [disabled]="!payTransactionForm.valid || this.processStatus === 'loading'"
+        [disabled]="!payTransactionForm.valid || processStatus === 'loading'"
         (click)="onPay()" />
     </div>
   </form>
