@@ -15,12 +15,13 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
+import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-pay-transactions-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, ConfirmDialog, DatePickerModule, DialogModule, SelectModule, ToastModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, ConfirmDialog, DatePickerModule, DialogModule, SelectModule, TableModule, ToastModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './pay-transactions-form.component.html'
 })
@@ -42,7 +43,7 @@ export class PayTransactionsFormComponent {
   wallets: Wallet[] = [];
 
   payTransactionForm: FormGroup = this.formBuilder.group({
-    walletId: [null],
+    walletId: [null, [Validators.required]],
     paymentDate: [CommonUtils.currentDate(), [Validators.required]]
   });
 
@@ -84,6 +85,8 @@ export class PayTransactionsFormComponent {
       walletId: null,
       paymentDate: CommonUtils.currentDate()
     });
+    this.payTransactionForm.markAsPristine();
+    this.payTransactionForm.markAsUntouched();
   }
 
   onWalletChange(event: any) {
