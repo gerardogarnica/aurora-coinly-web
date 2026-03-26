@@ -1,26 +1,32 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 
 import { DashboardWallet } from '@features/dashboard/models/dashboard.model';
 
 import { ChartModule } from 'primeng/chart';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-wallets-summary',
-  imports: [ChartModule],
+  imports: [ChartModule, ToggleSwitchModule, FormsModule],
   templateUrl: './wallets-summary.component.html'
 })
 export class WalletsSummaryComponent {
   wallets = input<DashboardWallet[]>([]);
 
+  onlyAvailable = signal(false);
+
   chartData = computed(() => {
     const wallets = this.wallets();
+    const mode = this.onlyAvailable() ? 'available' : 'total';
+    const positive = wallets.filter(w => (mode === 'total' ? w.totalAmount : w.availableAmount) > 0);
     return {
-      labels: wallets.map(w => w.name),
+      labels: positive.map(w => w.name),
       datasets: [
         {
-          data: wallets.map(w => w.totalAmount),
-          backgroundColor: wallets.map(w => w.color),
-          hoverBackgroundColor: wallets.map(w => w.color)
+          data: positive.map(w => this.onlyAvailable() ? w.availableAmount : w.totalAmount),
+          backgroundColor: positive.map(w => w.color),
+          hoverBackgroundColor: positive.map(w => w.color)
         }
       ]
     };
