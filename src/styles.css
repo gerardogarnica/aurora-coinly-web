@@ -63,3 +63,16 @@ body {
   background-color: var(--color-coinly-primary);
   color: #ffffff; /* Example: white text */
 }
+
+/* Larger, more legible dropdown/select panels */
+.select-panel-lg .p-select-option,
+.select-panel-lg .p-dropdown-item {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.25rem;
+  white-space: normal;
+}
+
+.select-panel-lg {
+  max-width: 90vw;
+}
