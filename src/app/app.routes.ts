@@ -58,6 +58,14 @@ export const routes: Routes = [
                 }
             },
             {
+                path: 'budgets',
+                loadComponent: () => import('@features/budgets/pages/budgets.component'),
+                data: {
+                    title: 'Budgets',
+                    subtitle: 'Manage your budgets to keep your spending on track.'
+                }
+            },
+            {
                 path: 'profile',
                 loadComponent: () => import('@features/profile/pages/profile.component'),
                 data: {

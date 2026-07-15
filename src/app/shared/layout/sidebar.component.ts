@@ -22,6 +22,11 @@ export class SidebarComponent{
             routerLink: ['/transactions']
         },
         {
+            label: 'Budgets',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/budgets']
+        },
+        {
             label: 'Wallets',
             icon: 'pi pi-fw pi-wallet',
             routerLink: ['/wallets']

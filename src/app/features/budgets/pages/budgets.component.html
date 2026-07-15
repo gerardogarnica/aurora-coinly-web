@@ -1,0 +1,109 @@
+<app-page-header>
+  <div class="w-full sm:w-1/2 md:w-3/5 flex items-center gap-4">
+    <div class="flex items-center gap-2">
+      <label for="yearSelector" class="font-medium whitespace-nowrap">Year:</label>
+      <p-datepicker
+        inputId="yearSelector"
+        [(ngModel)]="selectedYear"
+        view="year"
+        dateFormat="yy"
+        size="small"
+        [minDate]="minYear"
+        [maxDate]="maxYear"
+        [style]="{ width: '200px' }"
+        (onSelect)="onYearChange()" />
+    </div>
+  </div>
+
+  <div class="w-full sm:w-auto justify-end">
+    <p-button
+      label="Add new Budget"
+      icon="pi pi-plus"
+      title="Add new Budget"
+      size="small"
+      [raised]="true"
+      (onClick)="onAddBudget()"
+    />
+  </div>
+</app-page-header>
+
+<p-table
+  [value]="budgets()"
+  [rows]="10"
+  [scrollable]="true"
+  scrollHeight="660px"
+  [rowHover]="true">
+  <ng-template #header>
+    <tr>
+      <th pSortableColumn="category.name">
+        Category
+        <p-sortIcon field="category.name" />
+      </th>
+      <th class="text-center!" pSortableColumn="frequency">
+        Frequency
+        <p-sortIcon field="frequency" />
+      </th>
+      <th class="text-center!" pSortableColumn="budgetYear">
+        Year
+        <p-sortIcon field="budgetYear" />
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-budget>
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          <p-avatar
+            shape="circle"
+            [icon]="getCategoryIcon(budget.category.group)"
+            [style]="{ 'background-color': `${budget.category.color}66`, 'color': budget.category.color }" />
+          <div class="flex flex-col">
+            <span class="font-bold text-base">{{ budget.category.name }}</span>
+            <span class="text-xs text-coinly-disabled">{{ budget.category.group }}</span>
+          </div>
+        </div>
+      </td>
+      <td class="text-center!">
+        {{ budget.frequency }}
+      </td>
+      <td class="text-center!">
+        {{ budget.budgetYear }}
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <p-button
+            icon="pi pi-eye"
+            size="small"
+            title="View Detail"
+            [raised]="true"
+            [rounded]="true"
+            (onClick)="onViewDetail(budget)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="4" class="text-center!">No budgets found for {{ selectedYear.getFullYear() }}.</td>
+    </tr>
+  </ng-template>
+  <ng-template #summary>
+    <div class="py-8">
+      In total there are <span class="font-bold text-coinly-info-dark">{{ budgets() ? budgets().length : 0 }} budgets</span> for {{ selectedYear.getFullYear() }}.
+    </div>
+  </ng-template>
+</p-table>
+
+<p-toast position="center" />
+
+<app-new-budget-form
+  [showDialog]="showAddDialog"
+  (cancelAction)="onAddFormDialogClose()">
+</app-new-budget-form>
+
+<app-budget-detail
+  [budget]="selectedBudget()"
+  [showDialog]="showDetailDialog"
+  (cancelAction)="onDetailDialogClose()">
+</app-budget-detail>

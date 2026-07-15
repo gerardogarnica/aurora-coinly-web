@@ -1,0 +1,114 @@
+<p-dialog
+  header="Add New Budget"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '45vw' }"
+  [contentStyle]="{ 'min-height': '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  (onShow)="showDialogForm()"
+  (onHide)="hideDialogForm()">
+  <form [formGroup]="budgetForm" class="space-y-2" (ngSubmit)="onSave()">
+    <div class="flex flex-col">
+      <label for="categoryId">Category <span class="text-coinly-info">(required)</span></label>
+      <p-select
+        id="categoryId"
+        formControlName="categoryId"
+        [options]="categories"
+        [checkmark]="true"
+        optionLabel="name"
+        optionValue="categoryId"
+        placeholder="Select a category"
+        [filter]="true"
+        filterBy="name"
+        size="small" />
+      @if (budgetForm.get('categoryId')?.hasError('required') && budgetForm.get('categoryId')?.touched) {
+        <p class="mt-1 text-coinly-danger">Category is required</p>
+      }
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="year">Year <span class="text-coinly-info">(required)</span></label>
+        <p-datepicker
+          inputId="year"
+          formControlName="year"
+          view="year"
+          dateFormat="yy"
+          size="small"
+          [minDate]="minYear"
+          [maxDate]="maxYear"
+          fluid />
+        @if (budgetForm.get('year')?.hasError('required') && budgetForm.get('year')?.touched) {
+          <p class="mt-1 text-coinly-danger">Year is required</p>
+        }
+      </div>
+      <div class="flex flex-col">
+        <label for="frequency">Frequency <span class="text-coinly-info">(required)</span></label>
+        <p-select
+          id="frequency"
+          formControlName="frequency"
+          [options]="frequencyOptions"
+          [checkmark]="true"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select a frequency"
+          size="small" />
+        @if (budgetForm.get('frequency')?.hasError('required') && budgetForm.get('frequency')?.touched) {
+          <p class="mt-1 text-coinly-danger">Frequency is required</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="currencyCode">Currency code</label>
+        <input
+          pInputText
+          id="currencyCode"
+          formControlName="currencyCode"
+          placeholder="e.g. USD"
+          maxlength="10"
+          variant="outlined"
+          pSize="small" />
+      </div>
+      <div class="flex flex-col">
+        <label for="amountLimit">Amount limit <span class="text-coinly-info">(required)</span></label>
+        <p-input-number
+          inputId="amountLimit"
+          formControlName="amountLimit"
+          mode="decimal"
+          [min]="0.01"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          size="small"
+          fluid />
+        @if (budgetForm.get('amountLimit')?.hasError('required') && budgetForm.get('amountLimit')?.touched) {
+          <p class="mt-1 text-coinly-danger">Amount limit is required</p>
+        }
+        @if (budgetForm.get('amountLimit')?.hasError('min')) {
+          <p class="mt-1 text-coinly-danger">Amount limit must be greater than 0</p>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        severity="danger"
+        size="small"
+        (click)="hideDialogForm()" />
+      <p-button
+        label="Save"
+        icon="pi pi-save"
+        severity="success"
+        size="small"
+        [disabled]="!budgetForm.valid || processStatus === 'loading'"
+        (click)="onSave()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast position="center" />
