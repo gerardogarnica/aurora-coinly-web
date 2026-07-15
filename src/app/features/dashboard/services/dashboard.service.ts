@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { DashboardSummary } from '@features/dashboard/models/dashboard.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { DashboardSummary } from '@features/dashboard/models/dashboard.model';
 export class DashboardService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/dashboard';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/dashboard`;
 
   getDashboard() {
     return this.httpClient.get<DashboardSummary>(this.apiUrl, { context: checkToken() }).pipe(
