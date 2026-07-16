@@ -1,13 +1,21 @@
 <!-- Header -->
 <header
-  class="sticky top-0 px-8 py-4 z-50 bg-coinly-light flex justify-between items-center border-b border-b-coinly-secondary">
-  <div>
-    <h1 class="text-2xl text-coinly-primary font-semibold">{{ title }}</h1>
-    <p class="text-coinly-disabled">{{ subtitle }}</p>
-  </div>
-  <div class="flex items-center space-x-4">
+  class="sticky top-0 px-4 py-3 md:px-8 md:py-4 z-30 bg-coinly-light flex justify-between items-center border-b border-b-coinly-secondary">
+  <div class="flex items-center gap-3">
     <p-button
-      label="New Transaction"
+      icon="pi pi-bars"
+      title="Toggle sidebar"
+      variant="text"
+      [rounded]="true"
+      (onClick)="onToggleDrawer()" />
+    <div>
+      <h1 class="text-lg md:text-2xl text-coinly-primary font-semibold">{{ title }}</h1>
+      <p class="text-coinly-disabled text-sm md:text-base">{{ subtitle }}</p>
+    </div>
+  </div>
+  <div class="flex items-center space-x-2 md:space-x-4">
+    <p-button
+      [label]="isMobile() ? '' : 'New Transaction'"
       icon="pi pi-receipt"
       size="small"
       severity="success"
