@@ -1,5 +1,6 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 
+import { BreakpointService } from '@core/services/breakpoint.service';
 import { CategoryFormComponent } from '@features/categories/components/category-form.component';
 import { Category, CategoryGroup } from '@features/categories/models/category.model';
 import { CategoryService } from '@features/categories/services/category.service';
@@ -14,7 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -27,18 +28,31 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
   templateUrl: './categories.component.html'
 })
 export default class CategoriesComponent {
-  @ViewChild('dt') dt!: Table;
-
   categoryService = inject(CategoryService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
+  breakpoint = inject(BreakpointService);
 
   categories = signal<Category[]>([]);
   errorMessage = signal<string | null>(null);
   selectedCategory = signal<Category | undefined>(undefined);
   showDeleted = signal(false);
+  searchTerm = signal('');
 
   showDialog = false;
+
+  filteredCategories = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.categories();
+    }
+
+    return this.categories().filter(
+      (category) =>
+        category.name?.toLowerCase().includes(term) ||
+        category.notes?.toLowerCase().includes(term)
+    );
+  });
 
   ngOnInit() {
     this.loadCategories();
@@ -58,9 +72,9 @@ export default class CategoriesComponent {
       });
   }
 
-  onSearch(event: Event, dt: any) {
+  onSearch(event: Event) {
     const input = event.target as HTMLInputElement;
-    dt.filterGlobal(input.value, 'contains');
+    this.searchTerm.set(input.value);
   }
 
   onShowInactiveChange(event: any) {

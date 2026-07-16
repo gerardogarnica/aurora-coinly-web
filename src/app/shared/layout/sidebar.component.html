@@ -1,10 +1,14 @@
 <aside
-    class="w-64 h-screen bg-coinly-secondary flex flex-col justify-between px-4 overflow-y-auto font-rubik text-coinly-light"
+    [class]="asideClasses()"
     aria-label="Sidebar">
     <!-- Navigation -->
     <nav>
-        <div class="py-6">
-            <img src="coinly_logo.svg" alt="Aurora Coinly">
+        <div class="py-6 flex justify-center">
+            @if (isRailCollapsed()) {
+                <img src="coinly_logo_icon.svg" alt="Aurora Coinly" class="w-8 h-8">
+            } @else {
+                <img src="coinly_logo.svg" alt="Aurora Coinly">
+            }
         </div>
 
         <ul class="space-y-2">
@@ -12,9 +16,14 @@
             <li>
                 <a [routerLink]="menuItem.routerLink"
                     routerLinkActive="bg-coinly-primary font-bold"
-                    class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
-                    <i class="{{ menuItem.icon }} mr-3"></i>
-                    <span>{{ menuItem.label }}</span>
+                    [class]="itemClasses()"
+                    [pTooltip]="menuItem.label ?? ''"
+                    tooltipPosition="right"
+                    [tooltipDisabled]="!isRailCollapsed()">
+                    <i class="{{ menuItem.icon }} {{ iconClasses() }}"></i>
+                    @if (!isRailCollapsed()) {
+                        <span>{{ menuItem.label }}</span>
+                    }
                 </a>
             </li>
             }
@@ -26,9 +35,14 @@
         <div>
             <a [routerLink]="['/profile']"
                 routerLinkActive="bg-coinly-primary font-bold"
-                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
-                <i class="pi pi-fw pi-user mr-3"></i>
-                <span>Profile</span>
+                [class]="itemClasses()"
+                pTooltip="Profile"
+                tooltipPosition="right"
+                [tooltipDisabled]="!isRailCollapsed()">
+                <i class="pi pi-fw pi-user {{ iconClasses() }}"></i>
+                @if (!isRailCollapsed()) {
+                    <span>Profile</span>
+                }
             </a>
         </div>
 
@@ -36,18 +50,28 @@
         <div>
             <a [routerLink]="['/settings']"
                 routerLinkActive="bg-coinly-primary font-bold"
-                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
-                <i class="pi pi-fw pi-cog mr-3"></i>
-                <span>Settings</span>
+                [class]="itemClasses()"
+                pTooltip="Settings"
+                tooltipPosition="right"
+                [tooltipDisabled]="!isRailCollapsed()">
+                <i class="pi pi-fw pi-cog {{ iconClasses() }}"></i>
+                @if (!isRailCollapsed()) {
+                    <span>Settings</span>
+                }
             </a>
         </div>
 
         <!-- Logout -->
         <div>
             <a href="#"
-                class="flex items-center px-4 py-3 text-coinly-light hover:bg-coinly-primary rounded-lg transition-colors">
-                <i class="pi pi-fw pi-sign-out mr-3"></i>
-                <span>Log out</span>
+                [class]="itemClasses()"
+                pTooltip="Log out"
+                tooltipPosition="right"
+                [tooltipDisabled]="!isRailCollapsed()">
+                <i class="pi pi-fw pi-sign-out {{ iconClasses() }}"></i>
+                @if (!isRailCollapsed()) {
+                    <span>Log out</span>
+                }
             </a>
         </div>
     </div>

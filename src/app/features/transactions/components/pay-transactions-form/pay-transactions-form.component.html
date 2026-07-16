@@ -4,6 +4,7 @@
   [modal]="true"
   [closeOnEscape]="false"
   [style]="{ width: '50vw' }"
+  [breakpoints]="{ '768px': '95vw' }"
   [draggable]="false"
   [resizable]="false"
   [dismissableMask]="true"
@@ -95,5 +96,5 @@
   </form>
 </p-dialog>
 
-<p-confirmDialog [style]="{ width: '450px' }" />
+<p-confirmDialog [style]="{ width: '90vw', 'max-width': '450px' }" />
 <p-toast position="center" />

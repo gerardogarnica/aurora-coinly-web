@@ -1,7 +1,8 @@
-import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { BreakpointService } from '@core/services/breakpoint.service';
 import { TransactionNotificationService } from '@core/services/transaction-notification.service';
 import { AssignToFormComponent } from '@features/wallets/components/assign-to-form/assign-to-form.component';
 import { EditWalletFormComponent } from '@features/wallets/components/edit-wallet-form/edit-wallet-form.component';
@@ -21,7 +22,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -34,17 +35,30 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
   templateUrl: './wallets.component.html'
 })
 export default class WalletsComponent {
-  @ViewChild('dt') dt!: Table;
-
   transactionNotificationService = inject(TransactionNotificationService);
   walletService = inject(WalletService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   destroyRef = inject(DestroyRef);
+  breakpoint = inject(BreakpointService);
 
   wallets = signal<Wallet[]>([]);
   selectedWallet = signal<Wallet | undefined>(undefined);
   showDeleted = signal(false);
+  searchTerm = signal('');
+
+  filteredWallets = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.wallets();
+    }
+
+    return this.wallets().filter(
+      (wallet) =>
+        wallet.name?.toLowerCase().includes(term) ||
+        wallet.notes?.toLowerCase().includes(term)
+    );
+  });
 
   assignToType: 'available' | 'savings' = 'available';
   showAddDialog = false;
@@ -79,9 +93,9 @@ export default class WalletsComponent {
       });
   }
 
-  onSearch(event: Event, dt: any) {
+  onSearch(event: Event) {
     const input = event.target as HTMLInputElement;
-    dt.filterGlobal(input.value, 'contains');
+    this.searchTerm.set(input.value);
   }
 
   onShowInactiveChange(event: any) {

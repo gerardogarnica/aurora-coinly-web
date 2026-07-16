@@ -9,7 +9,7 @@
           placeholder="Search wallets"
           maxlength="100"
           pSize="small"
-          (input)="onSearch($event, dt)"
+          (input)="onSearch($event)"
           [style]="{ width: '300px' }" />
       </p-iconfield>
     </div>
@@ -33,11 +33,10 @@
   </div>
 </app-page-header>
 
+@if (!breakpoint.isMobile()) {
 <p-table
-  #dt
-  [value]="wallets()"
+  [value]="filteredWallets()"
   [rows]="10"
-  [globalFilterFields]="['name', 'notes']"
   [scrollable]="true"
   scrollHeight="660px"
   [rowHover]="true">
@@ -188,12 +187,132 @@
   </ng-template>
   <ng-template #summary>
     <div class="py-8">
-      In total there are <span class="font-bold text-coinly-info-dark">{{ wallets() ? wallets().length : 0 }} wallets</span>.
+      In total there are <span class="font-bold text-coinly-info-dark">{{ filteredWallets().length }} wallets</span>.
     </div>
   </ng-template>
 </p-table>
+}
 
-<p-confirmDialog [style]="{ width: '450px' }" />
+@if (breakpoint.isMobile()) {
+<div class="space-y-3">
+  @for (wallet of filteredWallets(); track wallet.walletId) {
+  <div class="mobile-record-card bg-white rounded-lg shadow-sm p-4">
+    <div class="flex items-start justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <p-avatar
+          class="pi"
+          shape="circle"
+          [icon]="getTypeIcon(wallet.type)"
+          [style]="{ 'background-color': `${wallet.color}66`, 'color': wallet.color }" />
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ wallet.name }}</span>
+          <span class="text-xs text-coinly-disabled">{{ wallet.type }}</span>
+        </div>
+      </div>
+      <p-tag
+        [value]="wallet.isDeleted ? 'Deleted' : 'Active'"
+        [severity]="getTagSeverity(!wallet.isDeleted)" />
+    </div>
+
+    <dl class="grid grid-cols-2 gap-3 mt-3">
+      <div>
+        <dt>Total</dt>
+        @if (wallet.totalAmount > 0) {
+          <dd class="font-bold text-coinly-success">{{ wallet.totalAmount | currency: wallet.currencyCode }}</dd>
+        } @else {
+          <dd class="font-bold text-coinly-danger">{{ wallet.totalAmount | currency: wallet.currencyCode }}</dd>
+        }
+      </div>
+      <div>
+        <dt>Allow Negative Balance</dt>
+        <dd>
+          <p-tag
+            [icon]="getTagIcon(wallet.allowNegative)"
+            [value]="wallet.allowNegative ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(wallet.allowNegative)"
+            [rounded]="true" />
+        </dd>
+      </div>
+      <div>
+        <dt>Available</dt>
+        @if (wallet.availableAmount > 0) {
+          <dd class="font-bold text-coinly-success">{{ wallet.availableAmount | currency: wallet.currencyCode }}</dd>
+        } @else {
+          <dd class="font-bold text-coinly-danger">{{ wallet.availableAmount | currency: wallet.currencyCode }}</dd>
+        }
+      </div>
+      <div>
+        <dt>Savings</dt>
+        @if (wallet.savingsAmount > 0) {
+          <dd class="font-bold text-coinly-success">{{ wallet.savingsAmount | currency: wallet.currencyCode }}</dd>
+        } @else {
+          <dd class="font-bold text-coinly-danger">{{ wallet.savingsAmount | currency: wallet.currencyCode }}</dd>
+        }
+      </div>
+    </dl>
+
+    <div class="flex flex-wrap gap-2 mt-3">
+      <p-button
+        label="Transfer"
+        icon="pi pi-arrow-right-arrow-left"
+        title="Transfer Funds"
+        size="small"
+        [raised]="true"
+        [disabled]="wallet.availableAmount <= 0 && !wallet.allowNegative"
+        (onClick)="onTransferFunds(wallet)" />
+      <p-button
+        label="To Savings"
+        icon="pi pi-arrow-right"
+        title="Assign to Savings"
+        size="small"
+        [raised]="true"
+        [disabled]="wallet.availableAmount <= 0"
+        (onClick)="onToSavings(wallet)" />
+      <p-button
+        label="To Available"
+        icon="pi pi-arrow-left"
+        title="Assign to Available"
+        size="small"
+        [raised]="true"
+        [disabled]="wallet.savingsAmount <= 0"
+        (onClick)="onToAvailable(wallet)" />
+    </div>
+
+    <div class="flex justify-end gap-3 mt-3 pt-3 border-t border-coinly-highlight">
+      <p-button
+        icon="pi pi-pencil"
+        styleClass="!w-11 !h-11"
+        title="Edit"
+        [raised]="true"
+        [rounded]="true"
+        [disabled]="wallet.isDeleted"
+        (onClick)="onEditWallet(wallet)" />
+      <p-button
+        icon="pi pi-trash"
+        severity="danger"
+        styleClass="!w-11 !h-11"
+        title="Delete"
+        [raised]="true"
+        [rounded]="true"
+        [disabled]="!wallet.canDelete"
+        (onClick)="onDeleteWallet(wallet)" />
+      <p-button
+        icon="pi pi-history"
+        severity="warn"
+        styleClass="!w-11 !h-11"
+        title="View History"
+        [raised]="true"
+        [rounded]="true"
+        (onClick)="onViewHistory(wallet)" />
+    </div>
+  </div>
+  } @empty {
+  <p class="text-center text-coinly-disabled py-8">No wallets found.</p>
+  }
+</div>
+}
+
+<p-confirmDialog [style]="{ width: '90vw', 'max-width': '450px' }" />
 <p-toast position="center" />
 
 <app-new-wallet-form
