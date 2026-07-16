@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { CreateMethod, Method, UpdateMethod } from '@features/methods/models/method.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { CreateMethod, Method, UpdateMethod } from '@features/methods/models/met
 export class MethodService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/methods';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/methods`;
 
   getMethod(id: string) {
     let url = `${this.apiUrl}/${id}`;

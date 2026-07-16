@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { ErrorsService } from '@core/services/errors.service';
 import { TokenService, TokenType } from '@core/services/token.service';
 import { IdentityToken } from '@features/auth/models/auth.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
   private readonly tokenService = inject(TokenService);
-  private readonly apiUrl = '/aurora/coinly/auth';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/auth`;
 
   login(email: string, password: string) {
     let url = `${this.apiUrl}/login`;

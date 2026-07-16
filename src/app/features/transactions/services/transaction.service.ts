@@ -7,6 +7,7 @@ import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { CreateExpenseTransaction, CreateIncomeTransaction, PayPendingTransactions, Transaction } from '@features/transactions/models/transaction.model';
 import { TransactionDateFilterType } from '@features/transactions/models/transaction.types';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ import { TransactionDateFilterType } from '@features/transactions/models/transac
 export class TransactionService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/transactions';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/transactions`;
 
   getTransactions(dateFrom: Date, dateTo: Date, dateType: TransactionDateFilterType) {
     let url = `${this.apiUrl}?from=${dateFrom.toISOString().slice(0, 10)}&to=${dateTo.toISOString().slice(0, 10)}&dt=${dateType}`;

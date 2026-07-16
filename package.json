@@ -6,6 +6,9 @@
     "start": "ng serve",
     "start:dev": "ng serve -o --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:dev": "ng build --configuration dev",
+    "build:staging": "ng build --configuration staging",
+    "build:production": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { Budget, CreateBudget, UpdateBudget } from '@features/budgets/models/budget.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { Budget, CreateBudget, UpdateBudget } from '@features/budgets/models/bud
 export class BudgetService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/budgets';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/budgets`;
 
   getBudgets(year: number) {
     return this.httpClient.get<Budget[]>(`${this.apiUrl}/year/${year}`, { context: checkToken() }).pipe(

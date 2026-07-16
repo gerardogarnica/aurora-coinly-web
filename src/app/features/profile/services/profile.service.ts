@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { User } from '@features/profile/models/user.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { User } from '@features/profile/models/user.model';
 export class ProfileService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/me';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/me`;
 
   getProfile() {
     let url = `${this.apiUrl}`;

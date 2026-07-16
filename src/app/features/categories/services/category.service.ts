@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { Category, CreateCategory, UpdateCategory } from '@features/categories/models/category.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { Category, CreateCategory, UpdateCategory } from '@features/categories/m
 export class CategoryService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/categories';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/categories`;
 
   getCategory(id: string) {
     let url = `${this.apiUrl}/${id}`;

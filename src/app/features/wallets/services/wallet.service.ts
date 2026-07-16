@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { checkToken } from '@core/interceptors/auth.interceptor';
 import { ErrorsService } from '@core/services/errors.service';
 import { Wallet, CreateWallet, UpdateWallet, AssignToAvailableWalletRequest, AssignToSavingsWalletRequest, TransferBetweenWalletsRequest } from '@features/wallets/models/wallet.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { Wallet, CreateWallet, UpdateWallet, AssignToAvailableWalletRequest, Ass
 export class WalletService {
   private readonly httpClient = inject(HttpClient);
   private readonly errorsService = inject(ErrorsService);
-  private readonly apiUrl = '/aurora/coinly/wallets';
+  private readonly apiUrl = `${environment.apiUrl}/aurora/coinly/wallets`;
 
   getWallet(id: string) {
     let url = `${this.apiUrl}/${id}`;
