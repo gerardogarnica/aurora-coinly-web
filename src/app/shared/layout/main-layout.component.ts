@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '@shared/layout/navbar.component';
 import { SidebarComponent } from '@shared/layout/sidebar.component';
+import { BreakpointService } from '@core/services/breakpoint.service';
 import { filter, map, startWith } from 'rxjs';
 
 @Component({
@@ -13,9 +14,19 @@ import { filter, map, startWith } from 'rxjs';
 export class MainLayoutComponent {
   route = inject(ActivatedRoute);
   router = inject(Router);
+  breakpoint = inject(BreakpointService);
 
   pageHeaderTitle = '';
   pageHeaderSubtitle = '';
+  isDrawerOpen = signal(!this.breakpoint.isMobile());
+
+  toggleDrawer() {
+    this.isDrawerOpen.update((open) => !open);
+  }
+
+  closeDrawer() {
+    this.isDrawerOpen.set(false);
+  }
 
   ngOnInit() {
     this.router.events
@@ -37,6 +48,9 @@ export class MainLayoutComponent {
         if (data['title']) {
           this.pageHeaderTitle = data['title'];
           this.pageHeaderSubtitle = data['subtitle'] || '';
+        }
+        if (this.breakpoint.isMobile()) {
+          this.closeDrawer();
         }
       });
   }

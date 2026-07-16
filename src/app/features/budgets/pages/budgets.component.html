@@ -27,6 +27,7 @@
   </div>
 </app-page-header>
 
+@if (!breakpoint.isMobile()) {
 <p-table
   [value]="budgets()"
   [rows]="10"
@@ -94,6 +95,36 @@
     </div>
   </ng-template>
 </p-table>
+}
+
+@if (breakpoint.isMobile()) {
+<div class="space-y-3">
+  @for (budget of budgets(); track budget.budgetId) {
+  <div
+    class="mobile-record-card bg-white rounded-lg shadow-sm p-4 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2 min-w-0">
+      <p-avatar
+        shape="circle"
+        [icon]="getCategoryIcon(budget.category.group)"
+        [style]="{ 'background-color': `${budget.category.color}66`, 'color': budget.category.color }" />
+      <div class="flex flex-col min-w-0">
+        <span class="font-bold text-base truncate">{{ budget.category.name }}</span>
+        <span class="text-xs text-coinly-disabled">{{ budget.frequency }} · {{ budget.budgetYear }}</span>
+      </div>
+    </div>
+    <p-button
+      icon="pi pi-eye"
+      styleClass="!w-11 !h-11"
+      title="View Detail"
+      [raised]="true"
+      [rounded]="true"
+      (onClick)="onViewDetail(budget)" />
+  </div>
+  } @empty {
+  <p class="text-center text-coinly-disabled py-8">No budgets found for {{ selectedYear.getFullYear() }}.</p>
+  }
+</div>
+}
 
 <p-toast position="center" />
 

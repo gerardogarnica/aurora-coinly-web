@@ -9,7 +9,7 @@
           placeholder="Search methods"
           maxlength="100"
           pSize="small"
-          (input)="onSearch($event, dt)"
+          (input)="onSearch($event)"
           [style]="{ width: '300px' }" />
       </p-iconfield>
     </div>
@@ -33,11 +33,10 @@
   </div>
 </app-page-header>
 
+@if (!breakpoint.isMobile()) {
 <p-table
-  #dt
-  [value]="methods()"
+  [value]="filteredMethods()"
   [rows]="10"
-  [globalFilterFields]="['name', 'wallet.name', 'notes']"
   [scrollable]="true"
   scrollHeight="660px"
   [rowHover]="true">
@@ -164,12 +163,110 @@
   </ng-template>
   <ng-template #summary>
     <div class="py-8">
-      In total there are <span class="font-bold text-coinly-info-dark">{{ methods() ? methods().length : 0 }} payment methods</span>.
+      In total there are <span class="font-bold text-coinly-info-dark">{{ filteredMethods().length }} payment methods</span>.
     </div>
   </ng-template>
 </p-table>
+}
 
-<p-confirmDialog [style]="{ width: '450px' }" />
+@if (breakpoint.isMobile()) {
+<div class="space-y-3">
+  @for (method of filteredMethods(); track method.paymentMethodId) {
+  <div class="mobile-record-card bg-white rounded-lg shadow-sm p-4">
+    <div class="flex items-start justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <p-avatar
+          class="pi"
+          shape="circle"
+          [icon]="getTypeIcon(method.wallet.type)"
+          [style]="{ 'background-color': `${method.wallet.color}66`, 'color': method.wallet.color }" />
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ method.name }}</span>
+          <span class="text-xs text-coinly-disabled">{{ method.wallet.name }}</span>
+        </div>
+      </div>
+      <p-tag
+        [value]="method.isDeleted ? 'Deleted' : 'Active'"
+        [severity]="getTagSeverity(!method.isDeleted)" />
+    </div>
+
+    <dl class="grid grid-cols-2 gap-3 mt-3">
+      <div>
+        <dt>Reverse Days</dt>
+        <dd>{{ method.maxDaysToReverse }}</dd>
+      </div>
+      <div>
+        <dt>Allow Recurring</dt>
+        <dd>
+          <p-tag
+            [icon]="getTagIcon(method.allowRecurring)"
+            [value]="method.allowRecurring ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(method.allowRecurring)"
+            [rounded]="true" />
+        </dd>
+      </div>
+      <div class="col-span-2">
+        <dt>Automark as Paid</dt>
+        <dd class="flex flex-col gap-1">
+          <p-tag
+            [icon]="getTagIcon(method.autoMarkAsPaid)"
+            [value]="method.autoMarkAsPaid ? 'Yes' : 'No'"
+            [severity]="getTagSeverity(method.autoMarkAsPaid)"
+            [rounded]="true"
+            styleClass="self-start" />
+          @if (!method.autoMarkAsPaid) {
+            <span class="text-xs font-bold">Suggested day of payment: {{ method.suggestedPaymentDay }}</span>
+            <span class="text-xs font-bold">Statement cutoff day: {{ method.statementCutoffDay }}</span>
+          }
+        </dd>
+      </div>
+    </dl>
+
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-3 pt-3 border-t border-coinly-highlight">
+      @if (!method.isDefault) {
+        <p-button
+          label="Set as Default"
+          title="Set as Default"
+          size="small"
+          [raised]="true"
+          [disabled]="method.isDeleted"
+          (onClick)="onSetDefaultMethod(method)" />
+      } @else {
+        <p-tag
+          value="Default"
+          [icon]="getTagIcon(method.isDefault)"
+          [severity]="getTagSeverity(method.isDefault)"
+          [rounded]="true" />
+      }
+
+      <div class="flex gap-3">
+        <p-button
+          icon="pi pi-pencil"
+          styleClass="!w-11 !h-11"
+          title="Edit"
+          [raised]="true"
+          [rounded]="true"
+          [disabled]="method.isDeleted"
+          (onClick)="onEditMethod(method)" />
+        <p-button
+          icon="pi pi-trash"
+          severity="danger"
+          styleClass="!w-11 !h-11"
+          title="Delete"
+          [raised]="true"
+          [rounded]="true"
+          [disabled]="method.isDeleted || method.isDefault"
+          (onClick)="onDeleteMethod(method)" />
+      </div>
+    </div>
+  </div>
+  } @empty {
+  <p class="text-center text-coinly-disabled py-8">No payment methods found.</p>
+  }
+</div>
+}
+
+<p-confirmDialog [style]="{ width: '90vw', 'max-width': '450px' }" />
 <p-toast position="center" />
 
 <app-method-form

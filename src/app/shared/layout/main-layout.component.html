@@ -1,11 +1,18 @@
 <div class="antialiased flex min-h-screen">
-    <app-sidebar></app-sidebar>
+    @if (isDrawerOpen() && breakpoint.isMobile()) {
+    <div
+        class="fixed inset-0 bg-black/40 z-40 transition-opacity duration-200"
+        (click)="closeDrawer()">
+    </div>
+    }
+    <app-sidebar [isOpen]="isDrawerOpen()"></app-sidebar>
     <div class="flex-1 flex flex-col h-screen font-quicksand">
         <app-navbar
           [title]="pageHeaderTitle"
           [subtitle]="pageHeaderSubtitle"
+          (toggleDrawer)="toggleDrawer()"
         ></app-navbar>
-        <main class="flex-1 overflow-y-auto px-8 py-6">
+        <main class="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
             <router-outlet></router-outlet>
         </main>
     </div>

@@ -76,3 +76,17 @@ body {
 .select-panel-lg {
   max-width: 90vw;
 }
+
+/* Mobile list-item cards that replace data tables below the md breakpoint */
+.mobile-record-card {
+  border-left: 3px solid var(--color-coinly-primary);
+}
+
+.mobile-record-card dt {
+  color: var(--color-coinly-disabled);
+  font-size: 0.75rem;
+}
+
+.mobile-record-card dd {
+  font-size: 0.875rem;
+}

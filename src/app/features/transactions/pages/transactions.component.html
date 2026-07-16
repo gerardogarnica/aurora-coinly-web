@@ -95,47 +95,64 @@
     <div class="space-y-2">
       <h2 class="font-bold text-lg text-coinly-primary mb-2">{{ group.date | date: 'fullDate' }}</h2>
       @for (transaction of group.transactions; track transaction.transactionId) {
-        <div class="bg-white grid grid-cols-6 px-5 py-3 items-center rounded-2xl">
-          <div class="col-span-2 flex items-center gap-3">
-            <p-checkbox
-              [binary]="true"
-              [ngModel]="isTransactionSelected(transaction)"
-              [ngModelOptions]="{standalone: true}"
-              [disabled]="transaction.status === TransactionStatus.Paid"
-              (onChange)="onTransactionSelectionChange($event.checked, transaction)" />
-            <div>
-              <p-avatar
-                [icon]="getTransactionIcon(transaction)"
-                shape="circle"
-                [style]="{'background-color': `${transaction.category.color}66`, 'color': `${transaction.category.color}`}" />
+        <div class="bg-white flex flex-col gap-3 border-l-[3px] border-coinly-primary md:border-l-0 md:grid md:grid-cols-6 px-4 py-3 md:px-5 md:items-center rounded-2xl">
+          <!-- Top row (mobile): category + amount. Left half of grid (desktop). -->
+          <div class="flex items-center justify-between gap-3 md:col-span-2">
+            <div class="flex items-center gap-3 min-w-0">
+              <p-checkbox
+                [binary]="true"
+                [ngModel]="isTransactionSelected(transaction)"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="transaction.status === TransactionStatus.Paid"
+                (onChange)="onTransactionSelectionChange($event.checked, transaction)" />
+              <div>
+                <p-avatar
+                  [icon]="getTransactionIcon(transaction)"
+                  shape="circle"
+                  [style]="{'background-color': `${transaction.category.color}66`, 'color': `${transaction.category.color}`}" />
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="font-bold text-ellipsis truncate">{{ transaction.description }}</span>
+                <span class="text-xs text-coinly-disabled">{{ transaction.category.name }}</span>
+              </div>
             </div>
-            <div class="flex flex-col">
-              <span class="font-bold text-ellipsis">{{ transaction.description }}</span>
-              <span class="text-xs text-coinly-disabled">{{ transaction.category.name }}</span>
-            </div>
-          </div>
-          <div class="col-span-2 flex items-center gap-3">
-            <div>
-              <p-avatar
-                [icon]="getTransactionWalletIcon(transaction.wallet.type)"
-                shape="circle"
-                [style]="{'background-color': `${transaction.wallet.color}66`, 'color': `${transaction.wallet.color}`}" />
-            </div>
-            <span class="font-bold">
-              @if (isExpenseTransaction(transaction)) {
-                {{ transaction.paymentMethod.name }}
-              } @else {
-                {{ transaction.wallet.name }}
-              }
+            <span class="text-xl md:hidden font-bold text-end shrink-0" [ngClass]="getTransactionAmountClass(transaction)">
+              {{ transaction.amount | currency: transaction.currency }}
             </span>
           </div>
-          <div class="flex flex-col items-center text-center">
+
+          <!-- Bottom row (mobile): wallet/method + status. Right half of grid (desktop). -->
+          <div class="flex items-center justify-between gap-3 md:col-span-2">
+            <div class="flex items-center gap-3 min-w-0">
+              <div>
+                <p-avatar
+                  [icon]="getTransactionWalletIcon(transaction.wallet.type)"
+                  shape="circle"
+                  [style]="{'background-color': `${transaction.wallet.color}66`, 'color': `${transaction.wallet.color}`}" />
+              </div>
+              <span class="font-bold truncate">
+                @if (isExpenseTransaction(transaction)) {
+                  {{ transaction.paymentMethod.name }}
+                } @else {
+                  {{ transaction.wallet.name }}
+                }
+              </span>
+            </div>
+            <p-tag
+              class="md:hidden shrink-0"
+              [value]="transaction.status"
+              [severity]="getTransactionStatusSeverity(transaction.status)"
+              [rounded]="true" />
+          </div>
+
+          <!-- Desktop-only columns: status tag and amount, shown separately in the 6-column grid. -->
+          <div class="hidden md:flex flex-col items-center text-center">
             <p-tag
               [value]="transaction.status"
               [severity]="getTransactionStatusSeverity(transaction.status)"
               [rounded]="true" />
           </div>
-          <span class="text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
+          <span class="hidden md:block text-2xl content-center font-bold text-end" [ngClass]="getTransactionAmountClass(transaction)">
             {{ transaction.amount | currency: transaction.currency }}
           </span>
         </div>
@@ -144,7 +161,7 @@
   }
 </div>
 
-<p-confirmDialog [style]="{ width: '450px' }" />
+<p-confirmDialog [style]="{ width: '90vw', 'max-width': '450px' }" />
 <p-toast position="center" />
 
 <app-pay-transactions-form

@@ -9,7 +9,7 @@
           placeholder="Search categories"
           maxlength="100"
           pSize="small"
-          (input)="onSearch($event, dt)"
+          (input)="onSearch($event)"
           [style]="{ width: '300px' }" />
       </p-iconfield>
     </div>
@@ -32,11 +32,10 @@
   </div>
 </app-page-header>
 
+@if (!breakpoint.isMobile()) {
 <p-table
-  #dt
-  [value]="categories()"
+  [value]="filteredCategories()"
   [rows]="10"
-  [globalFilterFields]="['name', 'notes']"
   [scrollable]="true"
   scrollHeight="660px"
   [rowHover]="true">
@@ -129,12 +128,76 @@
   </ng-template>
   <ng-template #summary>
     <div class="py-8">
-      In total there are <span class="font-bold text-coinly-info-dark">{{ categories() ? categories().length : 0 }} categories</span>.
+      In total there are <span class="font-bold text-coinly-info-dark">{{ filteredCategories().length }} categories</span>.
     </div>
   </ng-template>
 </p-table>
+}
 
-<p-confirmDialog [style]="{ width: '450px' }" />
+@if (breakpoint.isMobile()) {
+<div class="space-y-3">
+  @for (category of filteredCategories(); track category.categoryId) {
+  <div class="mobile-record-card bg-white rounded-lg shadow-sm p-4">
+    <div class="flex items-start justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <p-avatar
+          class="pi"
+          shape="circle"
+          [icon]="getGroupIcon(category.group)"
+          [style]="{ 'background-color': `${category.color}66`, 'color': category.color }" />
+        <div class="flex flex-col">
+          <span class="font-bold text-base">{{ category.name }}</span>
+          <span class="text-xs text-coinly-disabled">{{ category.group }}</span>
+        </div>
+      </div>
+      <p-tag
+        [value]="category.isDeleted ? 'Deleted' : 'Active'"
+        [severity]="getStatusSeverity(category.isDeleted)" />
+    </div>
+
+    <dl class="grid grid-cols-2 gap-3 mt-3">
+      <div>
+        <dt>Type</dt>
+        <dd>
+          <p-tag
+            [value]="category.type"
+            [icon]="getTypeIcon(category.type)"
+            [severity]="getTypeSeverity(category.type)" />
+        </dd>
+      </div>
+      <div>
+        <dt>Reverse Days</dt>
+        <dd>{{ category.maxDaysToReverse }}</dd>
+      </div>
+    </dl>
+
+    <div class="flex justify-end gap-3 mt-3 pt-3 border-t border-coinly-highlight">
+      <p-button
+        icon="pi pi-pencil"
+        styleClass="!w-11 !h-11"
+        title="Edit"
+        [raised]="true"
+        [rounded]="true"
+        [disabled]="category.isDeleted"
+        (onClick)="onEditCategory(category)" />
+      <p-button
+        icon="pi pi-trash"
+        severity="danger"
+        styleClass="!w-11 !h-11"
+        title="Delete"
+        [raised]="true"
+        [rounded]="true"
+        [disabled]="category.isDeleted"
+        (onClick)="onDeleteCategory(category)" />
+    </div>
+  </div>
+  } @empty {
+  <p class="text-center text-coinly-disabled py-8">No categories found.</p>
+  }
+</div>
+}
+
+<p-confirmDialog [style]="{ width: '90vw', 'max-width': '450px' }" />
 <p-toast position="center" />
 
 <app-category-form
