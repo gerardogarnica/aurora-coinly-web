@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { BreakpointService } from '@core/services/breakpoint.service';
 import { BudgetDetailComponent } from '@features/budgets/components/budget-detail/budget-detail.component';
 import { NewBudgetFormComponent } from '@features/budgets/components/new-budget-form/new-budget-form.component';
 import { Budget } from '@features/budgets/models/budget.model';
@@ -27,6 +28,7 @@ import { ToastModule } from 'primeng/toast';
 export default class BudgetsComponent implements OnInit {
   private readonly budgetService = inject(BudgetService);
   private readonly messageService = inject(MessageService);
+  readonly breakpoint = inject(BreakpointService);
 
   budgets = signal<Budget[]>([]);
   selectedBudget = signal<Budget | undefined>(undefined);

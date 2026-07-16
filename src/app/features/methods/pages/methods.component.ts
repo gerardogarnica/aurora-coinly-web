@@ -1,5 +1,6 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 
+import { BreakpointService } from '@core/services/breakpoint.service';
 import { MethodFormComponent } from '@features/methods/components/method-form.component';
 import { Method } from '@features/methods/models/method.model';
 import { MethodService } from '@features/methods/services/methods.service';
@@ -14,7 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -27,18 +28,32 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
   templateUrl: './methods.component.html'
 })
 export default class MethodsComponent {
-  @ViewChild('dt') dt!: Table;
-
   methodService = inject(MethodService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
+  breakpoint = inject(BreakpointService);
 
   methods = signal<Method[]>([]);
   errorMessage = signal<string | null>(null);
   selectedMethod = signal<Method | undefined>(undefined);
   showDeleted = signal(false);
+  searchTerm = signal('');
 
   showDialog = false;
+
+  filteredMethods = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.methods();
+    }
+
+    return this.methods().filter(
+      (method) =>
+        method.name?.toLowerCase().includes(term) ||
+        method.wallet?.name?.toLowerCase().includes(term) ||
+        method.notes?.toLowerCase().includes(term)
+    );
+  });
 
   ngOnInit() {
     this.loadMethods();
@@ -58,9 +73,9 @@ export default class MethodsComponent {
       });
   }
 
-  onSearch(event: Event, dt: any) {
+  onSearch(event: Event) {
     const input = event.target as HTMLInputElement;
-    dt.filterGlobal(input.value, 'contains');
+    this.searchTerm.set(input.value);
   }
 
   onShowInactiveChange(event: any) {
